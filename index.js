@@ -2,8 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const { exec } = require("child_process")
 const Pocketbase = require('pocketbase/cjs');
-
-const app = express()
+const all_routes = require('express-list-endpoints');
 
 const initPB = async (req, res, next) => {
     const pb = new Pocketbase(process.env.PB_HOST)
@@ -17,9 +16,13 @@ const initPB = async (req, res, next) => {
     }
 }
 
+const app = express()
+app.set('view engine', 'ejs');
 app.use(cors())
 app.use(express.json())
 app.use(initPB)
+
+app.use("/idea-box", require("./routes/ideaBox"))
 
 app.get("/books/list", (req, res) => {
     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
@@ -31,11 +34,24 @@ app.get("/books/list", (req, res) => {
     })
 })
 
-app.get("/idea-box/container/list", async (req, res) => {
-    const { pb } = req
-    const containers = await pb.collection("idea_box_container").getFullList()
-    res.json(containers)
+app.get("/", (req, res) => {
+    const routes = all_routes(app).flatMap(route => route.methods.map(method => ({
+        path: route.path,
+        method: method
+    }))).reduce((acc, route) => {
+        if (acc[route.path.split("/")[1]]) {
+            acc[route.path.split("/")[1]].push(route)
+        } else {
+            acc[route.path.split("/")[1]] = [route]
+        }
+        return acc
+    }, {})
+
+    res.render("api-explorer", {
+        routes
+    })
 })
+
 
 app.listen(3636, () => {
     console.log("Server is running on port 3636")

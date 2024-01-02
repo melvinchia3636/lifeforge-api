@@ -1,0 +1,70 @@
+<html>
+
+<head>
+  <title>API Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600&family=Urbanist:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-neutral-900 text-neutral-100 font-[Urbanist] px-64 py-32">
+  <h1 class="flex items-center gap-2 whitespace-nowrap mb-20 text-4xl font-semibold text-neutral-50">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="text-5xl text-teal-500 iconify iconify--tabler" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0L14.414 13m3.707 2.293l2.586-2.586a1 1 0 0 0 0-1.414l-7.586-7.586a1 1 0 0 0-1.414 0L9.121 6.293a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"></path></svg>
+      <div>
+        LifeForge<span class="text-4xl text-teal-500"> .</span> API
+      </div>
+  </h1>
+  <% Object.entries(routes).forEach(([route, methods])=> { %>
+    <div class="mt-16">
+      <h2 class="text-3xl font-semibold">
+        <%= route.split("-").map(e=> e ? e[0].toUpperCase() + e.slice(1) : "/").join(" ") %>
+      </h2>
+      <div class="flex flex-col">
+        <% methods.forEach(({method, path})=> { %>
+          <div class="flex p-2 rounded-full mt-4 border items-center <%= (() => {
+            switch(method) {
+              case "GET":
+                return "border-blue-500 bg-blue-500/10";
+              case "POST":
+                return "border-purple-500 bg-purple-500/10";
+              case "PUT":
+                return "border-green-500 bg-green-500/10";
+              case "DELETE":
+                return "border-red-500 bg-red-500/10";
+              case "PATCH":
+                return "border-yellow-500 bg-yellow-500/10";
+              default:
+                return "border-neutral-500 bg-neutral-500/10";
+            }
+          })() %>">
+            <div class="<%= (() => {
+              switch(method) {
+                case "GET":
+                  return "bg-blue-500";
+                case "POST":
+                  return "bg-purple-500";
+                case "PUT":
+                  return "bg-green-500";
+                case "DELETE":
+                  return "bg-red-500";
+                case "PATCH":
+                  return "bg-yellow-500";
+                default:
+                  return "bg-neutral-500";
+              }
+            })() %> text-neutral-900 tracking-widest font-semibold p-2 rounded-full w-24 text-center">
+              <%= method %>
+            </div>
+            <div class="ml-4 font-mono">
+              <%= path %>
+            </div>
+          </div>
+          <% }) %>
+      </div>
+    </div>
+    <% }) %>
+
+</body>
+
+</html>
