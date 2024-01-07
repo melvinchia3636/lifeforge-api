@@ -5,6 +5,16 @@ router.get("/get/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
+
+        if (!id) {
+            res.status(400)
+                .json({
+                    state: "error",
+                    message: "id is required"
+                })
+            return
+        }
+
         const container = await pb.collection("idea_box_container").getOne(id)
         res.json({
             state: "success",
@@ -63,6 +73,16 @@ router.delete("/delete/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
+
+        if (!id) {
+            res.status(400)
+                .json({
+                    state: "error",
+                    message: "id is required"
+                })
+            return
+        }
+
         await pb.collection("idea_box_container").delete(id)
 
         res.json({
@@ -81,6 +101,16 @@ router.patch("/update/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
+
+        if (!id) {
+            res.status(400)
+                .json({
+                    state: "error",
+                    message: "id is required"
+                })
+            return
+        }
+
         const { name, color, icon } = req.body
         await pb.collection("idea_box_container").update(id, {
             name,

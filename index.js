@@ -22,7 +22,10 @@ app.use(cors())
 app.use(express.json())
 app.use(initPB)
 
+app.use('/user', require("./routes/user"))
 app.use("/idea-box", require("./routes/ideaBox"))
+app.use("/code-snippets", require("./routes/codeSnippets"))
+app.use("/code-time", require("./routes/codeTime"))
 
 app.get("/books/list", (req, res) => {
     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
