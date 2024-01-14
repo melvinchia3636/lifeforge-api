@@ -1,20 +1,19 @@
 const express = require("express")
 const router = express.Router()
 
-router.post("/change-theme", ({ req, res }) => {
-    const { pb } = req
-    const { theme, id } = req.body
-
-    pb.collection("user").updateOne({
-        _id: id
-    }, {
-        $set: {
-            theme
-        }
-    })
-    res.json({
-        state: "success"
-    })
+router.patch("/personalization", async (req, res) => {
+    try {
+        const { pb } = req
+        const { id, data } = req.body
+        const user = await pb.collection("users").update(id, data)
+        res.json(user)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            state: "error",
+            message: error.message
+        })
+    }
 })
 
 module.exports = router
