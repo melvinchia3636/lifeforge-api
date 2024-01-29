@@ -1,23 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/get/:id", async (req, res) => {
-    try {
-        const { pb } = req;
-        const subject = await pb.collection("notes_subject").getOne(req.params.id);
-
-        res.json({
-            state: "success",
-            data: subject,
-        });
-    } catch (error) {
-        res.status(500).json({
-            state: "error",
-            message: error.message,
-        });
-    }
-});
-
 router.get("/list/:id", async (req, res) => {
     try {
         const { pb } = req;
@@ -40,6 +23,19 @@ router.get("/list/:id", async (req, res) => {
 router.put("/create", async (req, res) => {
     try {
         const { pb } = req;
+
+        const title = req.body.title;
+        const existing = await pb.collection("notes_subject").getFullList({
+            filter: `title = "${title}" && workspace = "${req.body.workspace}"`,
+        });
+        if (existing.length > 0) {
+            res.status(400).json({
+                state: "error",
+                message: "Subject already exists",
+            });
+
+            return
+        }
         const subject = await pb.collection("notes_subject").create(req.body);
 
         res.json({

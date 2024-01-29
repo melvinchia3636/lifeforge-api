@@ -58,6 +58,6 @@ app.get("/", (req, res) => {
 })
 
 
-app.listen(3636, () => {
+const server = app.listen(3636, () => {
     console.log("Server is running on port 3636")
 })
