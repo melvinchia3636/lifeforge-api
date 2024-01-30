@@ -17,7 +17,7 @@ router.get("/list/:containerId", async (req, res) => {
         }
 
         const ideas = await pb.collection("idea_box_entry").getFullList({
-            filter: `container = "${containerId}"`,
+            filter: `container = "${containerId}" && archived = false`,
             sort: "-pinned,-created"
         })
         res.json({
@@ -193,6 +193,37 @@ router.post("/pin/:id", async (req, res) => {
         const idea = await pb.collection("idea_box_entry").getOne(id)
         await pb.collection("idea_box_entry").update(id, {
             pinned: !idea.pinned
+        })
+
+        res.json({
+            state: "success"
+        })
+    } catch (error) {
+        res.status(500)
+            .json({
+                state: "error",
+                message: error.message
+            })
+    }
+})
+
+router.post("/archive/:id", async (req, res) => {
+    try {
+        const { pb } = req
+        const { id } = req.params
+
+        if (!id) {
+            res.status(400)
+                .json({
+                    state: "error",
+                    message: "id is required"
+                })
+            return
+        }
+
+        const idea = await pb.collection("idea_box_entry").getOne(id)
+        await pb.collection("idea_box_entry").update(id, {
+            archived: !idea.archived
         })
 
         res.json({

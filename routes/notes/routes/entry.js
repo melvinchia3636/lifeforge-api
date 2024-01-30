@@ -173,6 +173,15 @@ router.post("/upload/:workspace/:subject/*", uploadMiddleware, async (req, res) 
 
 router.patch("/update/folder/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         const note = await pb.collection("notes_entry").update(req.params.id, req.body);
 
@@ -190,6 +199,15 @@ router.patch("/update/folder/:id", async (req, res) => {
 
 router.delete("/delete/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         await pb.collection("notes_entry").delete(req.params.id);
 

@@ -3,6 +3,15 @@ const router = express.Router();
 
 router.get("/list/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         const subjects = await pb.collection("notes_subject").getFullList({
             filter: `workspace = "${req.params.id}"`,
@@ -52,6 +61,15 @@ router.put("/create", async (req, res) => {
 
 router.delete("/delete/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         await pb.collection("notes_subject").delete(req.params.id);
 
@@ -69,6 +87,15 @@ router.delete("/delete/:id", async (req, res) => {
 
 router.patch("/update/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         const subject = await pb
             .collection("notes_subject")

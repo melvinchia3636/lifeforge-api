@@ -3,6 +3,15 @@ const router = express.Router()
 
 router.get("/get/:id", async (req, res) => {
     try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: "error",
+                message: "id is required",
+            });
+
+            return
+        }
+
         const { pb } = req;
         const category = await pb
             .collection("notes_workspace")
