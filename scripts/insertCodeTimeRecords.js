@@ -2,7 +2,7 @@ const Pocketbase = require('pocketbase/cjs');
 const csv = require('csv-parser');
 const fs = require('fs')
 
-const pocketbase = new Pocketbase("http://127.0.0.1:8090");
+const pocketbase = new Pocketbase("http://192.168.0.106:8090");
 
 const results = [];
 

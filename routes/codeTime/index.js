@@ -44,18 +44,16 @@ router.get('/stats', async (req, res) => {
         }
 
         res.send({
-            status: "ok",
+            state: "success",
             data: Object.entries(groupByDate).map(([date, items]) => ({
                 time: date,
                 duration: items.length * 1000 * 60
             })),
-            message: "success",
         })
     } catch (e) {
-        res.status(500);
+        res.state(500);
         res.send({
-            status: "error",
-            data: [],
+            state: "error",
             message: e.message,
         })
     }
@@ -120,7 +118,7 @@ router.post("/eventLog", async (req, res) => {
             message: "success",
         });
     } catch (e) {
-        res.status(500);
+        res.state(500);
         res.send({
             status: "error",
             message: e.message,
@@ -215,17 +213,16 @@ router.get("/activities", async (req, res) => {
         });
 
         res.send({
-            status: "ok",
+            state: "success",
             data: {
                 data: final,
                 firstYear: new Date(firstRecordEver.items[0].event_time).getFullYear(),
             },
-            message: "success",
         });
     } catch (e) {
-        res.status(500);
+        res.state(500);
         res.send({
-            status: "error",
+            state: "error",
             data: [],
             message: e.message,
         })
@@ -324,7 +321,7 @@ router.get("/statistics", async (req, res) => {
         })();
 
         res.send({
-            status: "ok",
+            state: "success",
             data: {
                 "Most time spent": mostTimeSpent,
                 "Total time spent": total,
@@ -332,14 +329,11 @@ router.get("/statistics", async (req, res) => {
                 "Longest streak": longestStreak,
                 "Current streak": currentStreak,
             },
-            message: "success",
         });
     } catch (e) {
-
-        res.status(500);
+        res.state(500);
         res.send({
-            status: "error",
-            data: [],
+            state: "error",
             message: e.message,
         })
     }
@@ -352,10 +346,10 @@ router.get("/projects", async (req, res) => {
         const lastXDays = req.query.last || "24 hours";
 
         if (lastXDays > 30) {
-            res.status(400);
+            res.state(400);
 
             res.send({
-                status: "error",
+                state: "error",
                 message: "lastXDays must be less than 30",
             });
             return;
@@ -397,13 +391,13 @@ router.get("/projects", async (req, res) => {
         );
 
         res.send({
+            state: "success",
             data: groupByProject,
         })
     } catch (e) {
-        res.status(500);
+        res.state(500);
         res.send({
-            status: "error",
-            data: [],
+            state: "error",
             message: e.message,
         })
     }
@@ -416,10 +410,10 @@ router.get("/languages", async (req, res) => {
         const lastXDays = req.query.last || "24 hours";
 
         if (lastXDays > 30) {
-            res.status(400);
+            res.state(400);
 
             res.send({
-                status: "error",
+                state: "error",
                 message: "lastXDays must be less than 30",
             });
             return;
@@ -461,13 +455,13 @@ router.get("/languages", async (req, res) => {
         );
 
         res.send({
+            state: "success",
             data: groupByLanguage,
         })
     } catch (e) {
-        res.status(500);
+        res.state(500);
         res.send({
-            status: "error",
-            data: [],
+            state: "error",
             message: e.message,
         })
     }

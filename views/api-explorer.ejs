@@ -22,7 +22,7 @@
       </h2>
       <div class="flex flex-col">
         <% methods.forEach(({method, path})=> { %>
-          <a href="<%= path %>" class="flex p-2 rounded-full mt-4 border items-center <%= (() => {
+          <div class="flex p-2 rounded-lg mt-4 border items-center <%= (() => {
             switch(method) {
               case "GET":
                 return "border-blue-500 bg-blue-500/10";
@@ -53,13 +53,13 @@
                 default:
                   return "bg-neutral-500";
               }
-            })() %> text-neutral-900 tracking-widest font-semibold p-2 rounded-full w-24 text-center">
+            })() %> text-neutral-900 tracking-widest font-semibold p-2 rounded-md w-24 text-center">
               <%= method %>
             </div>
             <div class="ml-4 font-mono">
               <%= path %>
             </div>
-          </a>
+          </div>
           <% }) %>
       </div>
     </div>
