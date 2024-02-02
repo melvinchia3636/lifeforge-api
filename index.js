@@ -23,6 +23,7 @@ app.use(express.json())
 app.use(initPB)
 
 app.use('/user', require("./routes/user"))
+app.use('/disks', require("./routes/disks"))
 app.use("/todo-list", require("./routes/todoList"))
 app.use("/idea-box", require("./routes/ideaBox"))
 app.use("/code-snippets", require("./routes/codeSnippets"))
