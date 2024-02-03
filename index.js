@@ -32,6 +32,7 @@ app.use("/idea-box", require("./routes/ideaBox"))
 app.use("/code-snippets", require("./routes/codeSnippets"))
 app.use("/code-time", require("./routes/codeTime"))
 app.use("/notes", require("./routes/notes"))
+app.use('/spotify', require("./routes/spotify"))
 app.use("/change-log", require("./routes/changeLog"))
 
 app.get("/books/list", (req, res) => {

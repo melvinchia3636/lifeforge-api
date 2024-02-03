@@ -9,6 +9,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "pocketbase": "^0.20.1",
+    "request": "^2.88.2",
     "uuid": "^9.0.1"
   },
   "scripts": {
