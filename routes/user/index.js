@@ -8,7 +8,6 @@ router.patch("/personalization", async (req, res) => {
         const user = await pb.collection("users").update(id, data)
         res.json(user)
     } catch (error) {
-        console.log(error)
         res.status(500).send({
             state: "error",
             message: error.message

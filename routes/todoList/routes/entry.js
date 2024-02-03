@@ -17,4 +17,22 @@ router.get("/list", async (req, res) => {
     }
 })
 
+router.post("/toggle/:id", async (req, res) => {
+    try {
+        const { pb } = req;
+        const entry = await pb.collection("todo_entry").getOne(req.params.id);
+        await pb.collection("todo_entry").update(req.params.id, {
+            done: !entry.done,
+        });
+        res.json({
+            state: "success",
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: "error",
+            message: error.message,
+        });
+    }
+})
+
 module.exports = router

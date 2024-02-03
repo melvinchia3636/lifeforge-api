@@ -98,6 +98,12 @@ router.post("/upload/:workspace/:subject/*", uploadMiddleware, async (req, res) 
     try {
         const { pb } = req;
 
+        if (req.files.length === 0) {
+            return res.status(400).send({
+                state: "error",
+                message: "No files were uploaded.",
+            });
+        }
 
         for (let file of req.files) {
             let parent = req.params[0].split("/").pop()

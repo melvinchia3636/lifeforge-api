@@ -15,11 +15,11 @@ router.get("/stats", async (req, res) => {
                 .map(e => e.split(" ")
                     .filter(e => e !== ""))
                 .slice(1, -1)
-                .filter(e => e[8].startsWith("/Volumes")).map(e => ({
-                    name: e[8],
-                    size: e[1],
-                    used: e[2],
-                    avail: e[3],
+                .filter(e => e[5].startsWith("/media")).map(e => ({
+                    name: e[5],
+                    size: e[1].replace(/(\d)([A-Z])/, "$1 $2"),
+                    used: e[2].replace(/(\d)([A-Z])/, "$1 $2"),
+                    avail: e[3].replace(/(\d)([A-Z])/, "$1 $2"),
                     usedPercent: e[4],
                 }))
 

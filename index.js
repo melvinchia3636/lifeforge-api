@@ -3,6 +3,7 @@ const cors = require("cors")
 const { exec } = require("child_process")
 const Pocketbase = require('pocketbase/cjs');
 const all_routes = require('express-list-endpoints');
+const morganMiddleware = require("./middleware/morganMiddleware");
 
 const initPB = async (req, res, next) => {
     const pb = new Pocketbase(process.env.PB_HOST)
@@ -11,13 +12,15 @@ const initPB = async (req, res, next) => {
         req.pb = pb
         next()
     } catch (error) {
-        console.log(error)
         res.status(401).send("Unauthorized")
     }
 }
 
 const app = express()
 app.set('view engine', 'ejs');
+
+
+app.use(morganMiddleware);
 app.use(cors())
 app.use(express.json())
 app.use(initPB)
@@ -34,7 +37,6 @@ app.use("/change-log", require("./routes/changeLog"))
 app.get("/books/list", (req, res) => {
     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
         if (err) {
-            console.log(err)
             return
         }
         res.json(JSON.parse(stdout))
