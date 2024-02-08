@@ -62,7 +62,7 @@ router.get("/path/:workspace/:subject/*", async (req, res) => {
     }
 })
 
-router.put("/create/folder", async (req, res) => {
+router.post("/create/folder", async (req, res) => {
     try {
         const { pb } = req;
 

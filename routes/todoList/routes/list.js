@@ -17,7 +17,7 @@ router.get("/list", async (req, res) => {
     }
 })
 
-router.put("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const { pb } = req;
         const category = await pb.collection("todo_list").create(req.body);

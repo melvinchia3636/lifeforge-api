@@ -29,7 +29,7 @@ router.get("/list/:id", async (req, res) => {
     }
 });
 
-router.put("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const { pb } = req;
 

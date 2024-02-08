@@ -33,7 +33,7 @@ router.get("/list/:containerId", async (req, res) => {
     }
 })
 
-router.put("/create/:containerId", multer().single("image"), async (req, res) => {
+router.post("/create/:containerId", multer().single("image"), async (req, res) => {
     try {
         const { pb } = req
         const { title, content, link, type } = req.body

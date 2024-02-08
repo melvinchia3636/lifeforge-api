@@ -47,7 +47,7 @@ router.get("/list", async (req, res) => {
 
 })
 
-router.put("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const { pb } = req
         const { name, color, icon } = req.body

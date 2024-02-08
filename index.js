@@ -6,13 +6,14 @@ const all_routes = require('express-list-endpoints');
 const morganMiddleware = require("./middleware/morganMiddleware");
 
 const initPB = async (req, res, next) => {
+    console.log(process.env.PB_HOST)
     const pb = new Pocketbase(process.env.PB_HOST)
     try {
         await pb.admins.authWithPassword(process.env.PB_EMAIL, process.env.PB_PASSWORD)
         req.pb = pb
         next()
     } catch (error) {
-        res.status(401).send("Unauthorized")
+        res.status(401).send(error)
     }
 }
 
@@ -29,20 +30,19 @@ app.use('/user', require("./routes/user"))
 app.use('/disks', require("./routes/disks"))
 app.use("/todo-list", require("./routes/todoList"))
 app.use("/idea-box", require("./routes/ideaBox"))
-app.use("/code-snippets", require("./routes/codeSnippets"))
 app.use("/code-time", require("./routes/codeTime"))
 app.use("/notes", require("./routes/notes"))
 app.use('/spotify', require("./routes/spotify"))
 app.use("/change-log", require("./routes/changeLog"))
 
-app.get("/books/list", (req, res) => {
-    const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
-        if (err) {
-            return
-        }
-        res.json(JSON.parse(stdout))
-    })
-})
+// app.get("/books/list", (req, res) => {
+//     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
+//         if (err) {
+//             return
+//         }
+//         res.json(JSON.parse(stdout))
+//     })
+// })
 
 app.get("/", (req, res) => {
     const routes = all_routes(app).flatMap(route => route.methods.map(method => ({
