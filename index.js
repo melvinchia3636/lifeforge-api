@@ -6,14 +6,37 @@ const all_routes = require('express-list-endpoints');
 const morganMiddleware = require("./middleware/morganMiddleware");
 
 const initPB = async (req, res, next) => {
-    console.log(process.env.PB_HOST)
+    const bearerToken = req.headers.authorization?.split(" ")[1]
     const pb = new Pocketbase(process.env.PB_HOST)
+
+    if (req.url === "/" || req.url.startsWith("/spotify") || req.url.startsWith("/code-time")) {
+        req.pb = pb
+        next()
+        return
+    }
+
     try {
-        await pb.admins.authWithPassword(process.env.PB_EMAIL, process.env.PB_PASSWORD)
+        pb.authStore.save(bearerToken, null)
+
+        try {
+            await pb.collection('users').authRefresh()
+        } catch (error) {
+            if (error.response.code === 401) {
+                res.status(401).send({
+                    state: "error",
+                    message: "Invalid authorization credentials"
+                })
+                return
+            }
+        }
+
         req.pb = pb
         next()
     } catch (error) {
-        res.status(401).send(error)
+        res.status(500).send({
+            state: "error",
+            message: "Internal server error"
+        })
     }
 }
 
@@ -35,6 +58,14 @@ app.use("/notes", require("./routes/notes"))
 app.use('/spotify', require("./routes/spotify"))
 app.use('/disks', require("./routes/disks"))
 app.use("/change-log", require("./routes/changeLog"))
+app.use(function (req, res, next) {
+    res.status(404);
+
+    res.json({
+        state: "error",
+        message: "Not Found"
+    });
+});
 
 // app.get("/books/list", (req, res) => {
 //     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {

@@ -51,7 +51,8 @@ router.get('/stats', async (req, res) => {
             })),
         })
     } catch (e) {
-        res.state(500);
+        console.log(e)
+        res.status(500);
         res.send({
             state: "error",
             message: e.message,
@@ -118,7 +119,7 @@ router.post("/eventLog", async (req, res) => {
             message: "success",
         });
     } catch (e) {
-        res.state(500);
+        res.status(500);
         res.send({
             status: "error",
             message: e.message,
@@ -220,7 +221,7 @@ router.get("/activities", async (req, res) => {
             },
         });
     } catch (e) {
-        res.state(500);
+        res.status(500);
         res.send({
             state: "error",
             data: [],
@@ -331,7 +332,7 @@ router.get("/statistics", async (req, res) => {
             },
         });
     } catch (e) {
-        res.state(500);
+        res.status(500);
         res.send({
             state: "error",
             message: e.message,
@@ -346,7 +347,7 @@ router.get("/projects", async (req, res) => {
         const lastXDays = req.query.last || "24 hours";
 
         if (lastXDays > 30) {
-            res.state(400);
+            res.status(400);
 
             res.send({
                 state: "error",
@@ -395,7 +396,7 @@ router.get("/projects", async (req, res) => {
             data: groupByProject,
         })
     } catch (e) {
-        res.state(500);
+        res.status(500);
         res.send({
             state: "error",
             message: e.message,
@@ -410,7 +411,7 @@ router.get("/languages", async (req, res) => {
         const lastXDays = req.query.last || "24 hours";
 
         if (lastXDays > 30) {
-            res.state(400);
+            res.status(400);
 
             res.send({
                 state: "error",
@@ -459,7 +460,7 @@ router.get("/languages", async (req, res) => {
             data: groupByLanguage,
         })
     } catch (e) {
-        res.state(500);
+        res.status(500);
         res.send({
             state: "error",
             message: e.message,

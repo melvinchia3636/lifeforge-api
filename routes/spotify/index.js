@@ -41,7 +41,7 @@ router.get('/auth/login', (req, res) => {
         response_type: "code",
         client_id: spotify_client_id,
         scope: scope,
-        redirect_uri: "http://192.168.0.117:3636/spotify/auth/callback",
+        redirect_uri: "http://api.lifeforge.thecodeblog.net:3636/spotify/auth/callback",
         state: state,
     })
 
@@ -52,6 +52,11 @@ router.get('/auth/callback', async (req, res) => {
     const code = req.query.code;
     const { pb } = req
 
+    await pb.admins.authWithPassword(
+        process.env.PB_EMAIL,
+        process.env.PB_PASSWORD
+    )
+
     const user = await pb.collection("users").getFirstListItem(`email = "${pb.authStore.model.email}"`)
     const userId = user.id
 
@@ -59,7 +64,7 @@ router.get('/auth/callback', async (req, res) => {
         url: 'https://accounts.spotify.com/api/token',
         form: {
             code: code,
-            redirect_uri: "http://192.168.0.117:3636/spotify/auth/callback",
+            redirect_uri: "http://api.lifeforge.thecodeblog.net:3636/spotify/auth/callback",
             grant_type: 'authorization_code'
         },
         headers: {
@@ -91,6 +96,11 @@ router.get('/auth/callback', async (req, res) => {
 
 router.get('/auth/refresh', async function (req, res) {
     const { pb } = req
+
+    await pb.admins.authWithPassword(
+        process.env.PB_EMAIL,
+        process.env.PB_PASSWORD
+    )
 
     const user = await pb.collection("users").getFirstListItem(`email = "${pb.authStore.model.email}"`)
     const userId = user.id
