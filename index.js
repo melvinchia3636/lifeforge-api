@@ -1,6 +1,5 @@
 const express = require("express")
 const cors = require("cors")
-const { exec } = require("child_process")
 const Pocketbase = require('pocketbase/cjs');
 const all_routes = require('express-list-endpoints');
 const morganMiddleware = require("./middleware/morganMiddleware");
@@ -56,7 +55,7 @@ app.use("/idea-box", require("./routes/ideaBox"))
 app.use("/code-time", require("./routes/codeTime"))
 app.use("/notes", require("./routes/notes"))
 app.use('/spotify', require("./routes/spotify"))
-app.use('/disks', require("./routes/disks"))
+app.use('/server', require("./routes/server"))
 app.use("/change-log", require("./routes/changeLog"))
 app.use(function (req, res, next) {
     res.status(404);
