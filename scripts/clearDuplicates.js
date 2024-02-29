@@ -15,7 +15,7 @@ const moment = require("moment");
     for (let i = 0; i < data.length; i++) {
         const item = data[i]
         if (item.image) {
-            const file = `/media/kelvin/database/pb_data/storage/${item.collectionId}/${item.id}/${item.image}`
+            const file = `/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/database/pb_data/storage/${item.collectionId}/${item.id}/${item.image}`
             if (fs.existsSync(file)) {
                 const filesize = fs.statSync(file).size
                 const tags = await ExifReader.load(file)

@@ -7,7 +7,7 @@ const router = express.Router()
 router.put("/replace/:projectId", async (req, res) => {
     try {
         const { pb } = req
-        const newFiles = fs.readdirSync("/media/kelvin/uploads").filter(file => !file.startsWith("."))
+        const newFiles = fs.readdirSync("/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads").filter(file => !file.startsWith("."))
 
         if (newFiles.length === 0) {
             return res.status(401).json({
@@ -22,14 +22,14 @@ router.put("/replace/:projectId", async (req, res) => {
 
         await pb.collection('projects_k_entry').update(req.params.projectId, {
             files: newFiles.map(file => {
-                const buffer = fs.readFileSync(`/media/kelvin/uploads/${file}`);
+                const buffer = fs.readFileSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file}`);
                 return new File([buffer], file, { type: mime.lookup(file) })
             }),
             last_file_replacement_time: new Date().toISOString()
         });
 
         for (const file of newFiles) {
-            fs.unlinkSync(`/media/kelvin/uploads/${file}`);
+            fs.unlinkSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file}`);
         }
 
         return res.json({
@@ -60,8 +60,8 @@ router.get("/download/:projectId", async (req, res) => {
         }
 
         for (const file of files) {
-            const location = `/media/kelvin/database/pb_data/storage/${collectionId}/${id}/${file}`
-            fs.copyFileSync(location, `/media/kelvin/uploads/${file.split(".")[0].split("_").slice(0, -1).join("_")}.${file.split(".").pop()}`)
+            const location = `/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/database/pb_data/storage/${collectionId}/${id}/${file}`
+            fs.copyFileSync(location, `/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file.split(".")[0].split("_").slice(0, -1).join("_")}.${file.split(".").pop()}`)
         }
 
         res.json({
@@ -78,9 +78,9 @@ router.get("/download/:projectId", async (req, res) => {
 
 router.delete("/clear-medium", async (req, res) => {
     try {
-        const files = fs.readdirSync("/media/kelvin/uploads").filter(file => !file.startsWith("."))
+        const files = fs.readdirSync("/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads").filter(file => !file.startsWith("."))
         for (const file of files) {
-            fs.unlinkSync(`/media/kelvin/uploads/${file}`)
+            fs.unlinkSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file}`)
         }
         res.json({
             state: "success",
@@ -110,7 +110,7 @@ router.put("/set-thumbnail/:projectId", async (req, res) => {
             })
         }
 
-        const buffer = fs.readFileSync(`/media/kelvin/database/pb_data/storage/${project.collectionId}/${project.id}/${file}`);
+        const buffer = fs.readFileSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/database/pb_data/storage/${project.collectionId}/${project.id}/${file}`);
         await pb.collection('projects_k_entry').update(req.params.projectId, {
             thumbnail: new File([buffer], file, { type }),
             thumb_original_filename: file

@@ -3,6 +3,7 @@ const fs = require('fs')
 const mime = require('mime-types');
 const ExifReader = require('exifreader');
 const moment = require("moment")
+const axios = require("axios")
 const router = express.Router()
 
 const RAW_FILE_TYPE = [
@@ -44,6 +45,7 @@ router.get("/entry/list", async (req, res) => {
         }, {})
 
         const firstDayOfYear = {}
+        const firstDayOfMonth = {}
 
         for (const key of Object.keys(groupByDate)) {
             const date = moment(key)
@@ -57,11 +59,29 @@ router.get("/entry/list", async (req, res) => {
             }
         }
 
+        for (const key of Object.keys(groupByDate)) {
+            const date = moment(key)
+            const year = date.year()
+            const month = date.month()
+            if (month === moment(firstDayOfYear[year]).month()) {
+                continue
+            }
+            if (!firstDayOfMonth[`${year}-${month}`]) {
+                firstDayOfMonth[`${year}-${month}`] = date.format("YYYY-MM-DD")
+            } else {
+                if (date.isBefore(moment(firstDayOfMonth[`${year}-${month}`]))) {
+                    firstDayOfMonth[`${year}-${month}`] = date.format("YYYY-MM-DD")
+                }
+            }
+        }
+
+
         res.json({
             state: "success",
             data: {
                 items: groupByDate,
                 firstDayOfYear,
+                firstDayOfMonth,
                 totalItems
             }
         })
@@ -76,7 +96,7 @@ router.get("/entry/list", async (req, res) => {
 router.post("/entry/import", async (req, res) => {
     try {
         const { pb } = req
-        const newFiles = fs.readdirSync("/media/kelvin/uploads").filter(file =>
+        const newFiles = fs.readdirSync("/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads").filter(file =>
             !file.startsWith(".") && (
                 (mime.lookup(file) ? mime.lookup(file).startsWith("image") : false) ||
                 RAW_FILE_TYPE.includes(file.split(".").pop().toUpperCase())
@@ -117,7 +137,7 @@ router.post("/entry/import", async (req, res) => {
             const imageFiles = value.filter(file => !RAW_FILE_TYPE.includes(file.split(".").pop().toUpperCase()) && (mime.lookup(file) ? mime.lookup(file).startsWith("image") : false))
 
             if (imageFiles.length > 0) {
-                const filePath = `/media/kelvin/uploads/${imageFiles[0]}`
+                const filePath = `/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${imageFiles[0]}`
                 data.image = new File([fs.readFileSync(filePath)], imageFiles[0])
                 const tags = await ExifReader.load(filePath)
 
@@ -129,16 +149,17 @@ router.post("/entry/import", async (req, res) => {
 
             if (rawFiles.length > 0) {
                 data.raw = rawFiles.map(file => {
-                    const buffer = fs.readFileSync(`/media/kelvin/uploads/${file}`);
+                    const buffer = fs.readFileSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file}`);
                     return new File([buffer], file)
                 })[0]
             }
 
-            await pb.collection("photos_entry").create(data, { '$autoCancel': false })
+            const newEntry = await pb.collection("photos_entry").create(data, { '$autoCancel': false })
 
             for (const file of [...rawFiles, ...imageFiles]) {
-                fs.unlinkSync(`/media/kelvin/uploads/${file}`)
+                fs.unlinkSync(`/media/melvinchia/99961e79-8ea0-4504-8eaa-dc8bbddaff25/uploads/${file}`)
             }
+
 
             completed++;
             progress = completed / Object.keys(distinctFiles).length
