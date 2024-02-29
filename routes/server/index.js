@@ -75,7 +75,7 @@ router.get("/cpu", (req, res) => {
                 state: "success",
                 data: {
                     usage: v * 100,
-                    core_count: cpuCoreCount
+                    uptime: os.uptime(),
                 }
             })
         })

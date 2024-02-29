@@ -1,3 +1,5 @@
+require('dotenv').config({ path: '.env.local' });
+
 const express = require("express")
 const cors = require("cors")
 const Pocketbase = require('pocketbase/cjs');
@@ -55,6 +57,7 @@ app.use("/idea-box", require("./routes/ideaBox"))
 app.use("/code-time", require("./routes/codeTime"))
 app.use("/notes", require("./routes/notes"))
 app.use('/spotify', require("./routes/spotify"))
+app.use('/photos', require("./routes/photos"))
 app.use('/server', require("./routes/server"))
 app.use("/change-log", require("./routes/changeLog"))
 app.use(function (req, res, next) {
