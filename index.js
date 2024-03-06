@@ -50,6 +50,23 @@ app.use(cors())
 app.use(express.json())
 app.use(initPB)
 
+app.get("/", (req, res) => {
+    const routes = all_routes(app).flatMap(route => route.methods.map(method => ({
+        path: route.path,
+        method: method
+    }))).reduce((acc, route) => {
+        if (acc[route.path.split("/")[1]]) {
+            acc[route.path.split("/")[1]].push(route)
+        } else {
+            acc[route.path.split("/")[1]] = [route]
+        }
+        return acc
+    }, {})
+
+    res.render("api-explorer", {
+        routes
+    })
+})
 app.use('/user', require("./routes/user"))
 app.use('/projects-k', require("./routes/projects-k"))
 app.use("/todo-list", require("./routes/todoList"))
@@ -77,24 +94,6 @@ app.use(function (req, res, next) {
 //         res.json(JSON.parse(stdout))
 //     })
 // })
-
-app.get("/", (req, res) => {
-    const routes = all_routes(app).flatMap(route => route.methods.map(method => ({
-        path: route.path,
-        method: method
-    }))).reduce((acc, route) => {
-        if (acc[route.path.split("/")[1]]) {
-            acc[route.path.split("/")[1]].push(route)
-        } else {
-            acc[route.path.split("/")[1]] = [route]
-        }
-        return acc
-    }, {})
-
-    res.render("api-explorer", {
-        routes
-    })
-})
 
 
 const server = app.listen(3636, () => {

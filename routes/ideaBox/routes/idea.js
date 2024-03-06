@@ -6,6 +6,7 @@ router.get("/list/:containerId", async (req, res) => {
     try {
         const { pb } = req
         const { containerId } = req.params
+        const { archived } = req.query
 
         if (!containerId) {
             res.status(400)
@@ -17,7 +18,7 @@ router.get("/list/:containerId", async (req, res) => {
         }
 
         const ideas = await pb.collection("idea_box_entry").getFullList({
-            filter: `container = "${containerId}" && archived = false`,
+            filter: `container = "${containerId}" && archived = ${archived || "false"}`,
             sort: "-pinned,-created"
         })
         res.json({
@@ -176,7 +177,7 @@ router.patch("/update/:id", async (req, res) => {
     }
 })
 
-router.post("/pin/:id", async (req, res) => {
+router.patch("/pin/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
@@ -207,7 +208,7 @@ router.post("/pin/:id", async (req, res) => {
     }
 })
 
-router.post("/archive/:id", async (req, res) => {
+router.patch("/archive/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
@@ -223,7 +224,8 @@ router.post("/archive/:id", async (req, res) => {
 
         const idea = await pb.collection("idea_box_entry").getOne(id)
         await pb.collection("idea_box_entry").update(id, {
-            archived: !idea.archived
+            archived: !idea.archived,
+            pinned: false
         })
 
         res.json({

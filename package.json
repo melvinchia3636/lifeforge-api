@@ -21,7 +21,7 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "dev": "forever start -f --env-file=.env.local index.js"
+    "dev": "forever start -w index.js"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

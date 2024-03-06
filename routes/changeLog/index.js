@@ -43,9 +43,10 @@ router.get("/list", async (req, res) => {
                 description: entry.description,
             })
         }
+
         res.json({
             state: "success",
-            data: final
+            data: final.reverse()
         })
     } catch (error) {
         res.status(500)

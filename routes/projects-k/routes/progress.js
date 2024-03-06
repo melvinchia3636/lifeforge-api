@@ -54,7 +54,7 @@ router.get("/get/:id", async (req, res) => {
     }
 })
 
-router.post("/complete-step/:id", async (req, res) => {
+router.patch("/complete-step/:id", async (req, res) => {
     try {
         const { pb } = req
         const project = await pb.collection("projects_k_entry").getOne(req.params.id, {
@@ -77,7 +77,7 @@ router.post("/complete-step/:id", async (req, res) => {
     }
 })
 
-router.post("/uncomplete-step/:id", async (req, res) => {
+router.patch("/uncomplete-step/:id", async (req, res) => {
     try {
         const { pb } = req
         const project = await pb.collection("projects_k_entry").getOne(req.params.id, {
