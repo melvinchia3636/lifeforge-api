@@ -23,6 +23,52 @@ router.get("/list/:subject/*", async (req, res) => {
     }
 })
 
+router.get("/valid/:workspace/:subject/*", async (req, res) => {
+    try {
+        const { pb } = req;
+        const { totalItems: totalWorkspaceItems } = await pb.collection("notes_workspace").getList(1, 1, {
+            filter: `id = "${req.params.workspace}"`,
+        });
+        const { totalItems: totalSubjectItems } = await pb.collection("notes_subject").getList(1, 1, {
+            filter: `id = "${req.params.subject}"`,
+        });
+
+        if (!totalWorkspaceItems || !totalSubjectItems) {
+            res.json({
+                state: "success",
+                data: false,
+            });
+            return
+        }
+
+        const paths = req.params[0].split("/").filter(p => p !== "");
+
+        for (let path of paths) {
+            const { totalItems: totalEntryItems } = await pb.collection("notes_entry").getList(1, 1, {
+                filter: `id = "${path}"`,
+            });
+
+            if (!totalEntryItems) {
+                res.json({
+                    state: "success",
+                    data: false,
+                });
+                return
+            }
+        }
+
+        res.json({
+            state: "success",
+            data: true,
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: "error",
+            message: error.message,
+        });
+    }
+})
+
 router.get("/path/:workspace/:subject/*", async (req, res) => {
     try {
         const { pb } = req;

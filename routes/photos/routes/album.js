@@ -40,11 +40,17 @@ router.patch("/add-photo/:albumId", async (req, res) => {
     try {
         const { pb } = req
         const { albumId } = req.params
-        const { photoIds } = req.body
+        const { photos } = req.body
 
-        for (const photoId of photoIds) {
+        for (const photoId of photos) {
             await pb.collection("photos_entry").update(photoId, { album: albumId })
         }
+
+        const { totalItems } = await pb.collection("photos_entry").getList(1, 1, {
+            filter: `album = "${albumId}"`
+        })
+
+        await pb.collection("photos_album").update(albumId, { amount: totalItems })
 
         res.json({
             state: "success"

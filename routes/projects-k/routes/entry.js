@@ -3,6 +3,51 @@ const router = express.Router()
 const fs = require("fs")
 const mime = require('mime-types');
 
+router.get("/get/:id", async (req, res) => {
+    try {
+        const { pb } = req
+        const project = await pb.collection("projects_k_entry").getOne(req.params.id)
+        console.log(project)
+        res.json({
+            state: "success",
+            data: project
+        })
+    } catch (error) {
+        res.status(500).send({
+            state: "error",
+            message: error.message
+        })
+    }
+})
+
+router.get("/valid/:id", async (req, res) => {
+    try {
+        const { pb } = req
+        const { id } = req.params
+
+        const { totalItems } = await pb.collection("projects_k_entry").getList(1, 1, {
+            filter: `id = "${id}"`
+        })
+
+        if (totalItems === 1) {
+            res.json({
+                state: "success",
+                data: true
+            })
+        } else {
+            res.json({
+                state: "success",
+                data: false
+            })
+        }
+    } catch (error) {
+        res.status(500).send({
+            state: "error",
+            message: error.message
+        })
+    }
+})
+
 router.get("/list", async (req, res) => {
     try {
         const { pb } = req
@@ -20,23 +65,6 @@ router.get("/list", async (req, res) => {
         res.json({
             state: "success",
             data: projects
-        })
-    } catch (error) {
-        res.status(500).send({
-            state: "error",
-            message: error.message
-        })
-    }
-})
-
-router.get("/get/:id", async (req, res) => {
-    try {
-        const { pb } = req
-        const project = await pb.collection("projects_k_entry").getOne(req.params.id)
-        console.log(project)
-        res.json({
-            state: "success",
-            data: project
         })
     } catch (error) {
         res.status(500).send({
