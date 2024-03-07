@@ -94,6 +94,27 @@ router.get("/list", async (req, res) => {
     }
 })
 
+router.get("/list/:albumId", async (req, res) => {
+    try {
+        const { pb } = req
+        const { albumId } = req.params
+        const photos = await pb.collection("photos_entry").getFullList({
+            filter: `album = "${albumId}"`,
+            'sort': '-shot_time'
+        })
+
+        res.json({
+            state: "success",
+            data: photos
+        })
+    } catch (error) {
+        res.status(500).json({
+            state: "error",
+            message: error.message
+        })
+    }
+})
+
 router.post("/import", async (req, res) => {
     try {
         const { pb } = req
