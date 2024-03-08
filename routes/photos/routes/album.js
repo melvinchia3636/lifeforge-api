@@ -5,7 +5,15 @@ router.get("/get/:id", async (req, res) => {
     try {
         const { pb } = req
         const { id } = req.params
-        const album = await pb.collection("photos_album").getOne(id)
+        const album = await pb.collection("photos_album").getOne(id, {
+            expand: "cover"
+        })
+
+        if (album.expand) {
+            const cover = album.expand.cover
+            album.cover = `${cover.collectionId}/${cover.id}/${cover.image}`
+            delete album.expand
+        }
 
         res.json({
             state: "success",
@@ -50,7 +58,18 @@ router.get("/list", async (req, res) => {
     try {
         const { pb } = req
 
-        const albums = await pb.collection("photos_album").getFullList()
+        const albums = await pb.collection("photos_album").getFullList({
+            expand: "cover"
+        })
+
+        albums.forEach(album => {
+            if (album.expand) {
+                const cover = album.expand.cover
+                album.cover = `${cover.collectionId}/${cover.id}/${cover.image}`
+                delete album.expand
+            }
+        })
+
         res.json({
             state: "success",
             data: albums
@@ -115,6 +134,29 @@ router.delete("/delete/:albumId", async (req, res) => {
         const { albumId } = req.params
 
         await pb.collection("photos_album").delete(albumId)
+
+        res.json({
+            state: "success"
+        })
+
+    } catch (e) {
+        res.status(500).json({
+            state: "error",
+            message: e.message
+        })
+    }
+})
+
+router.put("/set-cover/:albumId/:imageId", async (req, res) => {
+    try {
+        const { pb } = req
+        const { imageId, albumId } = req.params
+
+        if (!imageId || !albumId) {
+            throw new Error("Missing required fields")
+        }
+
+        await pb.collection("photos_album").update(albumId, { cover: imageId })
 
         res.json({
             state: "success"

@@ -33,7 +33,20 @@ router.get("/list", async (req, res) => {
     try {
         const { pb } = req
         const { totalItems } = await pb.collection("photos_entry").getList(1, 1)
-        const photos = await pb.collection("photos_entry").getFullList({ 'sort': '-shot_time' })
+        const photos = await pb.collection("photos_entry").getFullList({
+            sort: '-shot_time',
+            filter: "is_deleted = false"
+        })
+
+        const collectionId = photos[0].collectionId
+
+        photos.forEach((photo) => {
+            delete photo.collectionId
+            delete photo.collectionName
+            delete photo.updated
+            delete photo.created
+            delete photo.filesize
+        })
 
         const groupByDate = photos.reduce((acc, photo) => {
             const date = moment(photo.shot_time).format("YYYY-MM-DD")
@@ -83,7 +96,8 @@ router.get("/list", async (req, res) => {
                 items: groupByDate,
                 firstDayOfYear,
                 firstDayOfMonth,
-                totalItems
+                totalItems,
+                collectionId
             }
         })
     } catch (error) {
@@ -99,7 +113,7 @@ router.get("/list/:albumId", async (req, res) => {
         const { pb } = req
         const { albumId } = req.params
         const photos = await pb.collection("photos_entry").getFullList({
-            filter: `album = "${albumId}"`,
+            filter: `album = "${albumId}" && is_deleted = false`,
             'sort': '-shot_time'
         })
 
@@ -118,6 +132,8 @@ router.get("/list/:albumId", async (req, res) => {
 router.post("/import", async (req, res) => {
     try {
         const { pb } = req
+        fs.readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`).filter(file => file.startsWith(".")).forEach(file => fs.unlinkSync(`/media/${process.env.DATABASE_OWNER}/uploads/${file}`))
+
         const newFiles = fs.readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`).filter(file =>
             !file.startsWith(".") && (
                 (mime.lookup(file) ? mime.lookup(file).startsWith("image") : false) ||
@@ -135,7 +151,7 @@ router.post("/import", async (req, res) => {
         const distinctFiles = {}
 
         for (const file of newFiles) {
-            const fileWithoutExtension = file.split(".")[0]
+            const fileWithoutExtension = file.split(".").slice(0, -1).join(".")
             if (distinctFiles[fileWithoutExtension]) {
                 distinctFiles[fileWithoutExtension].push(file)
             } else {
@@ -242,5 +258,29 @@ router.get("/import/progress", (req, res) => {
         data: progress
     })
 })
+
+router.delete("/delete", async (req, res) => {
+    try {
+        const { pb } = req
+        const { photos } = req.body
+
+        for (const photo of photos) {
+            await pb.collection("photos_entry").update(photo, {
+                'is_deleted': true
+            })
+        }
+
+        res.json({
+            state: "success",
+            message: "Photos have been deleted"
+        })
+    } catch (error) {
+        res.status(500).json({
+            state: "error",
+            message: error.message
+        })
+    }
+})
+
 
 module.exports = router
