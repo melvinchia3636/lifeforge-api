@@ -32,10 +32,13 @@ var progress = 0
 router.get("/list", async (req, res) => {
     try {
         const { pb } = req
-        const { totalItems } = await pb.collection("photos_entry").getList(1, 1)
+        const { hideInAlbum } = req.query
+        const filter = `is_deleted = false ${hideInAlbum === 'true' ? `&& album = ""` : ""}`
+        const response = await pb.collection("photos_entry").getList(1, 1, { filter })
+        const { totalItems } = response
         const photos = await pb.collection("photos_entry").getFullList({
             sort: '-shot_time',
-            filter: "is_deleted = false"
+            filter
         })
 
         const collectionId = photos[0].collectionId
@@ -183,7 +186,13 @@ router.post("/import", async (req, res) => {
             if (imageFiles.length > 0) {
                 const filePath = `/media/${process.env.DATABASE_OWNER}/uploads/${imageFiles[0]}`
                 data.image = new File([fs.readFileSync(filePath)], imageFiles[0])
-                const tags = await ExifReader.load(filePath)
+
+                let tags;
+                try {
+                    tags = await ExifReader.load(filePath)
+                } catch (e) {
+                    tags = {}
+                }
 
                 data.filesize = fs.statSync(filePath).size
                 if (tags["DateTimeOriginal"]) {
@@ -191,6 +200,7 @@ router.post("/import", async (req, res) => {
                 } else {
                     data.shot_time = moment(fs.statSync(filePath).birthtime).toISOString()
                 }
+
                 if (tags["Orientation"]) {
                     if (tags["PixelXDimension"] && tags["PixelYDimension"]) {
                         data.width = tags["Orientation"].value === 6 || tags["Orientation"].value === 8 ? tags["PixelYDimension"].value : tags["PixelXDimension"].value
@@ -214,7 +224,10 @@ router.post("/import", async (req, res) => {
                         data.height = 0
                     }
                 }
-
+            } else {
+                completed++;
+                progress = completed / Object.keys(distinctFiles).length
+                continue
             }
 
             if (rawFiles.length > 0) {
@@ -230,7 +243,11 @@ router.post("/import", async (req, res) => {
                 'thumb': '0x300'
             })
 
-            await axios.get(thumbnailImageUrl)
+            try {
+                await axios.get(thumbnailImageUrl)
+            } catch {
+
+            }
 
             for (const file of [...rawFiles, ...imageFiles]) {
                 fs.unlinkSync(`/media/${process.env.DATABASE_OWNER}/uploads/${file}`)
