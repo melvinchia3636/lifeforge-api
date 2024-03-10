@@ -1,38 +1,41 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable max-len */
 const Pocketbase = require('pocketbase/cjs');
 const fs = require('fs');
 const ExifReader = require('exifreader');
-const moment = require("moment");
+const moment = require('moment');
 
 (async () => {
-    const pb = new Pocketbase("http://192.168.0.117:8091");
+    const pb = new Pocketbase('http://192.168.0.117:8091');
 
-    await pb.collection("users").authWithPassword("kelvinchia56@gmail.com", "Kelvin9800")
+    await pb.collection('users').authWithPassword('kelvinchia56@gmail.com', 'Kelvin9800');
 
-    const data = await pb.collection("photos_entry").getFullList({
-        filter: "filesize=0"
-    })
+    const data = await pb.collection('photos_entry').getFullList({
+        filter: 'filesize=0',
+    });
 
-    for (let i = 0; i < data.length; i++) {
-        const item = data[i]
+    for (let i = 0; i < data.length; i += 1) {
+        const item = data[i];
         if (item.image) {
-            const file = `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${item.collectionId}/${item.id}/${item.image}`
+            const file = `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${item.collectionId}/${item.id}/${item.image}`;
             if (fs.existsSync(file)) {
-                const filesize = fs.statSync(file).size
-                const tags = await ExifReader.load(file)
-                const shot_time = moment(tags["DateTimeOriginal"].value, "YYYY:MM:DD HH:mm:ss").toISOString()
-                const width = tags["Orientation"].value === 6 || tags["Orientation"].value === 8 ? tags["PixelYDimension"].value : tags["PixelXDimension"].value
-                const height = tags["Orientation"].value === 6 || tags["Orientation"].value === 8 ? tags["PixelXDimension"].value : tags["PixelYDimension"].value
+                const filesize = fs.statSync(file).size;
+                const tags = await ExifReader.load(file);
+                const shotTime = moment(tags.DateTimeOriginal.value, 'YYYY:MM:DD HH:mm:ss').toISOString();
+                const width = tags.Orientation.value === 6 || tags.Orientation.value === 8 ? tags.PixelYDimension.value : tags.PixelXDimension.value;
+                const height = tags.Orientation.value === 6 || tags.Orientation.value === 8 ? tags.PixelXDimension.value : tags.PixelYDimension.value;
 
-                pb.collection("photos_entry").update(item.id, {
+                pb.collection('photos_entry').update(item.id, {
                     filesize,
-                    shot_time,
+                    shot_time: shotTime,
                     width,
                     height,
                 }, {
-                    "$autoCancel": false
-                })
+                    $autoCancel: false,
+                });
 
-                console.log(i)
+                console.log(i);
             }
         }
     }
@@ -59,4 +62,4 @@ const moment = require("moment");
     //         }
     //     }
     // }
-})()
+})();

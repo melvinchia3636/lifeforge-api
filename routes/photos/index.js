@@ -1,7 +1,8 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
 
-router.use("/entry", require("./routes/entry"))
-router.use("/album", require("./routes/album"))
+const router = express.Router();
 
-module.exports = router
+router.use('/entry', require('./routes/entry'));
+router.use('/album', require('./routes/album'));
+
+module.exports = router;

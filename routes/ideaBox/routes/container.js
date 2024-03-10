@@ -1,170 +1,170 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
 
-router.get("/get/:id", async (req, res) => {
+const router = express.Router();
+
+router.get('/get/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const container = await pb.collection("idea_box_container").getOne(id)
+        const container = await pb.collection('idea_box_container').getOne(id);
         res.json({
-            state: "success",
-            data: container
-        })
+            state: 'success',
+            data: container,
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.get("/valid/:id", async (req, res) => {
+router.get('/valid/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const { totalItems } = await pb.collection("idea_box_container").getList(1, 1, {
-            filter: `id = "${id}"`
-        })
+        const { totalItems } = await pb.collection('idea_box_container').getList(1, 1, {
+            filter: `id = "${id}"`,
+        });
 
         if (totalItems === 1) {
             res.json({
-                state: "success",
-                data: true
-            })
+                state: 'success',
+                data: true,
+            });
         } else {
             res.json({
-                state: "success",
-                data: false
-            })
+                state: 'success',
+                data: false,
+            });
         }
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.get("/list", async (req, res) => {
+router.get('/list', async (req, res) => {
     try {
-        const { pb } = req
-        const containers = await pb.collection("idea_box_container").getFullList()
+        const { pb } = req;
+        const containers = await pb.collection('idea_box_container').getFullList();
         res.json({
-            state: "success",
-            data: containers
-        })
+            state: 'success',
+            data: containers,
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
+});
 
-})
-
-router.post("/create", async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
-        const { pb } = req
-        const { name, color, icon } = req.body
-        const container = await pb.collection("idea_box_container").create({
+        const { pb } = req;
+        const { name, color, icon } = req.body;
+        const container = await pb.collection('idea_box_container').create({
             name,
             color,
-            icon
-        })
+            icon,
+        });
         res.json({
-            state: "success",
-            data: container
-        })
+            state: 'success',
+            data: container,
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        await pb.collection("idea_box_container").delete(id)
+        await pb.collection('idea_box_container').delete(id);
 
         res.json({
-            state: "success"
-        })
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.patch("/update/:id", async (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const { name, color, icon } = req.body
-        await pb.collection("idea_box_container").update(id, {
+        const { name, color, icon } = req.body;
+        await pb.collection('idea_box_container').update(id, {
             name,
             color,
-            icon
-        })
+            icon,
+        });
         res.json({
-            state: "success"
-        })
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-module.exports = router
+module.exports = router;

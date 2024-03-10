@@ -1,243 +1,261 @@
-const express = require('express')
-const router = express.Router()
-const multer = require("multer")
+/* eslint-disable indent */
+const express = require('express');
 
-router.get("/list/:containerId", async (req, res) => {
+const router = express.Router();
+const multer = require('multer');
+
+router.get('/list/:containerId', async (req, res) => {
     try {
-        const { pb } = req
-        const { containerId } = req.params
-        const { archived } = req.query
+        const { pb } = req;
+        const { containerId } = req.params;
+        const { archived } = req.query;
 
         if (!containerId) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "containerId is required"
-                })
-            return
+                    state: 'error',
+                    message: 'containerId is required',
+                });
+            return;
         }
 
-        const ideas = await pb.collection("idea_box_entry").getFullList({
-            filter: `container = "${containerId}" && archived = ${archived || "false"}`,
-            sort: "-pinned,-created"
-        })
+        const ideas = await pb.collection('idea_box_entry').getFullList({
+            filter: `container = "${containerId}" && archived = ${archived || 'false'}`,
+            sort: '-pinned,-created',
+        });
         res.json({
-            state: "success",
-            data: ideas
-        })
+            state: 'success',
+            data: ideas,
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.post("/create/:containerId", multer().single("image"), async (req, res) => {
+router.post('/create/:containerId', multer().single('image'), async (req, res) => {
     try {
-        const { pb } = req
-        const { title, content, link, type } = req.body
+        const { pb } = req;
+        const {
+            title, content, link, type,
+        } = req.body;
 
-        const file = req.file
-        const { containerId } = req.params
+        const { file } = req;
+        const { containerId } = req.params;
 
         if (!containerId) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "containerId is required"
-                })
-            return
+                    state: 'error',
+                    message: 'containerId is required',
+                });
+            return;
         }
 
         let data;
         switch (type) {
-            case "text":
+            case 'text':
                 data = {
                     content,
                     type,
-                    container: containerId
-                }
+                    container: containerId,
+                };
                 break;
-            case "link":
+            case 'link':
                 data = {
                     title,
                     content: link,
                     type,
-                    container: containerId
-                }
+                    container: containerId,
+                };
                 break;
-            case "image":
+            case 'image':
                 data = {
                     title,
                     type,
                     image: new File([file.buffer], file.originalname, { type: file.mimetype }),
-                    container: containerId
-                }
+                    container: containerId,
+                };
                 break;
+            default:
+                res.status(400)
+                    .json({
+                        state: 'error',
+                        message: 'Invalid type',
+                    });
+                return;
         }
 
-        const idea = await pb.collection("idea_box_entry").create(data)
-        await pb.collection("idea_box_container").update(containerId, {
-            [`${type}_count+`]: 1
-        })
+        const idea = await pb.collection('idea_box_entry').create(data);
+        await pb.collection('idea_box_container').update(containerId, {
+            [`${type}_count+`]: 1,
+        });
 
         res.json({
-            state: "success",
-            data: idea
-        })
-
+            state: 'success',
+            data: idea,
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const idea = await pb.collection("idea_box_entry").getOne(id)
-        await pb.collection("idea_box_entry").delete(id)
-        await pb.collection("idea_box_container").update(idea.container, {
-            [`${idea.type}_count-`]: 1
-        })
+        const idea = await pb.collection('idea_box_entry').getOne(id);
+        await pb.collection('idea_box_entry').delete(id);
+        await pb.collection('idea_box_container').update(idea.container, {
+            [`${idea.type}_count-`]: 1,
+        });
 
         res.json({
-            state: "success"
-        })
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.patch("/update/:id", async (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const { title, content, link, type } = req.body
+        const {
+            title, content, link, type,
+        } = req.body;
 
         let data;
         switch (type) {
-            case "text":
+            case 'text':
                 data = {
                     content,
-                    type
-                }
+                    type,
+                };
                 break;
-            case "link":
+            case 'link':
                 data = {
                     title,
                     content: link,
-                    type
-                }
+                    type,
+                };
                 break;
+            default:
+                res.status(400)
+                    .json({
+                        state: 'error',
+                        message: 'Invalid type',
+                    });
+                return;
         }
 
-        await pb.collection("idea_box_entry").update(id, data)
+        await pb.collection('idea_box_entry').update(id, data);
 
         res.json({
-            state: "success"
-        })
-
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.patch("/pin/:id", async (req, res) => {
+router.patch('/pin/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const idea = await pb.collection("idea_box_entry").getOne(id)
-        await pb.collection("idea_box_entry").update(id, {
-            pinned: !idea.pinned
-        })
+        const idea = await pb.collection('idea_box_entry').getOne(id);
+        await pb.collection('idea_box_entry').update(id, {
+            pinned: !idea.pinned,
+        });
 
         res.json({
-            state: "success"
-        })
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-router.patch("/archive/:id", async (req, res) => {
+router.patch('/archive/:id', async (req, res) => {
     try {
-        const { pb } = req
-        const { id } = req.params
+        const { pb } = req;
+        const { id } = req.params;
 
         if (!id) {
             res.status(400)
                 .json({
-                    state: "error",
-                    message: "id is required"
-                })
-            return
+                    state: 'error',
+                    message: 'id is required',
+                });
+            return;
         }
 
-        const idea = await pb.collection("idea_box_entry").getOne(id)
-        await pb.collection("idea_box_entry").update(id, {
+        const idea = await pb.collection('idea_box_entry').getOne(id);
+        await pb.collection('idea_box_entry').update(id, {
             archived: !idea.archived,
-            pinned: false
-        })
+            pinned: false,
+        });
 
         res.json({
-            state: "success"
-        })
+            state: 'success',
+        });
     } catch (error) {
         res.status(500)
             .json({
-                state: "error",
-                message: error.message
-            })
+                state: 'error',
+                message: error.message,
+            });
     }
-})
+});
 
-module.exports = router
+module.exports = router;

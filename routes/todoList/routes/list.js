@@ -1,36 +1,37 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
 
-router.get("/list", async (req, res) => {
+const router = express.Router();
+
+router.get('/list', async (req, res) => {
     try {
         const { pb } = req;
-        const categories = await pb.collection("todo_list").getFullList();
+        const categories = await pb.collection('todo_list').getFullList();
         res.json({
-            state: "success",
+            state: 'success',
             data: categories,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.post("/create", async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const { pb } = req;
-        const category = await pb.collection("todo_list").create(req.body);
+        const category = await pb.collection('todo_list').create(req.body);
         res.json({
-            state: "success",
+            state: 'success',
             data: category,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-module.exports = router
+module.exports = router;

@@ -238,21 +238,23 @@ const stuff = `.theme-red {
   --color-custom-800: #424242;
   --color-custom-900: #212121;
 }`
-  .split("}")
-  .map(e => e.trim())
-  .filter(e => e)
-  .map(e => e
-    .split("{")
-    .map(e => e.trim())
-  ).map(([name, colors]) => [
+  .split('}')
+  .map((e) => e.trim())
+  .filter((e) => e)
+  .map((e) => e
+    .split('{')
+    .map((e) => e.trim()))
+  .map(([name, colors]) => [
     name,
-    colors.split(";")
-      .map(e => e.trim())
-      .filter(e => e)
-      .map(e => e.split(":").map(e => e.trim()))
+    colors.split(';')
+      .map((e) => e.trim())
+      .filter((e) => e)
+      .map((e) => e.split(':').map((e) => e.trim()))
       .map(([key, value]) => [key, hexToRGB(value.slice(1))])
-      .map(e => e.join(": "))
-      .join(";\n")
-  ]).map(([name, colors]) => `${name} {\n  ${colors}\n}`).join("\n\n")
+      .map((e) => e.join(': '))
+      .join(';\n'),
+  ])
+  .map(([name, colors]) => `${name} {\n  ${colors}\n}`)
+  .join('\n\n');
 
-console.log(stuff)
+console.log(stuff);

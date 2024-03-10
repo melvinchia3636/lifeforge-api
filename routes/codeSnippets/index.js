@@ -1,8 +1,9 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
 
-router.use("/label", require("./routes/label"))
-router.use("/language", require("./routes/language"))
-router.use("/entry", require("./routes/entry"))
+const router = express.Router();
 
-module.exports = router
+router.use('/label', require('./routes/label'));
+router.use('/language', require('./routes/language'));
+router.use('/entry', require('./routes/entry'));
+
+module.exports = router;

@@ -1,15 +1,20 @@
-const express = require("express")
-const router = express.Router()
+/* eslint-disable indent */
+/* eslint-disable no-shadow */
+/* eslint-disable no-extend-native */
+/* eslint-disable no-restricted-syntax */
+const express = require('express');
+
+const router = express.Router();
 
 Date.prototype.addDays = function (days) {
-    var date = new Date(this.valueOf());
+    const date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
     return date;
-}
+};
 
 function getDates(startDate, stopDate) {
-    var dateArray = new Array();
-    var currentDate = startDate;
+    const dateArray = [];
+    let currentDate = startDate;
     while (currentDate <= stopDate) {
         dateArray.push(new Date(currentDate));
         currentDate = currentDate.addDays(1);
@@ -19,7 +24,7 @@ function getDates(startDate, stopDate) {
 
 router.get('/stats', async (req, res) => {
     try {
-        const { pb } = req
+        const { pb } = req;
         // first day of current month
         const date = new Date();
         date.setDate(1);
@@ -27,8 +32,8 @@ router.get('/stats', async (req, res) => {
         date.setMinutes(0);
         date.setSeconds(0);
         const data = await pb.collection('code_time').getFullList({
-            sort: "event_time",
-            filter: "event_time >= " + date.getTime()
+            sort: 'event_time',
+            filter: `event_time >= ${date.getTime()}`,
         });
         const groupByDate = {};
         for (const item of data) {
@@ -44,31 +49,31 @@ router.get('/stats', async (req, res) => {
         }
 
         res.send({
-            state: "success",
+            state: 'success',
             data: Object.entries(groupByDate).map(([date, items]) => ({
                 time: date,
-                duration: items.length * 1000 * 60
+                duration: items.length * 1000 * 60,
             })),
-        })
+        });
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(500);
         res.send({
-            state: "error",
+            state: 'error',
             message: e.message,
-        })
+        });
     }
-})
+});
 
-router.post("/eventLog", async (req, res) => {
+router.post('/eventLog', async (req, res) => {
     try {
-        const { pb } = req
-        data = req.body
+        const { pb } = req;
+        const data = req.body;
 
-        data.eventTime = Math.floor(Date.now() / 60000) * 60000
+        data.eventTime = Math.floor(Date.now() / 60000) * 60000;
 
         const lastData = await pb.collection('code_time').getList(1, 1, {
-            sort: "event_time",
+            sort: 'event_time',
             filter: `event_time = ${data.eventTime}`,
         });
 
@@ -80,8 +85,8 @@ router.post("/eventLog", async (req, res) => {
                 relative_file: data.relativeFile,
             });
 
-            language = await pb.collection('code_time_languages').getList(1, 1, {
-                sort: "name",
+            const language = await pb.collection('code_time_languages').getList(1, 1, {
+                sort: 'name',
                 filter: `name = '${data.language}'`,
             });
 
@@ -96,8 +101,8 @@ router.post("/eventLog", async (req, res) => {
                 });
             }
 
-            project = await pb.collection('code_time_projects').getList(1, 1, {
-                sort: "name",
+            const project = await pb.collection('code_time_projects').getList(1, 1, {
+                sort: 'name',
                 filter: `name = '${data.project}'`,
             });
 
@@ -114,22 +119,22 @@ router.post("/eventLog", async (req, res) => {
         }
 
         res.send({
-            status: "ok",
+            status: 'ok',
             data: [],
-            message: "success",
+            message: 'success',
         });
     } catch (e) {
         res.status(500);
         res.send({
-            status: "error",
+            status: 'error',
             message: e.message,
-        })
+        });
     }
-})
+});
 
-router.get("/activities", async (req, res) => {
+router.get('/activities', async (req, res) => {
     try {
-        const { pb } = req
+        const { pb } = req;
 
         const year = req.query.year || new Date().getFullYear();
 
@@ -150,8 +155,8 @@ router.get("/activities", async (req, res) => {
         lastDayOfYear.setFullYear(year);
 
         const data = await pb.collection('code_time').getFullList({
-            sort: "event_time",
-            filter: `event_time >= ${firstDayOfYear.getTime()} && event_time <= ${lastDayOfYear.getTime()}`
+            sort: 'event_time',
+            filter: `event_time >= ${firstDayOfYear.getTime()} && event_time <= ${lastDayOfYear.getTime()}`,
         });
 
         const groupByDate = {};
@@ -161,7 +166,7 @@ router.get("/activities", async (req, res) => {
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             if (!groupByDate[dateKey]) {
                 groupByDate[dateKey] = [];
             }
@@ -169,20 +174,19 @@ router.get("/activities", async (req, res) => {
         }
 
         const final = Object.entries(groupByDate).map(([date, items]) => ({
-            date: date,
+            date,
             count: items.length,
             level: (() => {
                 const hours = items.length / 60;
                 if (hours < 1) {
                     return 1;
-                } else if (1 <= hours && hours < 3) {
+                } if (hours >= 1 && hours < 3) {
                     return 2;
-                } else if (3 <= hours && hours < 5) {
+                } if (hours >= 3 && hours < 5) {
                     return 3;
-                } else {
-                    return 4;
                 }
-            })()
+                return 4;
+            })(),
         }));
 
         if (final[0].date !== `${firstDayOfYear.getFullYear()
@@ -210,11 +214,11 @@ router.get("/activities", async (req, res) => {
         }
 
         const firstRecordEver = await pb.collection('code_time').getList(1, 1, {
-            sort: "+event_time",
+            sort: '+event_time',
         });
 
         res.send({
-            state: "success",
+            state: 'success',
             data: {
                 data: final,
                 firstYear: new Date(firstRecordEver.items[0].event_time).getFullYear(),
@@ -223,19 +227,19 @@ router.get("/activities", async (req, res) => {
     } catch (e) {
         res.status(500);
         res.send({
-            state: "error",
+            state: 'error',
             data: [],
             message: e.message,
-        })
+        });
     }
-})
+});
 
-router.get("/statistics", async (req, res) => {
+router.get('/statistics', async (req, res) => {
     try {
-        const { pb } = req
+        const { pb } = req;
 
         const everything = await pb.collection('code_time').getFullList({
-            sort: "event_time",
+            sort: 'event_time',
         });
 
         let groupByDate = {};
@@ -245,7 +249,7 @@ router.get("/statistics", async (req, res) => {
             date.setHours(0);
             date.setMinutes(0);
             date.setSeconds(0);
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             if (!groupByDate[dateKey]) {
                 groupByDate[dateKey] = 0;
             }
@@ -260,20 +264,17 @@ router.get("/statistics", async (req, res) => {
         groupByDate = groupByDate.sort((a, b) => {
             if (a.count > b.count) {
                 return -1;
-            } else if (a.count < b.count) {
+            } if (a.count < b.count) {
                 return 1;
-            } else {
-                return 0;
             }
+            return 0;
         });
 
         const mostTimeSpent = groupByDate[0].count;
         const total = everything.length;
         const average = total / groupByDate.length;
 
-        groupByDate = groupByDate.sort((a, b) => {
-            return a.date.localeCompare(b.date);
-        });
+        groupByDate = groupByDate.sort((a, b) => a.date.localeCompare(b.date));
 
         const allDates = groupByDate.map((item) => item.date);
 
@@ -287,7 +288,7 @@ router.get("/statistics", async (req, res) => {
             const dates = getDates(firstDate, lastDate);
 
             for (const date of dates) {
-                const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+                const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
                 if (allDates.includes(dateKey)) {
                     streak += 1;
                 } else {
@@ -311,62 +312,62 @@ router.get("/statistics", async (req, res) => {
             const dates = getDates(firstDate, lastDate).reverse();
 
             for (const date of dates) {
-                const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+                const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
                 if (allDates.includes(dateKey)) {
                     streak += 1;
                 } else {
-                    break
+                    break;
                 }
             }
             return streak;
         })();
 
         res.send({
-            state: "success",
+            state: 'success',
             data: {
-                "Most time spent": mostTimeSpent,
-                "Total time spent": total,
-                "Average time spent": average,
-                "Longest streak": longestStreak,
-                "Current streak": currentStreak,
+                'Most time spent': mostTimeSpent,
+                'Total time spent': total,
+                'Average time spent': average,
+                'Longest streak': longestStreak,
+                'Current streak': currentStreak,
             },
         });
     } catch (e) {
         res.status(500);
         res.send({
-            state: "error",
+            state: 'error',
             message: e.message,
-        })
+        });
     }
-})
+});
 
-router.get("/projects", async (req, res) => {
+router.get('/projects', async (req, res) => {
     try {
-        const { pb } = req
+        const { pb } = req;
 
-        const lastXDays = req.query.last || "24 hours";
+        const lastXDays = req.query.last || '24 hours';
 
         if (lastXDays > 30) {
             res.status(400);
 
             res.send({
-                state: "error",
-                message: "lastXDays must be less than 30",
+                state: 'error',
+                message: 'lastXDays must be less than 30',
             });
             return;
         }
 
         const date = new Date();
         switch (lastXDays) {
-            case "24 hours":
+            case '24 hours':
                 date.setHours(date.getHours() - 24);
                 date.setMinutes(0);
                 date.setSeconds(0);
                 break;
-            case "7 days":
+            case '7 days':
                 date.setDate(date.getDate() - 7);
                 break;
-            case "30 days":
+            case '30 days':
                 date.setDate(date.getDate() - 30);
                 break;
             default:
@@ -384,53 +385,53 @@ router.get("/projects", async (req, res) => {
             if (!groupByProject[item.project]) {
                 groupByProject[item.project] = 0;
             }
-            groupByProject[item.project]++;
+            groupByProject[item.project] += 1;
         }
 
         groupByProject = Object.fromEntries(
-            Object.entries(groupByProject).sort(([, a], [, b]) => b - a)
+            Object.entries(groupByProject).sort(([, a], [, b]) => b - a),
         );
 
         res.send({
-            state: "success",
+            state: 'success',
             data: groupByProject,
-        })
+        });
     } catch (e) {
         res.status(500);
         res.send({
-            state: "error",
+            state: 'error',
             message: e.message,
-        })
+        });
     }
-})
+});
 
-router.get("/languages", async (req, res) => {
+router.get('/languages', async (req, res) => {
     try {
-        const { pb } = req
+        const { pb } = req;
 
-        const lastXDays = req.query.last || "24 hours";
+        const lastXDays = req.query.last || '24 hours';
 
         if (lastXDays > 30) {
             res.status(400);
 
             res.send({
-                state: "error",
-                message: "lastXDays must be less than 30",
+                state: 'error',
+                message: 'lastXDays must be less than 30',
             });
             return;
         }
 
         const date = new Date();
         switch (lastXDays) {
-            case "24 hours":
+            case '24 hours':
                 date.setHours(date.getHours() - 24);
                 date.setMinutes(0);
                 date.setSeconds(0);
                 break;
-            case "7 days":
+            case '7 days':
                 date.setDate(date.getDate() - 7);
                 break;
-            case "30 days":
+            case '30 days':
                 date.setDate(date.getDate() - 30);
                 break;
             default:
@@ -448,24 +449,24 @@ router.get("/languages", async (req, res) => {
             if (!groupByLanguage[item.language]) {
                 groupByLanguage[item.language] = 0;
             }
-            groupByLanguage[item.language]++;
+            groupByLanguage[item.language] += 1;
         }
 
         groupByLanguage = Object.fromEntries(
-            Object.entries(groupByLanguage).sort(([, a], [, b]) => b - a)
+            Object.entries(groupByLanguage).sort(([, a], [, b]) => b - a),
         );
 
         res.send({
-            state: "success",
+            state: 'success',
             data: groupByLanguage,
-        })
+        });
     } catch (e) {
         res.status(500);
         res.send({
-            state: "error",
+            state: 'error',
             message: e.message,
-        })
+        });
     }
-})
+});
 
-module.exports = router
+module.exports = router;
