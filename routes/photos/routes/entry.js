@@ -1,3 +1,5 @@
+/* eslint-disable no-shadow */
+/* eslint-disable indent */
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
 /* eslint-disable no-continue */
@@ -37,34 +39,26 @@ const RAW_FILE_TYPE = [
 
 let progress = 0;
 
-router.get('/list', async (req, res) => {
+router.get('/dimensions', async (req, res) => {
     try {
         const { pb } = req;
         const { hideInAlbum } = req.query;
-        const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& album = ""' : ''}`;
-        const response = await pb.collection('photos_entry').getList(1, 1, { filter });
+        const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''}`;
+        const response = await pb.collection('photos_entry_dimensions').getList(1, 1, { filter });
+        const { collectionId } = await pb.collection('photos_entry').getFirstListItem('name != ""');
         const { totalItems } = response;
-        const photos = await pb.collection('photos_entry').getFullList({
-            sort: '-shot_time',
+        const photos = await pb.collection('photos_entry_dimensions').getFullList({
+            fields: 'photo, width, height, shot_time',
             filter,
         });
 
-        const { collectionId } = photos[0];
-
         photos.forEach((photo) => {
-            delete photo.collectionId;
-            delete photo.collectionName;
-            delete photo.updated;
-            delete photo.created;
-            delete photo.filesize;
-            photo.hasRaw = !!photo.raw;
-            delete photo.raw;
-            delete photo.is_deleted;
-            delete photo.name;
+            photo.id = photo.photo;
+            photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD');
         });
 
-        const groupByDate = photos.reduce((acc, photo) => {
-            const date = moment(photo.shot_time).format('YYYY-MM-DD');
+        let groupByDate = photos.reduce((acc, photo) => {
+            const date = photo.shot_time;
             if (acc[date]) {
                 acc[date].push(photo);
             } else {
@@ -72,6 +66,9 @@ router.get('/list', async (req, res) => {
             }
             return acc;
         }, {});
+
+        // FIXME: 9 MAR 2024 IS A WIERD DATE HMMMMMMMM ;-;
+        groupByDate = Object.fromEntries(Object.entries(groupByDate).sort((a, b) => moment(b[0]).unix() - moment(a[0]).unix()));
 
         const firstDayOfYear = {};
         const firstDayOfMonth = {};
@@ -118,25 +115,63 @@ router.get('/list', async (req, res) => {
     }
 });
 
+router.get('/list', async (req, res) => {
+    try {
+        const { pb } = req;
+        const { date } = req.query;
+
+        if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
+            return res.status(400).json({
+                state: 'error',
+                message: 'Invalid date format',
+            });
+        }
+
+        const { hideInAlbum } = req.query;
+        const filter = `is_deleted = false && shot_time >= '${moment(date, 'YYYY-MM-DD').startOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+            }' && shot_time <= '${moment(date, 'YYYY-MM-DD').endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+            } ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`;
+        let photos = await pb.collection('photos_entry_dimensions').getFullList({
+            filter,
+            expand: 'photo',
+            fields: 'expand.photo.raw,is_in_album,expand.photo.id,expand.photo.image',
+        });
+
+        photos = photos.map((photo) => ({ ...photo.expand.photo, is_in_album: photo.is_in_album }));
+
+        photos.forEach((photo) => {
+            photo.has_raw = photo.raw !== '';
+            delete photo.raw;
+        });
+
+        res.json({
+            state: 'success',
+            data: photos,
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: 'error',
+            message: error.message,
+        });
+    }
+});
+
 router.get('/list/:albumId', async (req, res) => {
     try {
         const { pb } = req;
         const { albumId } = req.params;
-        const photos = await pb.collection('photos_entry').getFullList({
-            filter: `album = "${albumId}" && is_deleted = false`,
+        let photos = await pb.collection('photos_entry_dimensions').getFullList({
+            filter: `photo.album = "${albumId}"`,
+            expand: 'photo',
+            fields: 'expand.photo.id,expand.photo.image,expand.photo.raw,width,height,expand.photo.collectionId',
             sort: '-shot_time',
         });
 
-        photos.forEach((photo) => {
-            delete photo.collectionName;
-            delete photo.updated;
-            delete photo.created;
-            delete photo.filesize;
-            photo.hasRaw = !!photo.raw;
-            delete photo.raw;
-            delete photo.is_deleted;
-            delete photo.name;
-        });
+        photos = photos.map((photo) => ({
+            width: photo.width,
+            height: photo.height,
+            ...photo.expand.photo,
+        }));
 
         res.json({
             state: 'success',
@@ -251,7 +286,18 @@ router.post('/import', async (req, res) => {
                 })[0];
             }
 
-            const newEntry = await pb.collection('photos_entry').create(data, { $autoCancel: false });
+            const newEntry = await pb.collection('photos_entry').create({
+                image: data.image,
+                ...(data.raw ? { raw: data.raw } : {}),
+                name: data.name,
+            }, { $autoCancel: false });
+
+            await pb.collection('photos_entry_dimensions').create({
+                photo: newEntry.id,
+                width: data.width,
+                height: data.height,
+                shot_time: data.shot_time,
+            });
 
             const thumbnailImageUrl = pb.files.getUrl(newEntry, newEntry.image, {
                 thumb: '0x300',
@@ -302,10 +348,13 @@ router.delete('/delete', async (req, res) => {
                 await pb.collection('photos_album').update(album, {
                     'amount-': 1,
                 });
+                await pb.collection('photos_entry_dimensions').update(photo, {
+                    is_deleted: true,
+                    is_in_album: false,
+                });
             }
 
             await pb.collection('photos_entry').update(photo, {
-                is_deleted: true,
                 album: '',
             });
         }

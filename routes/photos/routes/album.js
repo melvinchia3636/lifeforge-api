@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const express = require('express');
 
 const router = express.Router();
@@ -109,6 +110,9 @@ router.patch('/add-photo/:albumId', async (req, res) => {
 
         await photos.forEach(async (photoId) => {
             await pb.collection('photos_entry').update(photoId, { album: albumId });
+            await pb.collection('photos_entry_dimensions').update(photoId, {
+                is_in_album: true,
+            });
         });
 
         const { totalItems } = await pb.collection('photos_entry').getList(1, 1, {
@@ -138,6 +142,9 @@ router.delete('/remove-photo/:albumId', async (req, res) => {
 
         await photos.forEach(async (photoId) => {
             await pb.collection('photos_entry').update(photoId, { album: '' });
+            await pb.collection('photos_entry_dimensions').update(photoId, {
+                is_in_album: false,
+            });
 
             if (cover === photoId) {
                 await pb.collection('photos_album').update(albumId, { cover: '' });
