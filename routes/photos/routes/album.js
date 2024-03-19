@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 const express = require('express');
 
@@ -108,12 +110,13 @@ router.patch('/add-photo/:albumId', async (req, res) => {
         const { albumId } = req.params;
         const { photos } = req.body;
 
-        await photos.forEach(async (photoId) => {
+        for (const photoId of photos) {
             await pb.collection('photos_entry').update(photoId, { album: albumId });
-            await pb.collection('photos_entry_dimensions').update(photoId, {
+            const { id } = await pb.collection('photos_entry_dimensions').getFirstListItem(`photo = "${photoId}"`);
+            await pb.collection('photos_entry_dimensions').update(id, {
                 is_in_album: true,
             });
-        });
+        }
 
         const { totalItems } = await pb.collection('photos_entry').getList(1, 1, {
             filter: `album = "${albumId}"`,
@@ -140,16 +143,17 @@ router.delete('/remove-photo/:albumId', async (req, res) => {
 
         const { cover } = await pb.collection('photos_album').getOne(albumId);
 
-        await photos.forEach(async (photoId) => {
+        for (const photoId of photos) {
             await pb.collection('photos_entry').update(photoId, { album: '' });
-            await pb.collection('photos_entry_dimensions').update(photoId, {
+            const { id } = await pb.collection('photos_entry_dimensions').getFirstListItem(`photo = "${photoId}"`);
+            await pb.collection('photos_entry_dimensions').update(id, {
                 is_in_album: false,
             });
 
             if (cover === photoId) {
                 await pb.collection('photos_album').update(albumId, { cover: '' });
             }
-        });
+        }
 
         const { totalItems } = await pb.collection('photos_entry').getList(1, 1, {
             filter: `album = "${albumId}"`,

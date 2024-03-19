@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-shadow */
 /* eslint-disable indent */
 /* eslint-disable consistent-return */
@@ -50,6 +51,7 @@ router.get('/dimensions', async (req, res) => {
         const photos = await pb.collection('photos_entry_dimensions').getFullList({
             fields: 'photo, width, height, shot_time',
             filter,
+            sort: '-shot_time',
         });
 
         photos.forEach((photo) => {
@@ -57,7 +59,7 @@ router.get('/dimensions', async (req, res) => {
             photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD');
         });
 
-        let groupByDate = photos.reduce((acc, photo) => {
+        const groupByDate = Object.entries(photos.reduce((acc, photo) => {
             const date = photo.shot_time;
             if (acc[date]) {
                 acc[date].push(photo);
@@ -65,15 +67,12 @@ router.get('/dimensions', async (req, res) => {
                 acc[date] = [photo];
             }
             return acc;
-        }, {});
-
-        // FIXME: 9 MAR 2024 IS A WIERD DATE HMMMMMMMM ;-;
-        groupByDate = Object.fromEntries(Object.entries(groupByDate).sort((a, b) => moment(b[0]).unix() - moment(a[0]).unix()));
+        }, {}));
 
         const firstDayOfYear = {};
         const firstDayOfMonth = {};
 
-        for (const key of Object.keys(groupByDate)) {
+        for (const [key] of groupByDate) {
             const date = moment(key);
             const year = date.year();
             if (!firstDayOfYear[year]) {
@@ -83,7 +82,7 @@ router.get('/dimensions', async (req, res) => {
             }
         }
 
-        for (const key of Object.keys(groupByDate)) {
+        for (const [key] of groupByDate) {
             const date = moment(key);
             const year = date.year();
             const month = date.month();
@@ -91,9 +90,9 @@ router.get('/dimensions', async (req, res) => {
                 continue;
             }
             if (!firstDayOfMonth[`${year}-${month}`]) {
-                firstDayOfMonth[`${year}-${month}`] = date.format('YYYY-MM-DD');
+                firstDayOfMonth[`${year}-${month + 1}`] = date.format('YYYY-MM-DD');
             } else if (date.isBefore(moment(firstDayOfMonth[`${year}-${month}`]))) {
-                firstDayOfMonth[`${year}-${month}`] = date.format('YYYY-MM-DD');
+                firstDayOfMonth[`${year}-${month + 1}`] = date.format('YYYY-MM-DD');
             }
         }
 
@@ -163,7 +162,7 @@ router.get('/list/:albumId', async (req, res) => {
         let photos = await pb.collection('photos_entry_dimensions').getFullList({
             filter: `photo.album = "${albumId}"`,
             expand: 'photo',
-            fields: 'expand.photo.id,expand.photo.image,expand.photo.raw,width,height,expand.photo.collectionId',
+            fields: 'expand.photo.id,expand.photo.image,expand.photo.raw,width,height,id,expand.photo.collectionId',
             sort: '-shot_time',
         });
 
@@ -171,6 +170,8 @@ router.get('/list/:albumId', async (req, res) => {
             width: photo.width,
             height: photo.height,
             ...photo.expand.photo,
+            photoId: photo.expand.photo.id,
+            id: photo.id,
         }));
 
         res.json({
@@ -249,7 +250,12 @@ router.post('/import', async (req, res) => {
                 if (tags.DateTimeOriginal) {
                     data.shot_time = moment(tags.DateTimeOriginal.value, 'YYYY:MM:DD HH:mm:ss').toISOString();
                 } else {
-                    data.shot_time = moment(fs.statSync(filePath).birthtime).toISOString();
+                    const dateStr = imageFiles[0].toUpperCase().match(/IMG-(?<date>\d+)-WA.+/).groups.date;
+                    if (dateStr) {
+                        data.shot_time = moment(dateStr, 'YYYYMMDD').format('YYYY-MM-DD HH:mm:ss');
+                    } else {
+                        data.shot_time = moment(fs.statSync(filePath).birthtime).toISOString();
+                    }
                 }
 
                 if (tags.Orientation) {
@@ -317,7 +323,6 @@ router.post('/import', async (req, res) => {
             progress = completed / Object.keys(distinctFiles).length;
         }
     } catch (error) {
-        console.log(error);
         try {
             res.status(500).send({
                 state: 'error',
@@ -342,9 +347,10 @@ router.delete('/delete', async (req, res) => {
         const { photos } = req.body;
 
         for (const photo of photos) {
-            const { album } = await pb.collection('photos_entry').getOne(photo);
+            const dim = await pb.collection('photos_entry_dimensions').getOne(photo);
 
-            if (album) {
+            if (dim.is_in_album) {
+                const { album } = await pb.collection('photos_entry').getOne(dim.photo);
                 await pb.collection('photos_album').update(album, {
                     'amount-': 1,
                 });
@@ -354,7 +360,7 @@ router.delete('/delete', async (req, res) => {
                 });
             }
 
-            await pb.collection('photos_entry').update(photo, {
+            await pb.collection('photos_entry').update(dim.photo, {
                 album: '',
             });
         }
