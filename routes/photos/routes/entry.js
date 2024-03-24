@@ -40,11 +40,97 @@ const RAW_FILE_TYPE = [
 
 let progress = 0;
 
+router.get('/name/:id', async (req, res) => {
+    try {
+        const { pb } = req;
+        const { id } = req.params;
+        const { name } = await pb.collection('photos_entry').getOne(id);
+
+        res.json({
+            state: 'success',
+            data: name,
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: 'error',
+            message: error.message,
+        });
+    }
+});
+
+router.get('/download/:id', async (req, res) => {
+    try {
+        const { pb } = req;
+        const { id } = req.params;
+        const { raw, isInAlbum } = req.query;
+        let image;
+
+        if (isInAlbum) {
+            const dim = await pb.collection('photos_entry_dimensions').getOne(id);
+            image = await pb.collection('photos_entry').getOne(dim.photo);
+        } else {
+            image = await pb.collection('photos_entry').getOne(id);
+        }
+
+        const url = pb.files.getUrl(image, image[
+            raw === 'true' ? 'raw' : 'image'
+        ]);
+
+        res.json({
+            state: 'success',
+            data: {
+                url,
+                fileName: `${image.name}.${image[
+                    raw === 'true' ? 'raw' : 'image'
+                ].split('.').pop()}`,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: 'error',
+            message: error.message,
+        });
+    }
+});
+
+router.post('/bulk-download', async (req, res) => {
+    try {
+        const { pb } = req;
+        const { photos } = req.body;
+
+        const { isInAlbum } = req.query === 'true';
+
+        for (const photo of photos) {
+            let image;
+            if (isInAlbum) {
+                const dim = await pb.collection('photos_entry_dimensions').getOne(photo);
+                image = await pb.collection('photos_entry').getOne(dim.photo);
+            } else {
+                image = await pb.collection('photos_entry').getOne(photo);
+            }
+
+            const filePath = `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${image.collectionId}/${image.id}/${image.image}`;
+
+            fs.cpSync(filePath, `/media/${process.env.DATABASE_OWNER}/uploads/${image.name}.${image.image.split('.').pop()}`);
+        }
+
+        res.json({
+            state: 'success',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            state: 'error',
+            message: error.message,
+        });
+    }
+});
+
 router.get('/dimensions', async (req, res) => {
     try {
         const { pb } = req;
         const { hideInAlbum } = req.query;
-        const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''}`;
+        const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `;
         const response = await pb.collection('photos_entry_dimensions').getList(1, 1, { filter });
         const { collectionId } = await pb.collection('photos_entry').getFirstListItem('name != ""');
         const { totalItems } = response;
@@ -89,10 +175,10 @@ router.get('/dimensions', async (req, res) => {
             if (month === moment(firstDayOfYear[year]).month()) {
                 continue;
             }
-            if (!firstDayOfMonth[`${year}-${month}`]) {
-                firstDayOfMonth[`${year}-${month + 1}`] = date.format('YYYY-MM-DD');
-            } else if (date.isBefore(moment(firstDayOfMonth[`${year}-${month}`]))) {
-                firstDayOfMonth[`${year}-${month + 1}`] = date.format('YYYY-MM-DD');
+            if (!firstDayOfMonth[`${year} -${month} `]) {
+                firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
+            } else if (date.isBefore(moment(firstDayOfMonth[`${year} -${month} `]))) {
+                firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
             }
         }
 
@@ -127,7 +213,7 @@ router.get('/list', async (req, res) => {
         }
 
         const { hideInAlbum } = req.query;
-        const filter = `is_deleted = false && shot_time >= '${moment(date, 'YYYY-MM-DD').startOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+        const filter = `is_deleted = false && shot_time >= '${moment(date, 'YYYY - MM - DD').startOf('day').utc().format('YYYY - MM - DD HH: mm:ss')
             }' && shot_time <= '${moment(date, 'YYYY-MM-DD').endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
             } ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`;
         let photos = await pb.collection('photos_entry_dimensions').getFullList({
@@ -345,23 +431,30 @@ router.delete('/delete', async (req, res) => {
     try {
         const { pb } = req;
         const { photos } = req.body;
+        const { isInAlbum } = req.query === 'true';
 
         for (const photo of photos) {
-            const dim = await pb.collection('photos_entry_dimensions').getOne(photo);
+            let dim;
+            if (isInAlbum) {
+                dim = await pb.collection('photos_entry_dimensions').getOne(photo);
+            } else {
+                dim = await pb.collection('photos_entry_dimensions').getFirstListItem(`photo = "${photo}"`);
+            }
 
             if (dim.is_in_album) {
                 const { album } = await pb.collection('photos_entry').getOne(dim.photo);
                 await pb.collection('photos_album').update(album, {
                     'amount-': 1,
                 });
-                await pb.collection('photos_entry_dimensions').update(photo, {
-                    is_deleted: true,
-                    is_in_album: false,
+
+                await pb.collection('photos_entry').update(dim.photo, {
+                    album: '',
                 });
             }
 
-            await pb.collection('photos_entry').update(dim.photo, {
-                album: '',
+            await pb.collection('photos_entry_dimensions').update(dim.id, {
+                is_deleted: true,
+                is_in_album: false,
             });
         }
 

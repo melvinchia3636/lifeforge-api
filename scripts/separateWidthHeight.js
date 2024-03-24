@@ -4,18 +4,21 @@
 const Pocketbase = require('pocketbase/cjs');
 
 (async () => {
-    const pb = new Pocketbase('http://192.168.0.117:8090');
+    const pb = new Pocketbase('http://192.168.0.117:8091');
 
-    await pb.collection('users').authWithPassword('melvinchia623600@gmail.com', 'redaxe3636');
+    await pb.collection('users').authWithPassword('kelvinchia56@gmail.com', 'Kelvin9800');
 
     const images = await pb.collection('photos_entry').getFullList();
-    const data = await pb.collection('photos_entry_dimensions').getFullList();
 
-    for (let i = 0; i < data.length; i += 1) {
-        const item = data[i];
-        await pb.collection('photos_entry_dimensions').update(item.id, {
-            is_deleted: images.find((image) => image.id === item.photo).is_deleted,
-            is_in_album: images.find((image) => image.id === item.photo).album !== '',
+    for (let i = 0; i < images.length; i += 1) {
+        const item = images[i];
+        await pb.collection('photos_entry_dimensions').create({
+            photo: item.id,
+            width: item.width,
+            height: item.height,
+            shot_time: item.shot_time,
+            is_deleted: item.is_deleted,
+            is_in_album: item.album !== '',
         }, {
             $autoCancel: false,
         });

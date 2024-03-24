@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 const express = require('express');
+const Pocketbase = require('pocketbase/cjs');
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ function getDateRangeFromWeekNumber(weekNumber, year) {
 
 router.get('/list', async (req, res) => {
     try {
-        const { pb } = req;
+        const pb = new Pocketbase('http://192.168.0.117:8090');
         const entries = await pb.collection('change_log_entry').getFullList();
 
         const final = [];

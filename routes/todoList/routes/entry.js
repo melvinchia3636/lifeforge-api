@@ -6,9 +6,23 @@ router.get('/list', async (req, res) => {
     try {
         const { pb } = req;
         const entries = await pb.collection('todo_entry').getFullList();
+
+        const sortedEntries = {
+            done: [],
+            pending: [],
+        };
+
+        entries.forEach((entry) => {
+            if (entry.done) {
+                sortedEntries.done.push(entry);
+            } else {
+                sortedEntries.pending.push(entry);
+            }
+        });
+
         res.json({
             state: 'success',
-            data: entries,
+            data: sortedEntries,
         });
     } catch (error) {
         res.status(500).json({
