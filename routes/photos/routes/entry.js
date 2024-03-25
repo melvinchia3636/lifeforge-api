@@ -65,7 +65,7 @@ router.get('/download/:id', async (req, res) => {
         const { raw, isInAlbum } = req.query;
         let image;
 
-        if (isInAlbum) {
+        if (isInAlbum === 'true') {
             const dim = await pb.collection('photos_entry_dimensions').getOne(id);
             image = await pb.collection('photos_entry').getOne(dim.photo);
         } else {
@@ -98,11 +98,11 @@ router.post('/bulk-download', async (req, res) => {
         const { pb } = req;
         const { photos } = req.body;
 
-        const { isInAlbum } = req.query === 'true';
+        const { isInAlbum } = req.query;
 
         for (const photo of photos) {
             let image;
-            if (isInAlbum) {
+            if (isInAlbum === true) {
                 const dim = await pb.collection('photos_entry_dimensions').getOne(photo);
                 image = await pb.collection('photos_entry').getOne(dim.photo);
             } else {
@@ -431,11 +431,11 @@ router.delete('/delete', async (req, res) => {
     try {
         const { pb } = req;
         const { photos } = req.body;
-        const { isInAlbum } = req.query === 'true';
+        const { isInAlbum } = req.query;
 
         for (const photo of photos) {
             let dim;
-            if (isInAlbum) {
+            if (isInAlbum === 'true') {
                 dim = await pb.collection('photos_entry_dimensions').getOne(photo);
             } else {
                 dim = await pb.collection('photos_entry_dimensions').getFirstListItem(`photo = "${photo}"`);

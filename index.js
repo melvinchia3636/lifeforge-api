@@ -75,6 +75,7 @@ app.use('/todo-list', require('./routes/todoList'));
 app.use('/idea-box', require('./routes/ideaBox'));
 app.use('/code-time', require('./routes/codeTime'));
 app.use('/notes', require('./routes/notes'));
+app.use('/flashcards', require('./routes/flashcards'));
 app.use('/spotify', require('./routes/spotify'));
 app.use('/photos', require('./routes/photos'));
 app.use('/server', require('./routes/server'));
