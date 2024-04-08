@@ -1,81 +1,111 @@
-const express = require("express")
-const router = express.Router()
-const fs = require("fs")
+/* eslint-disable no-continue */
+/* eslint-disable no-empty */
+/* eslint-disable consistent-return */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+const express = require('express');
+
+const router = express.Router();
+const fs = require('fs');
 
 const uploadMiddleware = require('../../../middleware/uploadMiddleware');
 
-router.get("/list/:subject/*", async (req, res) => {
+router.get('/get/:id', async (req, res) => {
+    try {
+        if (!req.params.id) {
+            res.status(400).json({
+                state: 'error',
+                message: 'id is required',
+            });
+        }
+
+        const { pb } = req;
+        const note = await pb.collection('notes_entry').getOne(req.params.id);
+
+        res.json({
+            state: 'success',
+            data: note,
+        });
+    } catch (error) {
+        res.status(500).json({
+            state: 'error',
+            message: error.message,
+        });
+    }
+});
+
+router.get('/list/:subject/*', async (req, res) => {
     try {
         const { pb } = req;
-        const notes = await pb.collection("notes_entry").getFullList({
-            filter: `subject = "${req.params.subject}" && parent = "${req.params[0].split("/").pop()}"`,
+        const notes = await pb.collection('notes_entry').getFullList({
+            filter: `subject = "${req.params.subject}" && parent = "${req.params[0].split('/').pop()}"`,
         });
 
         res.json({
-            state: "success",
+            state: 'success',
             data: notes,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.get("/valid/:workspace/:subject/*", async (req, res) => {
+router.get('/valid/:workspace/:subject/*', async (req, res) => {
     try {
         const { pb } = req;
-        const { totalItems: totalWorkspaceItems } = await pb.collection("notes_workspace").getList(1, 1, {
+        const { totalItems: totalWorkspaceItems } = await pb.collection('notes_workspace').getList(1, 1, {
             filter: `id = "${req.params.workspace}"`,
         });
-        const { totalItems: totalSubjectItems } = await pb.collection("notes_subject").getList(1, 1, {
+        const { totalItems: totalSubjectItems } = await pb.collection('notes_subject').getList(1, 1, {
             filter: `id = "${req.params.subject}"`,
         });
 
         if (!totalWorkspaceItems || !totalSubjectItems) {
             res.json({
-                state: "success",
+                state: 'success',
                 data: false,
             });
-            return
+            return;
         }
 
-        const paths = req.params[0].split("/").filter(p => p !== "");
+        const paths = req.params[0].split('/').filter((p) => p !== '');
 
-        for (let path of paths) {
-            const { totalItems: totalEntryItems } = await pb.collection("notes_entry").getList(1, 1, {
+        for (const path of paths) {
+            const { totalItems: totalEntryItems } = await pb.collection('notes_entry').getList(1, 1, {
                 filter: `id = "${path}"`,
             });
 
             if (!totalEntryItems) {
                 res.json({
-                    state: "success",
+                    state: 'success',
                     data: false,
                 });
-                return
+                return;
             }
         }
 
         res.json({
-            state: "success",
+            state: 'success',
             data: true,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.get("/path/:workspace/:subject/*", async (req, res) => {
+router.get('/path/:workspace/:subject/*', async (req, res) => {
     try {
         const { pb } = req;
 
-        const workspace = await pb.collection("notes_workspace").getOne(req.params.workspace);
-        const subject = await pb.collection("notes_subject").getOne(req.params.subject);
-        const paths = req.params[0].split("/").filter(p => p !== "");
+        const workspace = await pb.collection('notes_workspace').getOne(req.params.workspace);
+        const subject = await pb.collection('notes_subject').getOne(req.params.subject);
+        const paths = req.params[0].split('/').filter((p) => p !== '');
 
         const result = [{
             id: workspace.id,
@@ -85,8 +115,8 @@ router.get("/path/:workspace/:subject/*", async (req, res) => {
             name: subject.title,
         }];
 
-        for (let path of paths) {
-            const note = await pb.collection("notes_entry").getOne(path);
+        for (const path of paths) {
+            const note = await pb.collection('notes_entry').getOne(path);
             result.push({
                 id: path,
                 name: note.name,
@@ -94,7 +124,7 @@ router.get("/path/:workspace/:subject/*", async (req, res) => {
         }
 
         res.json({
-            state: "success",
+            state: 'success',
             data: {
                 icon: subject.icon,
                 path: result,
@@ -102,107 +132,106 @@ router.get("/path/:workspace/:subject/*", async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.post("/create/folder", async (req, res) => {
+router.post('/create/folder', async (req, res) => {
     try {
         const { pb } = req;
 
-        const name = req.body.name
-        const existing = await pb.collection("notes_entry").getFullList({
+        const { name } = req.body;
+        const existing = await pb.collection('notes_entry').getFullList({
             filter: `name = "${name}" && parent = "${req.body.parent}" && subject = "${req.body.subject}"`,
         });
 
         if (existing.length > 0) {
             res.status(400).json({
-                state: "error",
-                message: "Duplicate name",
+                state: 'error',
+                message: 'Duplicate name',
             });
-            return
+            return;
         }
 
-        const note = await pb.collection("notes_entry").create(req.body);
+        const note = await pb.collection('notes_entry').create(req.body);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: note,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-
-router.post("/upload/:workspace/:subject/*", uploadMiddleware, async (req, res) => {
+router.post('/upload/:workspace/:subject/*', uploadMiddleware, async (req, res) => {
     try {
         const { pb } = req;
 
         if (req.files.length === 0) {
             return res.status(400).send({
-                state: "error",
-                message: "No files were uploaded.",
+                state: 'error',
+                message: 'No files were uploaded.',
             });
         }
 
-        for (let file of req.files) {
-            let parent = req.params[0].split("/").pop()
+        for (const file of req.files) {
+            let parent = req.params[0].split('/').pop();
 
-            if (file.originalname.endsWith(".DS_Store")) {
+            if (file.originalname.endsWith('.DS_Store')) {
                 try {
                     fs.unlinkSync(file.path);
                 } catch (error) { }
-                continue
+                continue;
             }
 
             file.originalname = decodeURIComponent(file.originalname);
 
-            const path = file.originalname.split("/");
+            const path = file.originalname.split('/');
             const name = path.pop();
 
-            for (let i = 0; i < path.length; i++) {
-                const existing = await pb.collection("notes_entry").getFullList({
+            for (let i = 0; i < path.length; i += 1) {
+                const existing = await pb.collection('notes_entry').getFullList({
                     filter: `name = "${path[i]}" && parent = "${parent}" && subject = "${req.params.subject}"`,
                 });
 
                 if (existing.length > 0) {
                     parent = existing[0].id;
                 } else {
-                    const note = await pb.collection("notes_entry").create({
+                    const note = await pb.collection('notes_entry').create({
                         name: path[i],
-                        type: "folder",
+                        type: 'folder',
                         parent,
                         subject: req.params.subject,
-                    }, { '$autoCancel': false });
+                    }, { $autoCancel: false });
 
                     parent = note.id;
                 }
             }
 
-            const existing = await pb.collection("notes_entry").getFullList({
+            const existing = await pb.collection('notes_entry').getFullList({
                 filter: `name = "${name}" && parent = "${parent}" && subject = "${req.params.subject}"`,
             });
 
             if (existing.length > 0) {
-                continue
+                continue;
             }
 
             if (fs.existsSync(file.path)) {
                 const fileBuffer = fs.readFileSync(file.path);
 
-                await pb.collection("notes_entry").create({
+                await pb.collection('notes_entry').create({
                     name,
-                    type: "file",
+                    type: 'file',
                     parent,
                     subject: req.params.subject,
                     file: new File([fileBuffer], name, { type: file.mimetype }),
-                }, { '$autoCancel': false });
+                }, { $autoCancel: false });
 
                 try {
                     fs.unlinkSync(file.path);
@@ -212,67 +241,67 @@ router.post("/upload/:workspace/:subject/*", uploadMiddleware, async (req, res) 
         }
 
         res.json({
-            state: "success",
+            state: 'success',
             data: null,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.patch("/update/folder/:id", async (req, res) => {
+router.patch('/update/folder/:id', async (req, res) => {
     try {
         if (!req.params.id) {
             res.status(400).json({
-                state: "error",
-                message: "id is required",
+                state: 'error',
+                message: 'id is required',
             });
 
-            return
+            return;
         }
 
         const { pb } = req;
-        const note = await pb.collection("notes_entry").update(req.params.id, req.body);
+        const note = await pb.collection('notes_entry').update(req.params.id, req.body);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: note,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
         if (!req.params.id) {
             res.status(400).json({
-                state: "error",
-                message: "id is required",
+                state: 'error',
+                message: 'id is required',
             });
 
-            return
+            return;
         }
 
         const { pb } = req;
-        await pb.collection("notes_entry").delete(req.params.id);
+        await pb.collection('notes_entry').delete(req.params.id);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: null,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
-})
+});
 
 module.exports = router;

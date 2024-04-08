@@ -44,11 +44,19 @@ router.get('/name/:id', async (req, res) => {
     try {
         const { pb } = req;
         const { id } = req.params;
-        const { name } = await pb.collection('photos_entry').getOne(id);
+        const { isInAlbum } = req.query;
+        let image;
+
+        if (isInAlbum === 'true') {
+            const dim = await pb.collection('photos_entry_dimensions').getOne(id);
+            image = await pb.collection('photos_entry').getOne(dim.photo);
+        } else {
+            image = await pb.collection('photos_entry').getOne(id);
+        }
 
         res.json({
             state: 'success',
-            data: name,
+            data: image.name,
         });
     } catch (error) {
         res.status(500).json({
@@ -219,10 +227,10 @@ router.get('/list', async (req, res) => {
         let photos = await pb.collection('photos_entry_dimensions').getFullList({
             filter,
             expand: 'photo',
-            fields: 'expand.photo.raw,is_in_album,expand.photo.id,expand.photo.image',
+            fields: 'expand.photo.raw,is_in_album,is_favourite,expand.photo.id,expand.photo.image',
         });
 
-        photos = photos.map((photo) => ({ ...photo.expand.photo, is_in_album: photo.is_in_album }));
+        photos = photos.map((photo) => ({ ...photo.expand.photo, is_in_album: photo.is_in_album, is_favourite: photo.is_favourite }));
 
         photos.forEach((photo) => {
             photo.has_raw = photo.raw !== '';
@@ -336,7 +344,7 @@ router.post('/import', async (req, res) => {
                 if (tags.DateTimeOriginal) {
                     data.shot_time = moment(tags.DateTimeOriginal.value, 'YYYY:MM:DD HH:mm:ss').toISOString();
                 } else {
-                    const dateStr = imageFiles[0].toUpperCase().match(/IMG-(?<date>\d+)-WA.+/).groups.date;
+                    const dateStr = imageFiles[0].toUpperCase().match(/IMG-(?<date>\d+)-WA.+/)?.groups?.date;
                     if (dateStr) {
                         data.shot_time = moment(dateStr, 'YYYYMMDD').format('YYYY-MM-DD HH:mm:ss');
                     } else {
@@ -409,6 +417,7 @@ router.post('/import', async (req, res) => {
             progress = completed / Object.keys(distinctFiles).length;
         }
     } catch (error) {
+        console.log(error);
         try {
             res.status(500).send({
                 state: 'error',

@@ -104,7 +104,7 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.patch('/add-photo/:albumId', async (req, res) => {
+router.patch('/add-photos/:albumId', async (req, res) => {
     try {
         const { pb } = req;
         const { albumId } = req.params;
@@ -209,16 +209,25 @@ router.patch('/rename/:albumId', async (req, res) => {
     }
 });
 
-router.put('/set-cover/:albumId/:imageId', async (req, res) => {
+router.patch('/set-cover/:albumId/:imageId', async (req, res) => {
     try {
         const { pb } = req;
         const { imageId, albumId } = req.params;
+        const { isInAlbum } = req.query;
 
         if (!imageId || !albumId) {
             throw new Error('Missing required fields');
         }
 
-        await pb.collection('photos_album').update(albumId, { cover: imageId });
+        let image;
+        if (isInAlbum === 'true') {
+            const dim = await pb.collection('photos_entry_dimensions').getOne(imageId);
+            image = await pb.collection('photos_entry').getOne(dim.photo);
+        } else {
+            image = await pb.collection('photos_entry').getOne(imageId);
+        }
+
+        await pb.collection('photos_album').update(albumId, { cover: image.id });
 
         res.json({
             state: 'success',
