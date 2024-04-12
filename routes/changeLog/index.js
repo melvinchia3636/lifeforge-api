@@ -24,7 +24,7 @@ function getDateRangeFromWeekNumber(weekNumber, year) {
 
 router.get('/list', async (req, res) => {
     try {
-        const pb = new Pocketbase('http://192.168.0.117:8090');
+        const pb = new Pocketbase('http://api.lifeforge.thecodeblog.net:8090');
         const entries = await pb.collection('change_log_entry').getFullList();
 
         const final = [];
