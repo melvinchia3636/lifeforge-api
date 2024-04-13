@@ -1,9 +1,12 @@
-const express = require('express');
+import express from 'express';
+import tagRoutes from './routes/tag.js';
+import deckRoutes from './routes/deck.js';
+import cardRoutes from './routes/card.js';
 
 const router = express.Router();
 
-router.use('/tag', require('./routes/tag'));
-router.use('/deck', require('./routes/deck'));
-router.use('/card', require('./routes/card'));
+router.use('/tag', tagRoutes);
+router.use('/deck', deckRoutes);
+router.use('/card', cardRoutes);
 
-module.exports = router;
+export default router;

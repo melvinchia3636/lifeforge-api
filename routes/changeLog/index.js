@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
-const Pocketbase = require('pocketbase/cjs');
+import express from 'express';
+import Pocketbase from 'pocketbase';
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ function getDateRangeFromWeekNumber(weekNumber, year) {
 
 router.get('/list', async (req, res) => {
     try {
-        const pb = new Pocketbase('http://192.168.0.117:8090');
+        const pb = new Pocketbase('http://api.lifeforge.thecodeblog.net:8090');
         const entries = await pb.collection('change_log_entry').getFullList();
 
         const final = [];
@@ -61,4 +61,4 @@ router.get('/list', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

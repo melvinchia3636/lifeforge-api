@@ -1,18 +1,22 @@
-const express = require("express")
-const router = express.Router()
+import express from 'express';
+import entry from './routes/entry.js';
+import progress from './routes/progress.js';
+import files from './routes/files.js';
 
-router.use("/entry", require("./routes/entry"))
-router.use("/progress", require("./routes/progress"))
-router.use("/files", require("./routes/files"))
+const router = express.Router();
 
-router.get("/ip", async (req, res) => {
-    import("node-public-ip").then(async ({ publicIp }) => {
-        const ip = await publicIp()
+router.use('/entry', entry);
+router.use('/progress', progress);
+router.use('/files', files);
+
+router.get('/ip', async (req, res) => {
+    import('node-public-ip').then(async ({ publicIp }) => {
+        const ip = await publicIp();
         res.json({
-            state: "success",
-            data: ip
-        })
+            state: 'success',
+            data: ip,
+        });
     });
-})
+});
 
-module.exports = router
+export default router;

@@ -2,7 +2,7 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -82,4 +82,4 @@ router.put('/update', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -73,4 +73,4 @@ router.put('/create', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -8,12 +8,13 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
-const fs = require('fs');
-const mime = require('mime-types');
-const ExifReader = require('exifreader');
-const moment = require('moment');
-const axios = require('axios');
+import express from 'express';
+
+import fs from 'fs';
+import mime from 'mime-types';
+import ExifReader from 'exifreader';
+import moment from 'moment';
+import axios from 'axios';
 
 const router = express.Router();
 
@@ -479,4 +480,4 @@ router.delete('/delete', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

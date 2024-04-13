@@ -1,31 +1,11 @@
-/* eslint-disable consistent-return */
-const express = require('express');
-const bcrypt = require('bcrypt');
+/* eslint-disable no-param-reassign */
+import express from 'express';
+import master from './routes/master.js';
+import password from './routes/password.js';
 
 const router = express.Router();
 
-router.post('/master/create', (req, res) => {
-    try {
-        const { password, id } = req.body;
-        const { pb } = req;
+router.use('/master', master);
+router.use('/password', password);
 
-        bcrypt.hash(password, 10, async (err, hash) => {
-            if (err) {
-                throw new Error('Error creating master password');
-            }
-
-            await pb.collection('users').update(id, {
-                masterPasswordHash: hash,
-            });
-
-            res.json({ hash });
-        });
-    } catch (error) {
-        res.status(500).send({
-            state: 'error',
-            message: error.message,
-        });
-    }
-});
-
-module.exports = router;
+export default router;

@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-extend-native */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -469,4 +469,4 @@ router.get('/languages', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

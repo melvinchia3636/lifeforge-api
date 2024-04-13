@@ -1,7 +1,5 @@
-const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 // Configure multer storage and file name
 const storage = multer.diskStorage({
@@ -9,16 +7,17 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, uuidv4() + '-' + file.originalname);
-    }
+        cb(null, `${uuidv4()}-${file.originalname}`);
+    },
 });
 
 // Create multer upload instance
 const upload = multer({
-    storage: storage, limits: {
-        fileSize: 100000000
+    storage,
+    limits: {
+        fileSize: 100000000,
 
-    }
+    },
 });
 
 // Custom file upload middleware
@@ -30,4 +29,4 @@ const uploadMiddleware = (req, res, next) => {
     });
 };
 
-module.exports = uploadMiddleware;
+export default uploadMiddleware;

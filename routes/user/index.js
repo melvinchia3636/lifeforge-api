@@ -1,6 +1,9 @@
-const express = require('express');
+import express from 'express';
+import passkey from './routes/passkey.js';
 
 const router = express.Router();
+
+router.use('/passkey', passkey);
 
 router.patch('/module', async (req, res) => {
     try {
@@ -40,4 +43,4 @@ router.patch('/personalization', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

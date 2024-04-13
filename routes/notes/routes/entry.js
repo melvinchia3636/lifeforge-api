@@ -3,12 +3,11 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
+import express from 'express';
+import fs from 'fs';
+import uploadMiddleware from '../../../middleware/uploadMiddleware.js';
 
 const router = express.Router();
-const fs = require('fs');
-
-const uploadMiddleware = require('../../../middleware/uploadMiddleware');
 
 router.get('/get/:id', async (req, res) => {
     try {
@@ -304,4 +303,4 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
