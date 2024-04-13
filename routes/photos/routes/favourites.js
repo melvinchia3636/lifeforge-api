@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -75,4 +75,4 @@ router.patch('/add-photos', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

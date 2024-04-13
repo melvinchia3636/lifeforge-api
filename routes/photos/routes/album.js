@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -240,4 +240,4 @@ router.patch('/set-cover/:albumId/:imageId', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

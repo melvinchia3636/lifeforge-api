@@ -1,9 +1,11 @@
 /* eslint-disable no-param-reassign */
-const express = require('express');
+import express from 'express';
+import master from './routes/master.js';
+import password from './routes/password.js';
 
 const router = express.Router();
 
-router.use('/master', require('./routes/master'));
-router.use('/password', require('./routes/password'));
+router.use('/master', master);
+router.use('/password', password);
 
-module.exports = router;
+export default router;

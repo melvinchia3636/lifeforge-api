@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
-const express = require('express');
-const fs = require('fs');
-const mime = require('mime-types');
+import express from 'express';
+
+import fs from 'fs';
+import mime from 'mime-types';
 
 const router = express.Router();
 
@@ -125,4 +126,4 @@ router.put('/set-thumbnail/:projectId', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

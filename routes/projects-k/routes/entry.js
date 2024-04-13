@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -170,4 +170,4 @@ router.patch('/update-status/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

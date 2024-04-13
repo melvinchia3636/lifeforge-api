@@ -1,19 +1,38 @@
 /* eslint-disable max-len */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable camelcase */
-require('dotenv').config({ path: '.env.local' });
+import express from 'express';
+import cors from 'cors';
+import Pocketbase from 'pocketbase';
+import all_routes from 'express-list-endpoints';
+import dotenv from 'dotenv';
+import morganMiddleware from './middleware/morganMiddleware.js';
+import userRoutes from './routes/user/index.js';
+import projectsKRoutes from './routes/projects-k/index.js';
+import todoListRoutes from './routes/todoList/index.js';
+import ideaBoxRoutes from './routes/ideaBox/index.js';
+import codeTimeRoutes from './routes/codeTime/index.js';
+import notesRoutes from './routes/notes/index.js';
+import flashcardsRoutes from './routes/flashcards/index.js';
+import spotifyRoutes from './routes/spotify/index.js';
+import photosRoutes from './routes/photos/index.js';
+import passwordsRoutes from './routes/passwords/index.js';
+import serverRoutes from './routes/server/index.js';
+import changeLogRoutes from './routes/changeLog/index.js';
 
-const express = require('express');
-const cors = require('cors');
-const Pocketbase = require('pocketbase/cjs');
-const all_routes = require('express-list-endpoints');
-const morganMiddleware = require('./middleware/morganMiddleware');
+dotenv.config({ path: '.env.local' });
+
+const NO_NEED_AUTH = [
+    '/user/passkey',
+    '/spotify',
+    '/code-time',
+];
 
 const initPB = async (req, res, next) => {
     const bearerToken = req.headers.authorization?.split(' ')[1];
     const pb = new Pocketbase(process.env.PB_HOST);
 
-    if (req.url === '/' || req.url.startsWith('/spotify') || req.url.startsWith('/code-time')) {
+    if (req.url === '/' || NO_NEED_AUTH.some((route) => req.url.startsWith(route))) {
         req.pb = pb;
         next();
         return;
@@ -69,18 +88,18 @@ app.get('/', (req, res) => {
         routes,
     });
 });
-app.use('/user', require('./routes/user'));
-app.use('/projects-k', require('./routes/projects-k'));
-app.use('/todo-list', require('./routes/todoList'));
-app.use('/idea-box', require('./routes/ideaBox'));
-app.use('/code-time', require('./routes/codeTime'));
-app.use('/notes', require('./routes/notes'));
-app.use('/flashcards', require('./routes/flashcards'));
-app.use('/spotify', require('./routes/spotify'));
-app.use('/photos', require('./routes/photos'));
-app.use('/passwords', require('./routes/passwords'));
-app.use('/server', require('./routes/server'));
-app.use('/change-log', require('./routes/changeLog'));
+app.use('/user', userRoutes);
+app.use('/projects-k', projectsKRoutes);
+app.use('/todo-list', todoListRoutes);
+app.use('/idea-box', ideaBoxRoutes);
+app.use('/code-time', codeTimeRoutes);
+app.use('/notes', notesRoutes);
+app.use('/flashcards', flashcardsRoutes);
+app.use('/spotify', spotifyRoutes);
+app.use('/photos', photosRoutes);
+app.use('/passwords', passwordsRoutes);
+app.use('/server', serverRoutes);
+app.use('/change-log', changeLogRoutes);
 
 app.use((req, res) => {
     res.status(404);
@@ -99,7 +118,6 @@ app.use((req, res) => {
 //         res.json(JSON.parse(stdout))
 //     })
 // })
-
-app.listen(3636, () => {
-    console.log('Server is running on port 3636');
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
 });

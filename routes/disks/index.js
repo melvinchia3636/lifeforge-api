@@ -1,4 +1,5 @@
-const express = require('express');
+import express from 'express';
+
 const { exec } = require('child_process');
 
 const router = express.Router();
@@ -41,4 +42,4 @@ router.get('/stats', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

@@ -1,7 +1,10 @@
-const express = require('express');
+import express from 'express';
+import container from './routes/container.js';
+import idea from './routes/idea.js';
+
 const router = express.Router();
 
-router.use('/container', require('./routes/container'));
-router.use('/idea', require('./routes/idea'));
+router.use('/container', container);
+router.use('/idea', idea);
 
-module.exports = router;
+export default router;

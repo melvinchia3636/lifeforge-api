@@ -1,8 +1,8 @@
 /* eslint-disable indent */
-const express = require('express');
+import express from 'express';
+import multer from 'multer';
 
 const router = express.Router();
-const multer = require('multer');
 
 router.get('/list/:containerId', async (req, res) => {
     try {
@@ -258,4 +258,4 @@ router.patch('/archive/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

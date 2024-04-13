@@ -1,9 +1,12 @@
-const express = require('express');
+import express from 'express';
+import entry from './routes/entry.js';
+import list from './routes/list.js';
+import tag from './routes/tag.js';
 
 const router = express.Router();
 
-router.use('/entry', require('./routes/entry'));
-router.use('/list', require('./routes/list'));
-router.use('/tag', require('./routes/tag'));
+router.use('/entry', entry);
+router.use('/list', list);
+router.use('/tag', tag);
 
-module.exports = router;
+export default router;

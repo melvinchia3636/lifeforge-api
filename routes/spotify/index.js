@@ -2,8 +2,8 @@
 /* eslint-disable no-shadow */
 /* eslint-disable camelcase */
 /* eslint-disable no-multi-str */
-const express = require('express');
-const request = require('request');
+import express from 'express';
+import request from 'request';
 
 const router = express.Router();
 
@@ -143,4 +143,4 @@ router.get('/auth/refresh', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

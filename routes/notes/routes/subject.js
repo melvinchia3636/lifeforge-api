@@ -1,116 +1,117 @@
-const express = require("express");
+import express from 'express';
+
 const router = express.Router();
 
-router.get("/list/:id", async (req, res) => {
+router.get('/list/:id', async (req, res) => {
     try {
         if (!req.params.id) {
             res.status(400).json({
-                state: "error",
-                message: "id is required",
+                state: 'error',
+                message: 'id is required',
             });
 
-            return
+            return;
         }
 
         const { pb } = req;
-        const subjects = await pb.collection("notes_subject").getFullList({
+        const subjects = await pb.collection('notes_subject').getFullList({
             filter: `workspace = "${req.params.id}"`,
         });
 
         res.json({
-            state: "success",
+            state: 'success',
             data: subjects,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
 });
 
-router.post("/create", async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
         const { pb } = req;
 
-        const title = req.body.title;
-        const existing = await pb.collection("notes_subject").getFullList({
+        const { title } = req.body;
+        const existing = await pb.collection('notes_subject').getFullList({
             filter: `title = "${title}" && workspace = "${req.body.workspace}"`,
         });
         if (existing.length > 0) {
             res.status(400).json({
-                state: "error",
-                message: "Subject already exists",
+                state: 'error',
+                message: 'Subject already exists',
             });
 
-            return
+            return;
         }
-        const subject = await pb.collection("notes_subject").create(req.body);
+        const subject = await pb.collection('notes_subject').create(req.body);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: subject,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
         if (!req.params.id) {
             res.status(400).json({
-                state: "error",
-                message: "id is required",
+                state: 'error',
+                message: 'id is required',
             });
 
-            return
+            return;
         }
 
         const { pb } = req;
-        await pb.collection("notes_subject").delete(req.params.id);
+        await pb.collection('notes_subject').delete(req.params.id);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: null,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
 });
 
-router.patch("/update/:id", async (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     try {
         if (!req.params.id) {
             res.status(400).json({
-                state: "error",
-                message: "id is required",
+                state: 'error',
+                message: 'id is required',
             });
 
-            return
+            return;
         }
 
         const { pb } = req;
         const subject = await pb
-            .collection("notes_subject")
+            .collection('notes_subject')
             .update(req.params.id, req.body);
 
         res.json({
-            state: "success",
+            state: 'success',
             data: subject,
         });
     } catch (error) {
         res.status(500).json({
-            state: "error",
+            state: 'error',
             message: error.message,
         });
     }
 });
 
-module.exports = router;
+export default router;

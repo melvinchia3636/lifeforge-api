@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-const express = require('express');
-const crypto = require('crypto');
+import express from 'express';
+import crypto from 'crypto';
 
 const router = express.Router();
 
@@ -114,4 +114,4 @@ router.post('/create', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

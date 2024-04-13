@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const express = require('express');
-const Pocketbase = require('pocketbase/cjs');
+import express from 'express';
+import Pocketbase from 'pocketbase';
 
 const router = express.Router();
 
@@ -61,4 +61,4 @@ router.get('/list', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

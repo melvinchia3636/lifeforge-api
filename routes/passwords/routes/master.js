@@ -1,5 +1,5 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
+import express from 'express';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -56,4 +56,4 @@ router.post('/verify', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

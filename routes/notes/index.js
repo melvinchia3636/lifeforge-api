@@ -1,8 +1,12 @@
-const express = require("express");
+import express from 'express';
+import workspaceRoutes from './routes/workspace.js';
+import subjectRoutes from './routes/subject.js';
+import entryRoutes from './routes/entry.js';
+
 const router = express.Router();
 
-router.use("/workspace", require("./routes/workspace"));
-router.use("/subject", require("./routes/subject"));
-router.use("/entry", require("./routes/entry"));
+router.use('/workspace', workspaceRoutes);
+router.use('/subject', subjectRoutes);
+router.use('/entry', entryRoutes);
 
-module.exports = router;
+export default router;

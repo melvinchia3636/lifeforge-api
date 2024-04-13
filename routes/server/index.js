@@ -1,9 +1,10 @@
 /* eslint-disable no-shadow */
-const express = require('express');
-const { exec } = require('child_process');
-const os = require('os');
-const osUtils = require('os-utils');
-const si = require('systeminformation');
+import express from 'express';
+
+import { exec } from 'child_process';
+import os from 'os';
+import osUtils from 'os-utils';
+import si from 'systeminformation';
 
 const router = express.Router();
 
@@ -129,4 +130,4 @@ router.get('/cpu-temp', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
