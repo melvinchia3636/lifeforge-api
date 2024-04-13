@@ -78,6 +78,7 @@ app.use('/notes', require('./routes/notes'));
 app.use('/flashcards', require('./routes/flashcards'));
 app.use('/spotify', require('./routes/spotify'));
 app.use('/photos', require('./routes/photos'));
+app.use('/passwords', require('./routes/passwords'));
 app.use('/server', require('./routes/server'));
 app.use('/change-log', require('./routes/changeLog'));
 
