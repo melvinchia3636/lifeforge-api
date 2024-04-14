@@ -78,7 +78,19 @@ router.patch('/module', asyncWrapper(async (req, res) => {
 router.patch('/personalization', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id, data } = req.body;
-    await pb.collection('users').update(id, data);
+    const toBeUpdated = {}
+
+    for (let item of ["theme", "color", "bgTemp", "language"]) {
+        if (data[item]) {
+            toBeUpdated[item] = data[item]
+        }
+    }
+
+    if (!Object.keys(toBeUpdated).length) {
+        throw new Error('No data to update')
+    }
+
+    await pb.collection('users').update(id, toBeUpdated);
 
     success(res)
 }));
