@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import express from 'express';
 import crypto from 'crypto';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
@@ -23,95 +25,66 @@ const decrypt = (encrypted, key) => {
     return result;
 };
 
-router.get('/decrypt/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { master } = req.query;
-        const { pb } = req;
+router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const { master } = req.query;
+    const { pb } = req;
 
-        if (!master) {
-            res.status(400).json({
-                state: 'error',
-                message: 'Master password is required',
-            });
-            return;
-        }
-
-        if (!id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'ID is required',
-            });
-            return;
-        }
-
-        const password = await pb.collection('passwords_entry').getOne(id);
-
-        const decryptedPassword = decrypt(Buffer.from(password.password, 'base64'), master);
-
-        res.json({
-            state: 'success',
-            data: decryptedPassword.toString(),
-        });
-    } catch (e) {
-        res.status(500).json({
+    if (!master) {
+        res.status(400).json({
             state: 'error',
-            message: e.message,
+            message: 'Master password is required',
         });
+        return;
     }
-});
 
-router.get('/list', async (req, res) => {
-    try {
-        const { pb } = req;
-
-        const passwords = await pb.collection('passwords_entry').getFullList();
-
-        res.json({
-            state: 'success',
-            data: passwords,
-        });
-    } catch (e) {
-        res.status(500).json({
+    if (!id) {
+        res.status(400).json({
             state: 'error',
-            message: e.message,
+            message: 'ID is required',
         });
+        return;
     }
-});
 
-router.post('/create', async (req, res) => {
-    try {
-        const {
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password,
-            masterPassword,
-        } = req.body;
-        const { pb } = req;
+    const password = await pb.collection('passwords_entry').getOne(id);
 
-        const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
+    const decryptedPassword = decrypt(Buffer.from(password.password, 'base64'), master);
 
-        await pb.collection('passwords_entry').create({
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password: encryptedPassword.toString('base64'),
-        });
+    success(res, decryptedPassword.toString());
+}));
 
-        res.json({
-            state: 'success',
-        });
-    } catch (e) {
-        res.status(500).json({
-            state: 'error',
-            message: e.message,
-        });
-    }
-});
+router.get('/list', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+
+    const passwords = await pb.collection('passwords_entry').getFullList();
+
+    success(res, passwords);
+}));
+
+router.post('/create', asyncWrapper(async (req, res) => {
+    const {
+        name,
+        icon,
+        color,
+        website,
+        username,
+        password,
+        masterPassword,
+    } = req.body;
+    const { pb } = req;
+
+    const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
+
+    await pb.collection('passwords_entry').create({
+        name,
+        icon,
+        color,
+        website,
+        username,
+        password: encryptedPassword.toString('base64'),
+    });
+
+    success(res);
+}));
 
 export default router;

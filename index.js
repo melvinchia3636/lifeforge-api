@@ -3,7 +3,6 @@
 /* eslint-disable camelcase */
 import express from 'express';
 import cors from 'cors';
-import Pocketbase from 'pocketbase';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
 import morganMiddleware from './middleware/morganMiddleware.js';
@@ -19,62 +18,25 @@ import photosRoutes from './routes/photos/index.js';
 import passwordsRoutes from './routes/passwords/index.js';
 import serverRoutes from './routes/server/index.js';
 import changeLogRoutes from './routes/changeLog/index.js';
+import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
+
+import DESCRIPTIONS from './constants/description.js';
 
 dotenv.config({ path: '.env.local' });
-
-const NO_NEED_AUTH = [
-    '/user/passkey',
-    '/spotify',
-    '/code-time',
-];
-
-const initPB = async (req, res, next) => {
-    const bearerToken = req.headers.authorization?.split(' ')[1];
-    const pb = new Pocketbase(process.env.PB_HOST);
-
-    if (req.url === '/' || NO_NEED_AUTH.some((route) => req.url.startsWith(route))) {
-        req.pb = pb;
-        next();
-        return;
-    }
-
-    try {
-        pb.authStore.save(bearerToken, null);
-
-        try {
-            await pb.collection('users').authRefresh();
-        } catch (error) {
-            if (error.response.code === 401) {
-                res.status(401).send({
-                    state: 'error',
-                    message: 'Invalid authorization credentials',
-                });
-                return;
-            }
-        }
-
-        req.pb = pb;
-        next();
-    } catch (error) {
-        res.status(500).send({
-            state: 'error',
-            message: 'Internal server error',
-        });
-    }
-};
 
 const app = express();
 app.set('view engine', 'ejs');
 
-app.use(morganMiddleware);
 app.use(cors());
 app.use(express.json());
-app.use(initPB);
+app.use(morganMiddleware);
+app.use(pocketbaseMiddleware);
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     const routes = all_routes(app).flatMap((route) => route.methods.map((method) => ({
         path: route.path,
         method,
+        description: DESCRIPTIONS[route.path],
     }))).reduce((acc, route) => {
         if (acc[route.path.split('/')[1]]) {
             acc[route.path.split('/')[1]].push(route);
@@ -110,6 +72,15 @@ app.use((req, res) => {
     });
 });
 
+app.use((err, req, res, next) => {
+    res.status(500);
+
+    res.json({
+        state: 'error',
+        message: err.message,
+    });
+});
+
 // app.get("/books/list", (req, res) => {
 //     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
 //         if (err) {
@@ -118,6 +89,7 @@ app.use((req, res) => {
 //         res.json(JSON.parse(stdout))
 //     })
 // })
+
 app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
+    console.log(`Server running on port ${process.env.PORT}`);
 });

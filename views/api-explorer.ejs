@@ -2,10 +2,10 @@
 
 <head>
   <title>API Explorer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600&family=Urbanist:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="http://fonts.googleapis.com">
+  <link rel="preconnect" href="http://fonts.gstatic.com" crossorigin>
+  <link href="http://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600&family=Urbanist:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="http://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-neutral-900 text-neutral-100 font-[Urbanist] px-64 py-32">
@@ -17,48 +17,39 @@
   </h1>
   <% Object.entries(routes).forEach(([route, methods])=> { %>
     <div class="mt-16">
-      <h2 class="text-3xl font-semibold">
+      <h2 class="text-3xl font-semibold mb-2">
         <%= route.split("-").map(e=> e ? e[0].toUpperCase() + e.slice(1) : "/").join(" ") %>
       </h2>
       <div class="flex flex-col">
-        <% methods.forEach(({method, path})=> { %>
-          <a href="<%= path %>" class="flex p-2 rounded-lg mt-4 border items-center <%= (() => {
-            switch(method) {
-              case "GET":
-                return "border-blue-500 bg-blue-500/10";
-              case "POST":
-                return  "border-green-500 bg-green-500/10";
-              case "PUT":
-                return "border-yellow-500 bg-yellow-500/10";
-              case "DELETE":
-                return "border-red-500 bg-red-500/10";
-              case "PATCH":
-                return "border-yellow-500 bg-yellow-500/10";
-              default:
-                return "border-neutral-500 bg-neutral-500/10";
-            }
-          })() %>">
-            <div class="<%= (() => {
-              switch(method) {
-                case "GET":
-                  return "bg-blue-500";
-                case "POST":
-                  return "bg-green-500";
-                case "PUT":
-                  return "bg-yellow-500";
-                case "DELETE":
-                  return "bg-red-500";
-                case "PATCH":
-                  return "bg-yellow-500";
-                default:
-                  return "bg-neutral-500";
-              }
-            })() %> text-neutral-900 tracking-widest font-semibold p-2 rounded-md w-24 text-center">
-              <%= method %>
+        <% methods.forEach(({method, path, description})=> { %>
+          <a href="<%= path %>" class="flex p-2 rounded-lg mt-2 items-center justify-between bg-neutral-800">
+            <div class="flex items-center">
+              <div class="<%= (() => {
+                switch(method) {
+                  case "GET":
+                    return "text-blue-500";
+                  case "POST":
+                    return "text-green-500";
+                  case "PUT":
+                    return "text-fuchsia-500";
+                  case "DELETE":
+                    return "text-red-500";
+                  case "PATCH":
+                    return "text-yellow-500";
+                  default:
+                    return "text-neutral-500";
+                }
+              })() %> tracking-widest font-semibold p-2 rounded-md w-24 text-center">
+                <%= method %>
+              </div>
+              <div class="h-6 w-0 border-r-2 border-neutral-600"></div>
+              <div class="ml-6 font-mono">
+                <%= path %>
+              </div>
             </div>
-            <div class="ml-4 font-mono">
-              <%= path %>
-            </div>
+            <p class="text-neutral-500 tracking-wide mr-4">
+              <%= description %>
+            </p>
           </a>
           <% }) %>
       </div>

@@ -1,40 +1,24 @@
 import express from 'express';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-router.get('/list', async (req, res) => {
-    try {
-        const { pb } = req;
-        const tags = await pb.collection('todo_tag').getFullList();
-        res.json({
-            state: 'success',
-            data: tags,
-        });
-    } catch (error) {
-        res.status(500).json({
-            state: 'error',
-            message: error.message,
-        });
-    }
-});
+router.get('/list', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const tags = await pb.collection('todo_tag').getFullList();
 
-router.post('/create', async (req, res) => {
-    try {
-        const { pb } = req;
-        const { name } = req.body;
-        const tag = await pb.collection('todo_tag').create({
-            name,
-        });
-        res.json({
-            state: 'success',
-            data: tag,
-        });
-    } catch (error) {
-        res.status(500).json({
-            state: 'error',
-            message: error.message,
-        });
-    }
-});
+    success(res, tags);
+}));
+
+router.post('/create', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { name } = req.body;
+    const tag = await pb.collection('todo_tag').create({
+        name,
+    });
+
+    success(res, tag);
+}));
 
 export default router;

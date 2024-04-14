@@ -1,117 +1,79 @@
 import express from 'express';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-router.get('/list/:id', async (req, res) => {
-    try {
-        if (!req.params.id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'id is required',
-            });
-
-            return;
-        }
-
-        const { pb } = req;
-        const subjects = await pb.collection('notes_subject').getFullList({
-            filter: `workspace = "${req.params.id}"`,
-        });
-
-        res.json({
-            state: 'success',
-            data: subjects,
-        });
-    } catch (error) {
-        res.status(500).json({
+router.get('/list/:id', asyncWrapper(async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'id is required',
         });
+
+        return;
     }
-});
 
-router.post('/create', async (req, res) => {
-    try {
-        const { pb } = req;
+    const { pb } = req;
+    const subjects = await pb.collection('notes_subject').getFullList({
+        filter: `workspace = "${req.params.id}"`,
+    });
 
-        const { title } = req.body;
-        const existing = await pb.collection('notes_subject').getFullList({
-            filter: `title = "${title}" && workspace = "${req.body.workspace}"`,
-        });
-        if (existing.length > 0) {
-            res.status(400).json({
-                state: 'error',
-                message: 'Subject already exists',
-            });
+    success(res, subjects);
+}));
 
-            return;
-        }
-        const subject = await pb.collection('notes_subject').create(req.body);
+router.post('/create', asyncWrapper(async (req, res) => {
+    const { pb } = req;
 
-        res.json({
-            state: 'success',
-            data: subject,
-        });
-    } catch (error) {
-        res.status(500).json({
+    const { title } = req.body;
+    const existing = await pb.collection('notes_subject').getFullList({
+        filter: `title = "${title}" && workspace = "${req.body.workspace}"`,
+    });
+    if (existing.length > 0) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'Subject already exists',
         });
+
+        return;
     }
-});
+    const subject = await pb.collection('notes_subject').create(req.body);
 
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        if (!req.params.id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'id is required',
-            });
+    success(res, subject);
+}));
 
-            return;
-        }
-
-        const { pb } = req;
-        await pb.collection('notes_subject').delete(req.params.id);
-
-        res.json({
-            state: 'success',
-            data: null,
-        });
-    } catch (error) {
-        res.status(500).json({
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'id is required',
         });
+
+        return;
     }
-});
 
-router.patch('/update/:id', async (req, res) => {
-    try {
-        if (!req.params.id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'id is required',
-            });
+    const { pb } = req;
+    await pb.collection('notes_subject').delete(req.params.id);
 
-            return;
-        }
+    success(res, null);
+}));
 
-        const { pb } = req;
-        const subject = await pb
-            .collection('notes_subject')
-            .update(req.params.id, req.body);
-
-        res.json({
-            state: 'success',
-            data: subject,
-        });
-    } catch (error) {
-        res.status(500).json({
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'id is required',
         });
+
+        return;
     }
-});
+
+    const { pb } = req;
+    const subject = await pb
+        .collection('notes_subject')
+        .update(req.params.id, req.body);
+
+    success(res, subject);
+}));
 
 export default router;

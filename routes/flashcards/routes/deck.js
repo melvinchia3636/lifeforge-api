@@ -1,82 +1,48 @@
 import express from 'express';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-router.get('/get/:id', async (req, res) => {
-    try {
-        const { pb } = req;
-        const { id } = req.params;
-        const entry = await pb.collection('flashcards_deck').getOne(id);
+router.get('/get/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+    const entry = await pb.collection('flashcards_deck').getOne(id);
 
-        res.json({
-            state: 'success',
-            data: entry,
-        });
-    } catch (error) {
-        res.status(500)
+    success(res, entry);
+}));
+
+router.get('/valid/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+
+    if (!id) {
+        res.status(400)
             .json({
                 state: 'error',
-                message: error.message,
+                message: 'id is required',
             });
+        return;
     }
-});
 
-router.get('/valid/:id', async (req, res) => {
-    try {
-        const { pb } = req;
-        const { id } = req.params;
+    const { totalItems } = await pb.collection('flashcards_deck').getList(1, 1, {
+        filter: `id = "${id}"`,
+    });
 
-        if (!id) {
-            res.status(400)
-                .json({
-                    state: 'error',
-                    message: 'id is required',
-                });
-            return;
-        }
-
-        const { totalItems } = await pb.collection('flashcards_deck').getList(1, 1, {
-            filter: `id = "${id}"`,
-        });
-
-        if (totalItems === 1) {
-            res.json({
-                state: 'success',
-                data: true,
-            });
-        } else {
-            res.json({
-                state: 'success',
-                data: false,
-            });
-        }
-    } catch (error) {
-        res.status(500)
-            .json({
-                state: 'error',
-                message: error.message,
-            });
+    if (totalItems === 1) {
+        success(res, true);
+    } else {
+        success(res, false);
     }
-});
+}));
 
-router.get('/list', async (req, res) => {
-    try {
-        const { pb } = req;
-        const entries = await pb.collection('flashcards_deck').getFullList({
-            expand: 'tag',
-        });
+router.get('/list', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const entries = await pb.collection('flashcards_deck').getFullList({
+        expand: 'tag',
+    });
 
-        res.json({
-            state: 'success',
-            data: entries,
-        });
-    } catch (error) {
-        res.status(500)
-            .json({
-                state: 'error',
-                message: error.message,
-            });
-    }
-});
+    success(res, entries);
+}));
 
 export default router;

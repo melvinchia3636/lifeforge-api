@@ -1,86 +1,55 @@
 import express from 'express';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-router.get('/get/:id', async (req, res) => {
-    try {
-        if (!req.params.id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'id is required',
-            });
-
-            return;
-        }
-
-        const { pb } = req;
-        const category = await pb
-            .collection('notes_workspace')
-            .getOne(req.params.id);
-
-        res.json({
-            state: 'success',
-            data: category,
-        });
-    } catch (error) {
-        res.status(500).json({
+router.get('/get/:id', asyncWrapper(async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'id is required',
         });
+
+        return;
     }
-});
 
-router.get('/valid/:id', async (req, res) => {
-    try {
-        if (!req.params.id) {
-            res.status(400).json({
-                state: 'error',
-                message: 'id is required',
-            });
+    const { pb } = req;
+    const category = await pb
+        .collection('notes_workspace')
+        .getOne(req.params.id);
 
-            return;
-        }
+    success(res, category);
+}));
 
-        const { pb } = req;
-
-        const { totalItems } = await pb.collection('notes_workspace').getList(1, 1, {
-            filter: `id = "${req.params.id}"`,
-        });
-
-        if (totalItems === 1) {
-            res.json({
-                state: 'success',
-                data: true,
-            });
-        } else {
-            res.json({
-                state: 'success',
-                data: false,
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
+router.get('/valid/:id', asyncWrapper(async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({
             state: 'error',
-            message: error.message,
+            message: 'id is required',
         });
-    }
-});
 
-router.get('/list', async (req, res) => {
-    try {
-        const { pb } = req;
-        const categories = await pb.collection('notes_workspace').getFullList();
-
-        res.json({
-            state: 'success',
-            data: categories,
-        });
-    } catch (error) {
-        res.status(500).json({
-            state: 'error',
-            message: error.message,
-        });
+        return;
     }
-});
+
+    const { pb } = req;
+
+    const { totalItems } = await pb.collection('notes_workspace').getList(1, 1, {
+        filter: `id = "${req.params.id}"`,
+    });
+
+    if (totalItems === 1) {
+        success(res, true);
+    } else {
+        success(res, false);
+    }
+}));
+
+router.get('/list', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const categories = await pb.collection('notes_workspace').getFullList();
+
+    success(res, categories);
+}));
 
 export default router;

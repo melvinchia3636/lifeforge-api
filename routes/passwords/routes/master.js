@@ -1,59 +1,37 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
+import { success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-router.post('/create', async (req, res) => {
-    try {
-        const { id, password } = req.body;
-        const { pb } = req;
+router.post('/create', asyncWrapper(async (req, res) => {
+    const { id, password } = req.body;
+    const { pb } = req;
 
-        const salt = await bcrypt.genSalt(10);
-        const masterPasswordHash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const masterPasswordHash = await bcrypt.hash(password, salt);
 
-        await pb.collection('users').update(id, {
-            masterPasswordHash,
-        });
+    await pb.collection('users').update(id, {
+        masterPasswordHash,
+    });
 
-        res.json({
-            state: 'success',
-            hash: masterPasswordHash,
-        });
-    } catch (e) {
-        res.status(500).json({
-            state: 'error',
-            message: e.message,
-        });
-    }
-});
+    res.json({
+        state: 'success',
+        hash: masterPasswordHash,
+    });
+}));
 
-router.post('/verify', async (req, res) => {
-    try {
-        const { id, password } = req.body;
-        const { pb } = req;
+router.post('/verify', asyncWrapper(async (req, res) => {
+    const { id, password } = req.body;
+    const { pb } = req;
 
-        const user = await pb.collection('users').getOne(id);
-        const { masterPasswordHash } = user;
+    const user = await pb.collection('users').getOne(id);
+    const { masterPasswordHash } = user;
 
-        const isMatch = await bcrypt.compare(password, masterPasswordHash);
+    const isMatch = await bcrypt.compare(password, masterPasswordHash);
 
-        if (isMatch) {
-            res.json({
-                state: 'success',
-                data: true,
-            });
-        } else {
-            res.json({
-                state: 'success',
-                data: false,
-            });
-        }
-    } catch (e) {
-        res.status(500).json({
-            state: 'error',
-            message: e.message,
-        });
-    }
-});
+    success(res, isMatch);
+}));
 
 export default router;

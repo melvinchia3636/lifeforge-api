@@ -2,6 +2,8 @@
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
 import Pocketbase from 'pocketbase';
+import { success } from '../../utils/response.js';
+import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
@@ -22,43 +24,32 @@ function getDateRangeFromWeekNumber(weekNumber, year) {
     return [firstDayOfWeek, lastDayOfWeek];
 }
 
-router.get('/list', async (req, res) => {
-    try {
-        const pb = new Pocketbase('http://api.lifeforge.thecodeblog.net:8090');
-        const entries = await pb.collection('change_log_entry').getFullList();
+router.get('/list', asyncWrapper(async (req, res) => {
+    const pb = new Pocketbase('http://192.168.0.117:8090');
+    const entries = await pb.collection('change_log_entry').getFullList();
 
-        const final = [];
+    const final = [];
 
-        for (const entry of entries) {
-            const [year, week] = getWeekNumber(entry.created_at);
-            const versionNumber = `${year.toString().slice(2)}w${week.toString().padStart(2, '0')}`;
+    for (const entry of entries) {
+        const [year, week] = getWeekNumber(entry.created_at);
+        const versionNumber = `${year.toString().slice(2)}w${week.toString().padStart(2, '0')}`;
 
-            if (!final.find((item) => item.version === versionNumber)) {
-                final.push({
-                    version: versionNumber,
-                    date_range: getDateRangeFromWeekNumber(week, year),
-                    entries: [],
-                });
-            }
-
-            final.find((item) => item.version === versionNumber).entries.push({
-                id: entry.id,
-                feature: entry.feature,
-                description: entry.description,
+        if (!final.find((item) => item.version === versionNumber)) {
+            final.push({
+                version: versionNumber,
+                date_range: getDateRangeFromWeekNumber(week, year),
+                entries: [],
             });
         }
 
-        res.json({
-            state: 'success',
-            data: final.reverse(),
+        final.find((item) => item.version === versionNumber).entries.push({
+            id: entry.id,
+            feature: entry.feature,
+            description: entry.description,
         });
-    } catch (error) {
-        res.status(500)
-            .json({
-                state: 'error',
-                message: error.message,
-            });
     }
-});
+
+    success(res, final.reverse());
+}));
 
 export default router;

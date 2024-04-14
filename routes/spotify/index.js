@@ -4,6 +4,7 @@
 /* eslint-disable no-multi-str */
 import express from 'express';
 import request from 'request';
+import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ function generateRandomString(length) {
     return text;
 }
 
-router.get('/auth/login', (req, res) => {
+router.get('/auth/login', asyncWrapper(async (req, res) => {
     const scope = 'streaming \
     user-read-playback-state \
     user-modify-playback-state \
@@ -50,10 +51,10 @@ router.get('/auth/login', (req, res) => {
         state,
     });
 
-    res.redirect(`https://accounts.spotify.com/authorize/?${auth_query_parameters.toString()}`);
-});
+    res.redirect(`http://accounts.spotify.com/authorize/?${auth_query_parameters.toString()}`);
+}));
 
-router.get('/auth/callback', async (req, res) => {
+router.get('/auth/callback', asyncWrapper(async (req, res) => {
     const { code } = req.query;
     const { pb } = req;
 
@@ -66,7 +67,7 @@ router.get('/auth/callback', async (req, res) => {
     const userId = user.id;
 
     const authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
+        url: 'http://accounts.spotify.com/api/token',
         form: {
             code,
             redirect_uri: 'http://api.lifeforge.thecodeblog.net:3636/spotify/auth/callback',
@@ -97,9 +98,9 @@ router.get('/auth/callback', async (req, res) => {
             message: 'Unauthorized',
         });
     });
-});
+}));
 
-router.get('/auth/refresh', async (req, res) => {
+router.get('/auth/refresh', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
     await pb.admins.authWithPassword(
@@ -112,7 +113,7 @@ router.get('/auth/refresh', async (req, res) => {
     const { spotifyRefreshToken: refresh_token } = user;
 
     const authOptions = {
-        url: 'https://accounts.spotify.com/api/token',
+        url: 'http://accounts.spotify.com/api/token',
         headers: {
             'content-type': 'application/x-www-form-urlencoded',
             Authorization: `Basic ${new Buffer.from(`${spotify_client_id}:${spotify_client_secret}`).toString('base64')}`,
@@ -141,6 +142,6 @@ router.get('/auth/refresh', async (req, res) => {
             });
         }
     });
-});
+}));
 
 export default router;
