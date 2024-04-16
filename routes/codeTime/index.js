@@ -24,105 +24,6 @@ function getDates(startDate, stopDate) {
     return dateArray;
 }
 
-router.get('/stats', asyncWrapper(async (req, res) => {
-    try {
-        const { pb } = req;
-        // first day of current month
-        const date = new Date();
-        date.setDate(1);
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
-        const data = await pb.collection('code_time').getFullList({
-            sort: 'event_time',
-            filter: `event_time >= ${date.getTime()}`,
-        });
-        const groupByDate = {};
-        for (const item of data) {
-            const date = new Date(item.event_time);
-            date.setHours(0);
-            date.setMinutes(0);
-            date.setSeconds(0);
-            const dateKey = date.toISOString();
-            if (!groupByDate[dateKey]) {
-                groupByDate[dateKey] = [];
-            }
-            groupByDate[dateKey].push(item);
-        }
-
-        success(res, Object.entries(groupByDate).map(([date, items]) => ({
-            time: date,
-            duration: items.length * 1000 * 60,
-        })));
-    } catch (e) {
-        console.log(e);
-        res.status(500);
-        res.send({
-            state: 'error',
-            message: e.message,
-        });
-    }
-}));
-
-router.post('/eventLog', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const data = req.body;
-
-    data.eventTime = Math.floor(Date.now() / 60000) * 60000;
-
-    const lastData = await pb.collection('code_time').getList(1, 1, {
-        sort: 'event_time',
-        filter: `event_time = ${data.eventTime}`,
-    });
-
-    if (lastData.totalItems === 0) {
-        pb.collection('code_time').create({
-            project: data.project,
-            language: data.language,
-            event_time: data.eventTime,
-            relative_file: data.relativeFile,
-        });
-
-        const language = await pb.collection('code_time_languages').getList(1, 1, {
-            sort: 'name',
-            filter: `name = '${data.language}'`,
-        });
-
-        if (language.totalItems === 0) {
-            pb.collection('code_time_languages').create({
-                name: data.language,
-                duration: 1,
-            });
-        } else {
-            pb.collection('code_time_languages').update(language.items[0].id, {
-                duration: language.items[0].duration + 1,
-            });
-        }
-
-        const project = await pb.collection('code_time_projects').getList(1, 1, {
-            sort: 'name',
-            filter: `name = '${data.project}'`,
-        });
-
-        if (project.totalItems === 0) {
-            pb.collection('code_time_projects').create({
-                name: data.project,
-                duration: 1,
-            });
-        } else {
-            pb.collection('code_time_projects').update(project.items[0].id, {
-                duration: project.items[0].duration + 1,
-            });
-        }
-    }
-
-    res.send({
-        status: 'ok',
-        data: [],
-        message: 'success',
-    });
-}));
-
 router.get('/activities', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
@@ -410,6 +311,145 @@ router.get('/languages', asyncWrapper(async (req, res) => {
     );
 
     success(res, groupByLanguage);
+}));
+
+router.get('/each-day', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+
+    const lastDay = new Date();
+    lastDay.setHours(23);
+    lastDay.setMinutes(59);
+    lastDay.setSeconds(59);
+
+    // 30 days before today
+    const firstDay = new Date();
+    firstDay.setDate(lastDay.getDate() - 30);
+    firstDay.setHours(0);
+    firstDay.setMinutes(0);
+    firstDay.setSeconds(0);
+
+    const data = await pb.collection('code_time').getFullList({
+        sort: 'event_time',
+        filter: `event_time >= ${firstDay.getTime()} && event_time <= ${lastDay.getTime()}`,
+    });
+
+    const groupByDate = {};
+
+    for (const item of data) {
+        const date = new Date(item.event_time);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        if (!groupByDate[dateKey]) {
+            groupByDate[dateKey] = [];
+        }
+        groupByDate[dateKey].push(item);
+    }
+
+    success(res, Object.entries(groupByDate).map(([date, items]) => ({
+        date,
+        duration: items.length * 1000 * 60,
+    })));
+}));
+
+router.get('/stats', asyncWrapper(async (req, res) => {
+    try {
+        const { pb } = req;
+        // first day of current month
+        const date = new Date();
+        date.setDate(1);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        const data = await pb.collection('code_time').getFullList({
+            sort: 'event_time',
+            filter: `event_time >= ${date.getTime()}`,
+        });
+        const groupByDate = {};
+        for (const item of data) {
+            const date = new Date(item.event_time);
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            const dateKey = date.toISOString();
+            if (!groupByDate[dateKey]) {
+                groupByDate[dateKey] = [];
+            }
+            groupByDate[dateKey].push(item);
+        }
+
+        success(res, Object.entries(groupByDate).map(([date, items]) => ({
+            time: date,
+            duration: items.length * 1000 * 60,
+        })));
+    } catch (e) {
+        console.log(e);
+        res.status(500);
+        res.send({
+            state: 'error',
+            message: e.message,
+        });
+    }
+}));
+
+router.post('/eventLog', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const data = req.body;
+
+    data.eventTime = Math.floor(Date.now() / 60000) * 60000;
+
+    const lastData = await pb.collection('code_time').getList(1, 1, {
+        sort: 'event_time',
+        filter: `event_time = ${data.eventTime}`,
+    });
+
+    if (lastData.totalItems === 0) {
+        pb.collection('code_time').create({
+            project: data.project,
+            language: data.language,
+            event_time: data.eventTime,
+            relative_file: data.relativeFile,
+        });
+
+        const language = await pb.collection('code_time_languages').getList(1, 1, {
+            sort: 'name',
+            filter: `name = '${data.language}'`,
+        });
+
+        if (language.totalItems === 0) {
+            pb.collection('code_time_languages').create({
+                name: data.language,
+                duration: 1,
+            });
+        } else {
+            pb.collection('code_time_languages').update(language.items[0].id, {
+                duration: language.items[0].duration + 1,
+            });
+        }
+
+        const project = await pb.collection('code_time_projects').getList(1, 1, {
+            sort: 'name',
+            filter: `name = '${data.project}'`,
+        });
+
+        if (project.totalItems === 0) {
+            pb.collection('code_time_projects').create({
+                name: data.project,
+                duration: 1,
+            });
+        } else {
+            pb.collection('code_time_projects').update(project.items[0].id, {
+                duration: project.items[0].duration + 1,
+            });
+        }
+    }
+
+    res.send({
+        status: 'ok',
+        data: [],
+        message: 'success',
+    });
 }));
 
 export default router;

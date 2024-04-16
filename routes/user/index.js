@@ -23,6 +23,7 @@ router.post("/auth/login", asyncWrapper(async (req, res) => {
             }
         }
 
+        userData.hasMasterPassword = !!userData.masterPasswordHash
         delete userData["masterPasswordHash"]
 
         res.json({
@@ -55,7 +56,9 @@ router.post("/auth/verify", asyncWrapper(async (req, res) => {
             }
         }
 
+        userData.hasMasterPassword = !!userData.masterPasswordHash
         delete userData["masterPasswordHash"]
+
         res.json({
             state: 'success',
             token: pb.authStore.token,
