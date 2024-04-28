@@ -91,8 +91,9 @@ router.post('/bulk-download', asyncWrapper(async (req, res) => {
     const { isInAlbum } = req.query;
 
     for (const photo of photos) {
+        console.log(photo)
         let image;
-        if (isInAlbum === true) {
+        if (isInAlbum === "true") {
             const dim = await pb.collection('photos_entry_dimensions').getOne(photo);
             image = await pb.collection('photos_entry').getOne(dim.photo);
         } else {

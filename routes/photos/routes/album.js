@@ -38,6 +38,7 @@ router.get('/list', asyncWrapper(async (req, res) => {
 
     const albums = await pb.collection('photos_album').getFullList({
         expand: 'cover',
+        sort: '-created',
     });
 
     albums.forEach((album) => {
@@ -89,13 +90,13 @@ router.delete('/remove-photo/:albumId', asyncWrapper(async (req, res) => {
     const { cover } = await pb.collection('photos_album').getOne(albumId);
 
     for (const photoId of photos) {
-        await pb.collection('photos_entry').update(photoId, { album: '' });
-        const { id } = await pb.collection('photos_entry_dimensions').getFirstListItem(`photo = "${photoId}"`);
+        const { id, photo } = await pb.collection('photos_entry_dimensions').getOne(photoId);
+        await pb.collection('photos_entry').update(photo, { album: '' });
         await pb.collection('photos_entry_dimensions').update(id, {
             is_in_album: false,
         });
 
-        if (cover === photoId) {
+        if (cover === photo) {
             await pb.collection('photos_album').update(albumId, { cover: '' });
         }
     }
