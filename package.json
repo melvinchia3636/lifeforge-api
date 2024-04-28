@@ -28,7 +28,8 @@
   },
   "scripts": {
     "dev": "nodemon --exec babel-node src/index.js --presets @babel/preset-env",
-    "build": "babel src --out-dir dist --presets @babel/preset-env"
+    "build": "babel src --out-dir dist --presets @babel/preset-env",
+    "vercel-build": "echo sus"
   },
   "type": "module",
   "devDependencies": {
