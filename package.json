@@ -27,10 +27,11 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "vercel-build": "echo sus"
   },
   "type": "module",
-  "main": "src/index.js",
+  "main": "api/index.js",
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^9.0.0",
