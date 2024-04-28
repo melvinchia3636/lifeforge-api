@@ -3,6 +3,7 @@
 /* eslint-disable camelcase */
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
 import morganMiddleware from './middleware/morganMiddleware.js';
@@ -23,9 +24,15 @@ import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
 
 import DESCRIPTIONS from './constants/description.js';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 dotenv.config({ path: '.env.local' });
 
 const app = express();
+app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
 app.use(cors());
