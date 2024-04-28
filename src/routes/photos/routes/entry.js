@@ -20,6 +20,7 @@ import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
+
 const RAW_FILE_TYPE = [
     'ARW',
     'CR2',
@@ -42,6 +43,7 @@ const RAW_FILE_TYPE = [
 ];
 
 let progress = 0;
+let allPhotosDimensions = undefined;
 
 router.get('/name/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
@@ -108,69 +110,93 @@ router.post('/bulk-download', asyncWrapper(async (req, res) => {
     success(res);
 }));
 
-router.get('/dimensions', asyncWrapper(async (req, res) => {
+router.get('/dimensions/async-get', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { hideInAlbum } = req.query;
-    const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `;
-    const response = await pb.collection('photos_entry_dimensions').getList(1, 1, { filter });
-    const { collectionId } = await pb.collection('photos_entry').getFirstListItem('name != ""');
-    const { totalItems } = response;
-    const photos = await pb.collection('photos_entry_dimensions').getFullList({
-        fields: 'photo, width, height, shot_time',
-        filter,
-        sort: '-shot_time',
-    });
 
-    photos.forEach((photo) => {
-        photo.id = photo.photo;
-        photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD');
-    });
-
-    const groupByDate = Object.entries(photos.reduce((acc, photo) => {
-        const date = photo.shot_time;
-        if (acc[date]) {
-            acc[date].push(photo);
-        } else {
-            acc[date] = [photo];
-        }
-        return acc;
-    }, {}));
-
-    const firstDayOfYear = {};
-    const firstDayOfMonth = {};
-
-    for (const [key] of groupByDate) {
-        const date = moment(key);
-        const year = date.year();
-        if (!firstDayOfYear[year]) {
-            firstDayOfYear[year] = date.format('YYYY-MM-DD');
-        } else if (date.isBefore(moment(firstDayOfYear[year]))) {
-            firstDayOfYear[year] = date.format('YYYY-MM-DD');
-        }
-    }
-
-    for (const [key] of groupByDate) {
-        const date = moment(key);
-        const year = date.year();
-        const month = date.month();
-        if (month === moment(firstDayOfYear[year]).month()) {
-            continue;
-        }
-        if (!firstDayOfMonth[`${year} -${month} `]) {
-            firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
-        } else if (date.isBefore(moment(firstDayOfMonth[`${year} -${month} `]))) {
-            firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
-        }
-    }
-
-    success(res, {
-        items: groupByDate,
-        firstDayOfYear,
-        firstDayOfMonth,
-        totalItems,
-        collectionId,
+    res.status(202).json({
+        state: 'accepted',
     })
+
+    if (allPhotosDimensions === undefined) {
+        allPhotosDimensions = "pending"
+        const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `;
+        const response = await pb.collection('photos_entry_dimensions').getList(1, 1, { filter });
+        const { collectionId } = await pb.collection('photos_entry').getFirstListItem('name != ""');
+        const { totalItems } = response;
+        const photos = await pb.collection('photos_entry_dimensions').getFullList({
+            fields: 'photo, width, height, shot_time',
+            filter,
+            sort: '-shot_time',
+        });
+
+        photos.forEach((photo) => {
+            photo.id = photo.photo;
+            photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD');
+        });
+
+        const groupByDate = Object.entries(photos.reduce((acc, photo) => {
+            const date = photo.shot_time;
+            if (acc[date]) {
+                acc[date].push(photo);
+            } else {
+                acc[date] = [photo];
+            }
+            return acc;
+        }, {}));
+
+        const firstDayOfYear = {};
+        const firstDayOfMonth = {};
+
+        for (const [key] of groupByDate) {
+            const date = moment(key);
+            const year = date.year();
+            if (!firstDayOfYear[year]) {
+                firstDayOfYear[year] = date.format('YYYY-MM-DD');
+            } else if (date.isBefore(moment(firstDayOfYear[year]))) {
+                firstDayOfYear[year] = date.format('YYYY-MM-DD');
+            }
+        }
+
+        for (const [key] of groupByDate) {
+            const date = moment(key);
+            const year = date.year();
+            const month = date.month();
+            if (month === moment(firstDayOfYear[year]).month()) {
+                continue;
+            }
+            if (!firstDayOfMonth[`${year} -${month} `]) {
+                firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
+            } else if (date.isBefore(moment(firstDayOfMonth[`${year} -${month} `]))) {
+                firstDayOfMonth[`${year} -${month + 1} `] = date.format('YYYY-MM-DD');
+            }
+        }
+
+        allPhotosDimensions = {
+            items: groupByDate,
+            firstDayOfYear,
+            firstDayOfMonth,
+            totalItems,
+            collectionId,
+        }
+    }
 }));
+
+router.get("/dimensions/async-res", asyncWrapper(async (req, res) => {
+    if (allPhotosDimensions === "pending") {
+        return res.status(202).json({
+            state: 'pending',
+        });
+    } else if (allPhotosDimensions !== undefined) {
+        success(res, allPhotosDimensions)
+        allPhotosDimensions = undefined
+    } else {
+        res.status(404).json({
+            state: 'error',
+            message: 'No data available',
+        });
+    }
+}))
 
 router.get('/list', asyncWrapper(async (req, res) => {
     const { pb } = req;
