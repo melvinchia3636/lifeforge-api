@@ -127,16 +127,15 @@ router.get('/dimensions/async-get', asyncWrapper(async (req, res) => {
         const photos = await pb.collection('photos_entry_dimensions').getFullList({
             fields: 'photo, width, height, shot_time',
             filter,
-            sort: '-shot_time',
         });
 
         photos.forEach((photo) => {
             photo.id = photo.photo;
-            photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD');
+            photo.shot_time = moment(photo.shot_time).format('YYYY-MM-DD HH:mm:ss');
         });
 
         const groupByDate = Object.entries(photos.reduce((acc, photo) => {
-            const date = photo.shot_time;
+            const date = photo.shot_time.split(' ')[0];
             if (acc[date]) {
                 acc[date].push(photo);
             } else {
@@ -144,6 +143,8 @@ router.get('/dimensions/async-get', asyncWrapper(async (req, res) => {
             }
             return acc;
         }, {}));
+
+        groupByDate.sort((a, b) => moment(b[0]).diff(moment(a[0])));
 
         const firstDayOfYear = {};
         const firstDayOfMonth = {};

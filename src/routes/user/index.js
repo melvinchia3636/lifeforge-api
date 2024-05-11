@@ -78,6 +78,16 @@ router.patch('/module', asyncWrapper(async (req, res) => {
     success(res)
 }));
 
+router.put("/module/config", asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id, data } = req.body;
+    await pb.collection('users').update(id, {
+        moduleConfigs: data
+    });
+
+    success(res)
+}));
+
 router.patch('/personalization', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id, data } = req.body;
