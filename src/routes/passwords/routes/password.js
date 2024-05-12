@@ -56,7 +56,9 @@ router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
 router.get('/list', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
-    const passwords = await pb.collection('passwords_entry').getFullList();
+    const passwords = await pb.collection('passwords_entry').getFullList({
+        sort: '-pinned',
+    });
 
     success(res, passwords);
 }));
@@ -128,6 +130,26 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
     await pb.collection('passwords_entry').delete(id);
+
+    success(res);
+}));
+
+router.post('/pin/:id', asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const { pb } = req;
+
+    if (!id) {
+        res.status(400).json({
+            state: 'error',
+            message: 'ID is required',
+        });
+        return;
+    }
+
+    const password = await pb.collection('passwords_entry').getOne(id);
+    await pb.collection('passwords_entry').update(id, {
+        pinned: !password.pinned,
+    });
 
     success(res);
 }));
