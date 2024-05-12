@@ -23,7 +23,7 @@ router.post("/auth/login", asyncWrapper(async (req, res) => {
             }
         }
 
-        userData.hasMasterPassword = !!userData.masterPasswordHash
+        userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
         delete userData["masterPasswordHash"]
 
         res.json({
@@ -56,7 +56,7 @@ router.post("/auth/verify", asyncWrapper(async (req, res) => {
             }
         }
 
-        userData.hasMasterPassword = !!userData.masterPasswordHash
+        userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
         delete userData["masterPasswordHash"]
 
         res.json({

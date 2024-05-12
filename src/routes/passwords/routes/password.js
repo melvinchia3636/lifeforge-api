@@ -87,6 +87,33 @@ router.post('/create', asyncWrapper(async (req, res) => {
     success(res);
 }));
 
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const {
+        name,
+        icon,
+        color,
+        website,
+        username,
+        password,
+        masterPassword,
+    } = req.body;
+    const { pb } = req;
+
+    const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
+
+    await pb.collection('passwords_entry').update(id, {
+        name,
+        icon,
+        color,
+        website,
+        username,
+        password: encryptedPassword.toString('base64'),
+    });
+
+    success(res);
+}));
+
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
@@ -97,7 +124,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
         });
         return;
     }
-    
+
     const { pb } = req;
 
     await pb.collection('passwords_entry').delete(id);

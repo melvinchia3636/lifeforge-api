@@ -16,4 +16,42 @@ router.post('/create', asyncWrapper(async (req, res) => {
     success(res, category);
 }));
 
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+    const { name, icon, color } = req.body;
+
+    if (!id) {
+        res.status(400).json({
+            state: 'error',
+            message: 'ID is required',
+        });
+        return;
+    }
+
+    const category = await pb.collection('todo_list').update(id, {
+        name,
+        icon,
+        color,
+    });
+
+    success(res, category);
+}));
+
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+
+    if (!id) {
+        res.status(400).json({
+            state: 'error',
+            message: 'ID is required',
+        });
+        return;
+    }
+
+    await pb.collection('todo_list').delete(id);
+    success(res);
+}));
+
 export default router;
