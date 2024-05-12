@@ -87,4 +87,22 @@ router.post('/create', asyncWrapper(async (req, res) => {
     success(res);
 }));
 
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        res.status(400).json({
+            state: 'error',
+            message: 'ID is required',
+        });
+        return;
+    }
+    
+    const { pb } = req;
+
+    await pb.collection('passwords_entry').delete(id);
+
+    success(res);
+}));
+
 export default router;

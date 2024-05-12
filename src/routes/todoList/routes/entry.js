@@ -23,7 +23,8 @@ router.get('/list', asyncWrapper(async (req, res) => {
         today: `done = false && due_date >= "${
             moment().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
         }" && due_date <= "${
-            moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+            moment().endOf('day').utc().add(1, 'second')
+            .format('YYYY-MM-DD HH:mm:ss')
         }"`,
         scheduled: `done = false && due_date != "" && due_date >= "${
             moment().utc().format('YYYY-MM-DD HH:mm:ss')
@@ -33,6 +34,8 @@ router.get('/list', asyncWrapper(async (req, res) => {
         }"`,
         completed: 'done = true',
     };
+
+    console.log(moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss'));
 
     let finalFilter = filters[status];
 
@@ -53,7 +56,8 @@ router.get('/status-counter', asyncWrapper(async (req, res) => {
         today: `done = false && due_date >= "${
             moment().startOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
         }" && due_date <= "${
-            moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss')
+            moment().endOf('day').utc().add(1, 'second')
+            .format('YYYY-MM-DD HH:mm:ss')
         }"`,
         scheduled: `done = false && due_date != "" && due_date >= "${
             moment().utc().format('YYYY-MM-DD HH:mm:ss')
