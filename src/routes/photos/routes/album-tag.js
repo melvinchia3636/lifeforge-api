@@ -2,7 +2,7 @@
 /* eslint-disable no-await-in-loop */
 import express from 'express';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 
 const router = express.Router();
 
@@ -26,6 +26,16 @@ router.patch('/update-album/:albumId', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { albumId } = req.params;
     const { tags } = req.body;
+
+    if (!albumId) {
+        clientError(res, 'Album ID is required');
+        return;
+    }
+
+    if (!tags) {
+        clientError(res, 'Tags are required');
+        return;
+    }
 
     await pb.collection('photos_album').update(albumId, {
         tags,

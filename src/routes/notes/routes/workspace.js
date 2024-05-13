@@ -1,15 +1,12 @@
 import express from 'express';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
 router.get('/get/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required')
 
         return;
     }
@@ -24,10 +21,7 @@ router.get('/get/:id', asyncWrapper(async (req, res) => {
 
 router.get('/valid/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required')
 
         return;
     }

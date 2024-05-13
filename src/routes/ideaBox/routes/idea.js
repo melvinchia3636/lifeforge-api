@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import express from 'express';
 import multer from 'multer';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -12,11 +12,7 @@ router.get('/list/:containerId', asyncWrapper(async (req, res) => {
     const { archived } = req.query;
 
     if (!containerId) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'containerId is required',
-            });
+        clientError(res, 'containerId is required');
         return;
     }
 
@@ -37,11 +33,7 @@ router.post('/create/:containerId', multer().single('image'), asyncWrapper(async
     const { containerId } = req.params;
 
     if (!containerId) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'containerId is required',
-            });
+        clientError(res, 'containerId is required');
         return;
     }
 
@@ -71,11 +63,7 @@ router.post('/create/:containerId', multer().single('image'), asyncWrapper(async
             };
             break;
         default:
-            res.status(400)
-                .json({
-                    state: 'error',
-                    message: 'Invalid type',
-                });
+            clientError(res, 'Invalid type');
             return;
     }
 
@@ -92,11 +80,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'id is required',
-            });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -114,11 +98,7 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'id is required',
-            });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -142,11 +122,7 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
             };
             break;
         default:
-            res.status(400)
-                .json({
-                    state: 'error',
-                    message: 'Invalid type',
-                });
+            clientError(res, 'Invalid type');
             return;
     }
 
@@ -160,11 +136,7 @@ router.patch('/pin/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'id is required',
-            });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -181,11 +153,7 @@ router.patch('/archive/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'id is required',
-            });
+        clientError(res, 'id is required');
         return;
     }
 

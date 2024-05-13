@@ -17,11 +17,7 @@ router.get('/valid/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400)
-            .json({
-                state: 'error',
-                message: 'id is required',
-            });
+        clientError(res, 'id is required');
         return;
     }
 

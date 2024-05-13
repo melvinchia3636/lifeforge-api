@@ -3,7 +3,7 @@
 /* eslint-disable no-extend-native */
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
-import { success } from '../../utils/response.js';
+import { clientError, success } from '../../utils/response.js';
 import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -216,10 +216,7 @@ router.get('/projects', asyncWrapper(async (req, res) => {
     const lastXDays = req.query.last || '24 hours';
 
     if (lastXDays > 30) {
-        res.status(400).send({
-            state: 'error',
-            message: 'lastXDays must be less than 30',
-        });
+        clientError(res, 'lastXDays must be less than 30');
         return;
     }
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import express from 'express';
 import crypto from 'crypto';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -31,18 +31,12 @@ router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
     if (!master) {
-        res.status(400).json({
-            state: 'error',
-            message: 'Master password is required',
-        });
+        clientError(res, 'master is required');
         return;
     }
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -74,6 +68,11 @@ router.post('/create', asyncWrapper(async (req, res) => {
         masterPassword,
     } = req.body;
     const { pb } = req;
+
+    if (!name || !icon || !color || !website || !username || !password || !masterPassword) {
+        clientError(res, 'Missing required fields');
+        return;
+    }
 
     const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
 
@@ -120,10 +119,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -139,10 +135,7 @@ router.post('/pin/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 

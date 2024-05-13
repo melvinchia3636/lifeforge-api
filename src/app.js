@@ -18,6 +18,7 @@ import spotifyRoutes from './routes/spotify/index.js';
 import photosRoutes from './routes/photos/index.js';
 import repositoriesRoutes from './routes/repositories/index.js';
 import passwordsRoutes from './routes/passwords/index.js';
+import journalRoutes from './routes/journal/index.js';
 import serverRoutes from './routes/server/index.js';
 import changeLogRoutes from './routes/changeLog/index.js';
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
@@ -69,6 +70,7 @@ app.use('/spotify', spotifyRoutes);
 app.use('/photos', photosRoutes);
 app.use('/repositories', repositoriesRoutes);
 app.use('/passwords', passwordsRoutes);
+app.use('/journal', journalRoutes);
 app.use('/server', serverRoutes);
 app.use('/change-log', changeLogRoutes);
 

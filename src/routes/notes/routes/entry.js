@@ -6,17 +6,14 @@
 import express from 'express';
 import fs from 'fs';
 import uploadMiddleware from '../../../middleware/uploadMiddleware.js';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
 router.get('/get/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required');
     }
 
     const { pb } = req;
@@ -189,10 +186,7 @@ router.post('/upload/:workspace/:subject/*', uploadMiddleware, asyncWrapper(asyn
 
 router.patch('/update/folder/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required');
 
         return;
     }
@@ -205,10 +199,7 @@ router.patch('/update/folder/:id', asyncWrapper(async (req, res) => {
 
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required');
 
         return;
     }

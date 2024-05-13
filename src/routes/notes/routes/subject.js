@@ -1,15 +1,12 @@
 import express from 'express';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
 router.get('/list/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required')
 
         return;
     }
@@ -44,10 +41,7 @@ router.post('/create', asyncWrapper(async (req, res) => {
 
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required')
 
         return;
     }
@@ -60,10 +54,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
 
 router.patch('/update/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'id is required',
-        });
+        clientError(res, 'id is required')
 
         return;
     }

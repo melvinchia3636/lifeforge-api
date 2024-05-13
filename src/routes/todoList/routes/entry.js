@@ -2,7 +2,7 @@
 /* eslint-disable no-await-in-loop */
 import express from 'express';
 import moment from 'moment';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -34,8 +34,6 @@ router.get('/list', asyncWrapper(async (req, res) => {
         }"`,
         completed: 'done = true',
     };
-
-    console.log(moment().endOf('day').utc().format('YYYY-MM-DD HH:mm:ss'));
 
     let finalFilter = filters[status];
 
@@ -96,8 +94,16 @@ router.post('/create', asyncWrapper(async (req, res) => {
 
 router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const originalEntry = await pb.collection('todo_entry').getOne(req.params.id);
-    const entry = await pb.collection('todo_entry').update(req.params.id, req.body);
+    const { id } = req.params;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    const originalEntry = await pb.collection('todo_entry').getOne(id);
+    const entry = await pb.collection('todo_entry').update(id, req.body);
+
     if (originalEntry.list !== entry.list) {
         if (originalEntry.list) {
             await pb.collection('todo_list').update(originalEntry.list, {
@@ -132,9 +138,16 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
 
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const entry = await pb.collection('todo_entry').getOne(req.params.id);
+    const { id } = req.params;
 
-    await pb.collection('todo_entry').delete(req.params.id);
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    const entry = await pb.collection('todo_entry').getOne();
+
+    await pb.collection('todo_entry').delete(id);
     if (entry.list) {
         await pb.collection('todo_list').update(entry.list, {
             'amount-': 1,
@@ -152,8 +165,15 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
 
 router.patch('/toggle/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const entry = await pb.collection('todo_entry').getOne(req.params.id);
-    await pb.collection('todo_entry').update(req.params.id, {
+    const { id } = req.params;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    const entry = await pb.collection('todo_entry').getOne(id);
+    await pb.collection('todo_entry').update(id, {
         done: !entry.done,
         completed_at: entry.done ? null : moment().utc().format('YYYY-MM-DD HH:mm:ss'),
     });

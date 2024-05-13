@@ -1,5 +1,5 @@
 import express from 'express';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -22,10 +22,7 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { name, icon, color } = req.body;
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 
@@ -43,10 +40,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -14,6 +14,12 @@ router.get('/list', asyncWrapper(async (req, res) => {
 router.post('/create', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { name } = req.body;
+
+    if (!name) {
+        clientError(res, 'name is required');
+        return;
+    }
+
     const tag = await pb.collection('todo_tag').create({
         name,
     });
@@ -25,6 +31,16 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;
     const { name } = req.body;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    if (!name) {
+        clientError(res, 'name is required');
+        return;
+    }
 
     const tag = await pb.collection('todo_tag').update(id, {
         name,
@@ -38,10 +54,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
 
     if (!id) {
-        res.status(400).json({
-            state: 'error',
-            message: 'ID is required',
-        });
+        clientError(res, 'id is required');
         return;
     }
 
