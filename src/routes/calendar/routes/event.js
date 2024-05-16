@@ -14,7 +14,9 @@ router.get('/list', asyncWrapper(async (req, res) => {
 
 router.post('/create', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const { title, start, end } = req.body;
+    const {
+        title, start, end, category,
+    } = req.body;
 
     if (!title || !start || !end) {
         clientError(res, 'Missing required fields');
@@ -25,15 +27,23 @@ router.post('/create', asyncWrapper(async (req, res) => {
         title,
         start,
         end,
+        category: category || '',
     });
+
+    if (category) {
+        await pb.collection('calendar_category').update(category, {
+            'amount+': 1,
+        });
+    }
 
     success(res, events);
 }));
 
-router.patch('/update', asyncWrapper(async (req, res) => {
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
+    const { id } = req.params;
     const {
-        id, title, start, end,
+        title, start, end, category,
     } = req.body;
 
     if (!id) {
@@ -41,11 +51,28 @@ router.patch('/update', asyncWrapper(async (req, res) => {
         return;
     }
 
+    const oldEvent = await pb.collection('calendar_event').getOne(id);
+
     const events = await pb.collection('calendar_event').update(id, {
         title,
         start,
         end,
+        category: category || '',
     });
+
+    if (oldEvent.category !== category) {
+       if (oldEvent.category) {
+           await pb.collection('calendar_category').update(oldEvent.category, {
+               'amount-': 1,
+           });
+        }
+
+        if (category) {
+            await pb.collection('calendar_category').update(category, {
+                'amount+': 1,
+            });
+        }
+    }
 
     success(res, events);
 }));

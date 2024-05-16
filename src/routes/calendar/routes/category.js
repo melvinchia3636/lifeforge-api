@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/list', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const categories = await pb.collection('todo_list').getFullList();
+    const categories = await pb.collection('calendar_category').getFullList();
     success(res, categories);
 }));
 
@@ -19,7 +19,11 @@ router.post('/create', asyncWrapper(async (req, res) => {
         return;
     }
 
-    const category = await pb.collection('todo_list').create(req.body);
+    const category = await pb.collection('calendar_category').create({
+        name,
+        icon,
+        color,
+    });
     success(res, category);
 }));
 
@@ -38,7 +42,7 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
         return;
     }
 
-    const category = await pb.collection('todo_list').update(id, {
+    const category = await pb.collection('calendar_category').update(id, {
         name,
         icon,
         color,
@@ -56,7 +60,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
         return;
     }
 
-    await pb.collection('todo_list').delete(id);
+    await pb.collection('calendar_category').delete(id);
     success(res);
 }));
 
