@@ -3,6 +3,7 @@
 /* eslint-disable no-extend-native */
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
+import moment from 'moment';
 import { clientError, success } from '../../utils/response.js';
 import asyncWrapper from '../../utils/asyncWrapper.js';
 
@@ -215,7 +216,7 @@ router.get('/projects', asyncWrapper(async (req, res) => {
 
     const lastXDays = req.query.last || '24 hours';
 
-    if (lastXDays > 30) {
+    if (parseInt(lastXDays, 10) > 30) {
         clientError(res, 'lastXDays must be less than 30');
         return;
     }
@@ -350,36 +351,21 @@ router.get('/each-day', asyncWrapper(async (req, res) => {
     })));
 }));
 
-router.get('/stats', asyncWrapper(async (req, res) => {
+router.get('/user/minutes', asyncWrapper(async (req, res) => {
     try {
         const { pb } = req;
         // first day of current month
-        const date = new Date();
-        date.setDate(1);
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
-        const data = await pb.collection('code_time').getFullList({
-            sort: 'event_time',
-            filter: `event_time >= ${date.getTime()}`,
-        });
-        const groupByDate = {};
-        for (const item of data) {
-            const date = new Date(item.event_time);
-            date.setHours(0);
-            date.setMinutes(0);
-            date.setSeconds(0);
-            const dateKey = date.toISOString();
-            if (!groupByDate[dateKey]) {
-                groupByDate[dateKey] = [];
-            }
-            groupByDate[dateKey].push(item);
-        }
+        const { minutes } = req.query;
+        const minTime = moment().subtract(+minutes, 'minutes').valueOf();
 
-        success(res, Object.entries(groupByDate).map(([date, items]) => ({
-            time: date,
-            duration: items.length * 1000 * 60,
-        })));
+        const { totalItems } = await pb.collection('code_time').getList(1, 1, {
+            sort: 'event_time',
+            filter: `event_time >= ${minTime}`,
+        });
+
+        res.json({
+            minutes: totalItems,
+        })
     } catch (e) {
         console.log(e);
         res.status(500);
