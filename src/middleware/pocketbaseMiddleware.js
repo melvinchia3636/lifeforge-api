@@ -12,6 +12,7 @@ const NO_NEED_AUTH = [
     "/photos/entry/list",
     "/photos/entry/name",
     "/photos/entry/download", 
+    "/media"
 ];
 
 const pocketbaseMiddleware

@@ -6,6 +6,7 @@ import cors from 'cors';
 import path from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
+import { Readable } from 'stream';
 import morganMiddleware from './middleware/morganMiddleware.js';
 import userRoutes from './routes/user/index.js';
 import projectsKRoutes from './routes/projects-k/index.js';
@@ -28,6 +29,7 @@ import DESCRIPTIONS from './constants/description.js';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import asyncWrapper from './utils/asyncWrapper.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -61,6 +63,21 @@ app.get('/', async (req, res) => {
         routes,
     });
 });
+app.get("/media/:collectionId/:entryId/:photoId", asyncWrapper(async (req, res) => {
+    const { collectionId, entryId, photoId } = req.params
+    console.log(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
+    const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
+
+    if (!fetchResponse.ok) {
+        res.status(fetchResponse.status).send({
+            state: 'error',
+            message: fetchResponse.statusText,
+        });
+    }
+
+    Readable.fromWeb( fetchResponse.body ).pipe( res );
+}))
+
 app.use('/user', userRoutes);
 app.use('/projects-k', projectsKRoutes);
 app.use('/todo-list', todoListRoutes);
