@@ -5,9 +5,9 @@
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
 import fs from 'fs';
-import uploadMiddleware from '../../../middleware/uploadMiddleware.js';
-import { clientError, success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import uploadMiddleware from '../../../middleware/uploadMiddleware';
+import { clientError, success } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper';
 
 const router = express.Router();
 

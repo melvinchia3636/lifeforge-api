@@ -1,7 +1,7 @@
 import express from 'express';
 import * as webauthn from '@passwordless-id/webauthn';
-import { clientError, success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { clientError, success } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper';
 
 const router = express.Router();
 

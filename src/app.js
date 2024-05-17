@@ -7,29 +7,29 @@ import path from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
 import { Readable } from 'stream';
-import morganMiddleware from './middleware/morganMiddleware.js';
-import userRoutes from './routes/user/index.js';
-import projectsKRoutes from './routes/projects-k/index.js';
-import todoListRoutes from './routes/todoList/index.js';
-import calendarRoutes from './routes/calendar/index.js';
-import ideaBoxRoutes from './routes/ideaBox/index.js';
-import codeTimeRoutes from './routes/codeTime/index.js';
-import notesRoutes from './routes/notes/index.js';
-import flashcardsRoutes from './routes/flashcards/index.js';
-import spotifyRoutes from './routes/spotify/index.js';
-import photosRoutes from './routes/photos/index.js';
-import repositoriesRoutes from './routes/repositories/index.js';
-import passwordsRoutes from './routes/passwords/index.js';
-import journalRoutes from './routes/journal/index.js';
-import serverRoutes from './routes/server/index.js';
-import changeLogRoutes from './routes/changeLog/index.js';
-import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
+import morganMiddleware from './middleware/morganMiddleware';
+import userRoutes from './routes/user/index';
+import projectsKRoutes from './routes/projects-k/index';
+import todoListRoutes from './routes/todoList/index';
+import calendarRoutes from './routes/calendar/index';
+import ideaBoxRoutes from './routes/ideaBox/index';
+import codeTimeRoutes from './routes/codeTime/index';
+import notesRoutes from './routes/notes/index';
+import flashcardsRoutes from './routes/flashcards/index';
+import spotifyRoutes from './routes/spotify/index';
+import photosRoutes from './routes/photos/index';
+import repositoriesRoutes from './routes/repositories/index';
+import passwordsRoutes from './routes/passwords/index';
+import journalRoutes from './routes/journal/index';
+import serverRoutes from './routes/server/index';
+import changeLogRoutes from './routes/changeLog/index';
+import pocketbaseMiddleware from './middleware/pocketbaseMiddleware';
 
-import DESCRIPTIONS from './constants/description.js';
+import DESCRIPTIONS from './constants/description';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import asyncWrrouterer from './utils/asyncWrrouterer.js';
+import asyncWrrouterer from './utils/asyncWrrouterer';
 
 // const __dirname = dirname(fileURLToPath(import.meta.url));
 
