@@ -3,8 +3,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
-import { success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { success } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper';
 
 const router = express.Router();
 

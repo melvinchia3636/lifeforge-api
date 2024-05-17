@@ -15,8 +15,8 @@ import mime from 'mime-types';
 import ExifReader from 'exifreader';
 import moment from 'moment';
 import axios from 'axios';
-import { clientError, success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { clientError, success } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper';
 
 const router = express.Router();
 

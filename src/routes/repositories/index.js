@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
-import asyncWrapper from '../../utils/asyncWrapper.js';
-import { success } from '../../utils/response.js';
+import asyncWrapper from '../../utils/asyncWrapper';
+import { success } from '../../utils/response';
 
 const router = express.Router();
 

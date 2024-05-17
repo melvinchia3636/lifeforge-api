@@ -3,8 +3,8 @@
 import express from 'express';
 import Pocketbase from 'pocketbase';
 import moment from 'moment';
-import { success } from '../../utils/response.js';
-import asyncWrapper from '../../utils/asyncWrapper.js';
+import { success } from '../../utils/response';
+import asyncWrapper from '../../utils/asyncWrapper';
 
 const router = express.Router();
 

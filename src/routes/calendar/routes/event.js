@@ -1,6 +1,6 @@
 import express from 'express';
-import { success, clientError } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { success, clientError } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper';
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import { exec } from 'child_process';
-import { success } from '../../utils/response.js';
-import asyncWrapper from '../../utils/asyncWrapper.js';
+import { success } from '../../utils/response';
+import asyncWrapper from '../../utils/asyncWrapper';
 
 const router = express.Router();
 
