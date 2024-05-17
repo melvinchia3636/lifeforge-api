@@ -1,12 +1,12 @@
 import express from 'express';
-import { clientError, success } from '../../../utils/response';
-import asyncWrapper from '../../../utils/asyncWrapper';
+import { clientError, success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
 router.get('/get/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        clientError(res, 'id is required')
+        clientError(res, 'id is required');
 
         return;
     }
@@ -21,7 +21,7 @@ router.get('/get/:id', asyncWrapper(async (req, res) => {
 
 router.get('/valid/:id', asyncWrapper(async (req, res) => {
     if (!req.params.id) {
-        clientError(res, 'id is required')
+        clientError(res, 'id is required');
 
         return;
     }

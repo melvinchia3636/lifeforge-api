@@ -1,8 +1,8 @@
 import express from 'express';
-import entryRoute from './routes/entry';
-import albumRoute from './routes/album';
-import albumTagRoute from './routes/album-tag';
-import favouritesRoute from './routes/favourites';
+import entryRoute from './routes/entry.js';
+import albumRoute from './routes/album.js';
+import albumTagRoute from './routes/album-tag.js';
+import favouritesRoute from './routes/favourites.js';
 
 const router = express.Router();
 

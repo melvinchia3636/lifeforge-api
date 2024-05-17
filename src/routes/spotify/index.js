@@ -4,7 +4,7 @@
 /* eslint-disable no-multi-str */
 import express from 'express';
 import request from 'request';
-import asyncWrapper from '../../utils/asyncWrapper';
+import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 

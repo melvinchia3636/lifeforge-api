@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import express from 'express';
-import master from './routes/master';
-import password from './routes/password';
+import master from './routes/master.js';
+import password from './routes/password.js';
 
 const router = express.Router();
 

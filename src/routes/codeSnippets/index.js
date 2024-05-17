@@ -1,7 +1,7 @@
 import express from 'express';
-import labelRoutes from './routes/label';
-import languageRoutes from './routes/language';
-import entryRoutes from './routes/entry';
+import labelRoutes from './routes/label.js';
+import languageRoutes from './routes/language.js';
+import entryRoutes from './routes/entry.js';
 
 const router = express.Router();
 

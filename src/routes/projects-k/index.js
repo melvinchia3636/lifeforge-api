@@ -1,9 +1,9 @@
 import express from 'express';
-import entry from './routes/entry';
-import progress from './routes/progress';
-import files from './routes/files';
-import { success } from '../../utils/response';
-import asyncWrapper from '../../utils/asyncWrapper';
+import entry from './routes/entry.js';
+import progress from './routes/progress.js';
+import files from './routes/files.js';
+import { success } from '../../utils/response.js';
+import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 

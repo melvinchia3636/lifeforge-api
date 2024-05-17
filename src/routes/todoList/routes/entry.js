@@ -2,8 +2,8 @@
 /* eslint-disable no-await-in-loop */
 import express from 'express';
 import moment from 'moment';
-import { clientError, success } from '../../../utils/response';
-import asyncWrapper from '../../../utils/asyncWrapper';
+import { clientError, success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 

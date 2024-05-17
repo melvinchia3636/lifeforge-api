@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import express from 'express';
-import { clientError, success } from '../../../utils/response';
-import asyncWrapper from '../../../utils/asyncWrapper';
+import { clientError, success } from '../../../utils/response.js';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
 

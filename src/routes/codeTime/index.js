@@ -4,8 +4,8 @@
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
 import moment from 'moment';
-import { clientError, success } from '../../utils/response';
-import asyncWrapper from '../../utils/asyncWrapper';
+import { clientError, success } from '../../utils/response.js';
+import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
@@ -365,7 +365,7 @@ router.get('/user/minutes', asyncWrapper(async (req, res) => {
 
         res.json({
             minutes: totalItems,
-        })
+        });
     } catch (e) {
         console.log(e);
         res.status(500);

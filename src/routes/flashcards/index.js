@@ -1,7 +1,7 @@
 import express from 'express';
-import tagRoutes from './routes/tag';
-import deckRoutes from './routes/deck';
-import cardRoutes from './routes/card';
+import tagRoutes from './routes/tag.js';
+import deckRoutes from './routes/deck.js';
+import cardRoutes from './routes/card.js';
 
 const router = express.Router();
 

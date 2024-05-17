@@ -8,7 +8,6 @@ import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
 import { Readable } from 'stream';
 import { fileURLToPath } from 'url';
-<<<<<<< HEAD
 import morganMiddleware from './middleware/morganMiddleware.js';
 import userRoutes from './routes/user/index.js';
 import projectsKRoutes from './routes/projects-k/index.js';
@@ -30,29 +29,6 @@ import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
 import DESCRIPTIONS from './constants/description.js';
 
 import asyncWrapper from './utils/asyncWrapper.js';
-=======
-import morganMiddleware from './middleware/morganMiddleware';
-import userRoutes from './routes/user/index';
-import projectsKRoutes from './routes/projects-k/index';
-import todoListRoutes from './routes/todoList/index';
-import calendarRoutes from './routes/calendar/index';
-import ideaBoxRoutes from './routes/ideaBox/index';
-import codeTimeRoutes from './routes/codeTime/index';
-import notesRoutes from './routes/notes/index';
-import flashcardsRoutes from './routes/flashcards/index';
-import spotifyRoutes from './routes/spotify/index';
-import photosRoutes from './routes/photos/index';
-import repositoriesRoutes from './routes/repositories/index';
-import passwordsRoutes from './routes/passwords/index';
-import journalRoutes from './routes/journal/index';
-import serverRoutes from './routes/server/index';
-import changeLogRoutes from './routes/changeLog/index';
-import pocketbaseMiddleware from './middleware/pocketbaseMiddleware';
-
-import DESCRIPTIONS from './constants/description';
-
-import asyncWrapper from './utils/asyncWrapper';
->>>>>>> c60ef73fc23f2a88bc095b2e84ffc85beda11f2d
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

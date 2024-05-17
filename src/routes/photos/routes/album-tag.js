@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
-import asyncWrapper from '../../../utils/asyncWrapper';
-import { clientError, success } from '../../../utils/response';
+import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { clientError, success } from '../../../utils/response.js';
 
 const router = express.Router();
 

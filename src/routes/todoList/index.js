@@ -1,7 +1,7 @@
 import express from 'express';
-import entry from './routes/entry';
-import list from './routes/list';
-import tag from './routes/tag';
+import entry from './routes/entry.js';
+import list from './routes/list.js';
+import tag from './routes/tag.js';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import express from 'express';
-import container from './routes/container';
-import idea from './routes/idea';
+import container from './routes/container.js';
+import idea from './routes/idea.js';
 
 const router = express.Router();
 
