@@ -29,24 +29,25 @@ import DESCRIPTIONS from './constants/description.js';
 
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import asyncWrapper from './utils/asyncWrapper.js';
+import asyncWrrouterer from './utils/asyncWrrouterer.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: '.env.local' });
 
 const app = express();
-app.set('views', path.join(__dirname, '/views'));
-app.set('view engine', 'ejs');
+const router = express.Router();
+router.set('views', path.join(__dirname, '/views'));
+router.set('view engine', 'ejs');
 
-app.use(cors());
-app.use(express.raw());
-app.use(express.json());
-app.use(morganMiddleware);
-app.use(pocketbaseMiddleware);
+router.use(cors());
+router.use(express.raw());
+router.use(express.json());
+router.use(morganMiddleware);
+router.use(pocketbaseMiddleware);
 
-app.get('/', async (req, res) => {
-    const routes = all_routes(app).flatMap((route) => route.methods.map((method) => ({
+router.get('/', async (req, res) => {
+    const routes = all_routes(router).flatMap((route) => route.methods.map((method) => ({
         path: route.path,
         method,
         description: DESCRIPTIONS[route.path],
@@ -63,7 +64,7 @@ app.get('/', async (req, res) => {
         routes,
     });
 });
-app.get("/media/:collectionId/:entryId/:photoId", asyncWrapper(async (req, res) => {
+router.get("/media/:collectionId/:entryId/:photoId", asyncWrrouterer(async (req, res) => {
     const { collectionId, entryId, photoId } = req.params
     console.log(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
     const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
@@ -78,23 +79,23 @@ app.get("/media/:collectionId/:entryId/:photoId", asyncWrapper(async (req, res) 
     Readable.fromWeb( fetchResponse.body ).pipe( res );
 }))
 
-app.use('/user', userRoutes);
-app.use('/projects-k', projectsKRoutes);
-app.use('/todo-list', todoListRoutes);
-app.use('/calendar', calendarRoutes);
-app.use('/idea-box', ideaBoxRoutes);
-app.use('/code-time', codeTimeRoutes);
-app.use('/notes', notesRoutes);
-app.use('/flashcards', flashcardsRoutes);
-app.use('/spotify', spotifyRoutes);
-app.use('/photos', photosRoutes);
-app.use('/repositories', repositoriesRoutes);
-app.use('/passwords', passwordsRoutes);
-app.use('/journal', journalRoutes);
-app.use('/server', serverRoutes);
-app.use('/change-log', changeLogRoutes);
+router.use('/user', userRoutes);
+router.use('/projects-k', projectsKRoutes);
+router.use('/todo-list', todoListRoutes);
+router.use('/calendar', calendarRoutes);
+router.use('/idea-box', ideaBoxRoutes);
+router.use('/code-time', codeTimeRoutes);
+router.use('/notes', notesRoutes);
+router.use('/flashcards', flashcardsRoutes);
+router.use('/spotify', spotifyRoutes);
+router.use('/photos', photosRoutes);
+router.use('/repositories', repositoriesRoutes);
+router.use('/passwords', passwordsRoutes);
+router.use('/journal', journalRoutes);
+router.use('/server', serverRoutes);
+router.use('/change-log', changeLogRoutes);
 
-app.use((req, res) => {
+router.use((req, res) => {
     res.status(404);
 
     res.json({
@@ -103,7 +104,7 @@ app.use((req, res) => {
     });
 });
 
-app.use((err, req, res, next) => {
+router.use((err, req, res, next) => {
     res.status(500);
 
     res.json({
@@ -112,8 +113,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// app.get("/books/list", (req, res) => {
-//     const { stdout, stderr } = exec("/Applications/calibre.app/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
+// router.get("/books/list", (req, res) => {
+//     const { stdout, stderr } = exec("/routerlications/calibre.router/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
 //         if (err) {
 //             return
 //         }
@@ -121,4 +122,4 @@ app.use((err, req, res, next) => {
 //     })
 // })
 
-export default app
+export default router
