@@ -5,3 +5,5 @@ yarn.lock
 scripts
 .vercel
 uploads
+# Local Netlify folder
+.netlify
