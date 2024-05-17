@@ -1,4 +1,3 @@
-import serverless from 'serverless-http';
 import express from 'express';
 import router from './app.js';
 

@@ -64,7 +64,6 @@ router.get('/', async (req, res) => {
 });
 router.get('/media/:collectionId/:entryId/:photoId', asyncWrapper(async (req, res) => {
     const { collectionId, entryId, photoId } = req.params;
-    console.log(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`);
     const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`);
 
     if (!fetchResponse.ok) {
@@ -72,6 +71,7 @@ router.get('/media/:collectionId/:entryId/:photoId', asyncWrapper(async (req, re
             state: 'error',
             message: fetchResponse.statusText,
         });
+        return;
     }
 
     Readable.fromWeb(fetchResponse.body).pipe(res);
