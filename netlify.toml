@@ -1,6 +1,5 @@
-[functions]
-  external_node_modules = ["express"]
-  node_bundler = "esbuild"
+[build]
+    functions = "functions"
 [[redirects]]
   force = true
   from = "/*"
