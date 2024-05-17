@@ -1,5 +1,6 @@
 import serverless from 'serverless-http';
 import express from 'express';
+import ejs from 'ejs';
 import router from '../src/app.js';
 
 const app = express();
