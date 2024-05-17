@@ -15,7 +15,7 @@ import mime from 'mime-types';
 import ExifReader from 'exifreader';
 import moment from 'moment';
 import axios from 'axios';
-import { success } from '../../../utils/response.js';
+import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 
 const router = express.Router();
@@ -49,6 +49,41 @@ router.get('/name/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;
     const { isInAlbum } = req.query;
+
+    if (!id) {
+        clientError(res, 'Photo ID is required');
+        return
+    }
+
+    if (!pb.authStore.isValid) {
+        await pb.admins.authWithPassword(
+            process.env.PB_EMAIL,
+            process.env.PB_PASSWORD,
+        );
+
+        let image
+
+        if (isInAlbum === 'true') {
+            const dim = await pb.collection('photos_entry_dimensions').getOne(id);
+            image = await pb.collection('photos_entry').getOne(dim.photo);
+            const album = await pb.collection('photos_album').getOne(image.album);
+
+            if (!album.is_public) {
+                res.status(401).json({
+                    state: 'error',
+                    message: 'Invalid authorization credentials',
+                });
+                return;
+            }
+        } else {
+            res.status(401).json({
+                state: 'error',
+                message: 'Invalid authorization credentials',
+            });
+            return;
+        }
+    }
+
     let image;
 
     if (isInAlbum === 'true') {
@@ -65,6 +100,39 @@ router.get('/download/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;
     const { raw, isInAlbum } = req.query;
+
+    if (!id) {
+        clientError(res, 'Photo ID is required');
+        return
+    }
+
+    if (!pb.authStore.isValid) {
+        await pb.admins.authWithPassword(
+            process.env.PB_EMAIL,
+            process.env.PB_PASSWORD,
+        );
+
+        let image
+
+        if (isInAlbum === 'true') {
+            const dim = await pb.collection('photos_entry_dimensions').getOne(id);
+            image = await pb.collection('photos_entry').getOne(dim.photo);
+            const album = await pb.collection('photos_album').getOne(image.album);
+
+            if (!album.is_public) {
+                res.status(401).json({
+                    state: 'error',
+                    message: 'Invalid authorization credentials',
+                });
+            }
+        } else {
+            res.status(401).json({
+                state: 'error',
+                message: 'Invalid authorization credentials',
+            });
+        }
+    }
+    
     let image;
 
     if (isInAlbum === 'true') {
@@ -203,6 +271,13 @@ router.get('/list', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { date } = req.query;
 
+    if (!pb.authStore.isValid) {
+        return res.status(401).json({
+            state: 'error',
+            message: 'Invalid authorization credentials',
+        });
+    }
+
     if (!moment(date, 'YYYY-MM-DD', true).isValid()) {
         return res.status(400).json({
             state: 'error',
@@ -233,6 +308,31 @@ router.get('/list', asyncWrapper(async (req, res) => {
 router.get('/list/:albumId', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { albumId } = req.params;
+
+    if (!albumId) {
+        return res.status(400).json({
+            state: 'error',
+            message: 'Album ID is required',
+        });
+    }
+
+    if (!pb.authStore.isValid) {
+        await pb.admins.authWithPassword(
+            process.env.PB_EMAIL,
+            process.env.PB_PASSWORD,
+        );
+
+        const album = await pb.collection('photos_album').getOne(albumId);
+
+        if (!album.is_public) {
+            res.status(401).json({
+                state: 'error',
+                message: 'Invalid authorization credentials',
+            }); 
+            return
+        }
+    }
+
     let photos = await pb.collection('photos_entry_dimensions').getFullList({
         filter: `photo.album = "${albumId}"`,
         expand: 'photo',

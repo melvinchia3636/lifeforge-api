@@ -6,6 +6,12 @@ const NO_NEED_AUTH = [
     '/user/auth/login',
     '/spotify',
     '/code-time',
+    '/photos/album/check-publicity',
+    "/photos/album/valid",
+    "/photos/album/get",
+    "/photos/entry/list",
+    "/photos/entry/name",
+    "/photos/entry/download", 
 ];
 
 const pocketbaseMiddleware
@@ -13,10 +19,12 @@ const pocketbaseMiddleware
         const bearerToken = req.headers.authorization?.split(' ')[1];
         const pb = new Pocketbase(process.env.PB_HOST);
 
-        if (req.url === '/' || NO_NEED_AUTH.some((route) => req.url.startsWith(route))) {
-            req.pb = pb;
-            next();
-            return;
+        if (!bearerToken) {
+            if (req.url === '/' || NO_NEED_AUTH.some((route) => req.url.startsWith(route))) {
+                req.pb = pb;
+                next();
+                return;
+            }
         }
 
         try {

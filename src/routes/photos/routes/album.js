@@ -16,6 +16,23 @@ router.get('/get/:id', asyncWrapper(async (req, res) => {
         return;
     }
 
+    if (!pb.authStore.isValid) {
+        await pb.admins.authWithPassword(
+            process.env.PB_EMAIL,
+            process.env.PB_PASSWORD,
+        );
+
+        const album = await pb.collection('photos_album').getOne(id);
+
+        if (!album.is_public) {
+            res.status(401).json({
+                state: 'error',
+                message: 'Invalid authorization credentials',
+            });
+            return;
+        }
+    }
+
     const album = await pb.collection('photos_album').getOne(id, {
         expand: 'cover',
     });
@@ -36,6 +53,13 @@ router.get('/valid/:id', asyncWrapper(async (req, res) => {
     if (!id) {
         clientError(res, 'id is required');
         return;
+    }
+
+    if (!pb.authStore.isValid) {
+        await pb.admins.authWithPassword(
+            process.env.PB_EMAIL,
+            process.env.PB_PASSWORD,
+        );
     }
 
     const { totalItems } = await pb.collection('photos_album').getList(1, 1, {
@@ -62,6 +86,25 @@ router.get('/list', asyncWrapper(async (req, res) => {
     });
 
     success(res, albums);
+}));
+
+router.get('/check-publicity/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    await pb.admins.authWithPassword(
+        process.env.PB_EMAIL,
+        process.env.PB_PASSWORD,
+    );
+
+    const { id } = req.params;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    const album = await pb.collection('photos_album').getOne(id);
+
+    success(res, album.is_public);
 }));
 
 router.post('/create', asyncWrapper(async (req, res) => {
@@ -182,7 +225,7 @@ router.patch('/rename/:albumId', asyncWrapper(async (req, res) => {
     success(res);
 }));
 
-router.patch('/set-cover/:albumId/:imageId', asyncWrapper(async (req, res) => {
+router.post('/set-cover/:albumId/:imageId', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { imageId, albumId } = req.params;
     const { isInAlbum } = req.query;
@@ -206,6 +249,26 @@ router.patch('/set-cover/:albumId/:imageId', asyncWrapper(async (req, res) => {
     }
 
     await pb.collection('photos_album').update(albumId, { cover: image.id });
+
+    success(res);
+}));
+
+router.post('/set-publicity/:albumId', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { albumId } = req.params;
+    const { publicity } = req.body;
+
+    if (!albumId) {
+        clientError(res, 'albumId is required');
+        return;
+    }
+
+    if (publicity === undefined) {
+        clientError(res, 'publicity is required');
+        return;
+    }
+
+    await pb.collection('photos_album').update(albumId, { is_public: publicity });
 
     success(res);
 }));
