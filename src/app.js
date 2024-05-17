@@ -31,7 +31,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import asyncWrrouterer from './utils/asyncWrrouterer.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// const __dirname = dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: '.env.local' });
 
