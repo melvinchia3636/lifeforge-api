@@ -145,7 +145,7 @@ router.get('/download/:id', asyncWrapper(async (req, res) => {
     const url = pb.files.getUrl(image, image[
         raw === 'true' ? 'raw' : 'image'
     //TODO
-    ]).replace("http://dev.lifeforge.thecodeblog.net:8090/api/files/", "https://public.lifeforge.thecodeblog.net/media/")
+    ]).replace("http://dev.lifeforge.thecodeblog.net:8090/api/files/", "https://pms-api-wreh.onrender.com/media/")
 
     success(res, {
         url,
