@@ -30,7 +30,7 @@ import DESCRIPTIONS from './constants/description.js';
 
 import asyncWrapper from './utils/asyncWrapper.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// const __dirname = dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: '.env.local' });
 
