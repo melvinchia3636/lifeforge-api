@@ -1,11 +1,4 @@
 import serverless from 'serverless-http';
-import express from 'express';
-import ejs from 'ejs';
-import router from '../src/app.js';
-
-const app = express();
-app.set('view engine', 'ejs');
-
-app.use('/', router);
+import app from '../src/app.js';
 
 export const handler = serverless(app);

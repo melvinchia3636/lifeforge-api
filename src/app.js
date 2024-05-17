@@ -34,6 +34,8 @@ import asyncWrapper from './utils/asyncWrapper.js';
 
 dotenv.config({ path: '.env.local' });
 
+const app = express();
+app.set('view engine', 'ejs');
 const router = express.Router();
 
 router.use(cors());
@@ -117,5 +119,7 @@ router.use((err, req, res, next) => {
 //         res.json(JSON.parse(stdout))
 //     })
 // })
+
+app.use('/', router);
 
 export default router;
