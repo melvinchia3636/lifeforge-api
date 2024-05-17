@@ -3,10 +3,11 @@
 /* eslint-disable camelcase */
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
+import path, { dirname } from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
 import { Readable } from 'stream';
+import { fileURLToPath } from 'url';
 import morganMiddleware from './middleware/morganMiddleware';
 import userRoutes from './routes/user/index';
 import projectsKRoutes from './routes/projects-k/index';
@@ -27,9 +28,7 @@ import pocketbaseMiddleware from './middleware/pocketbaseMiddleware';
 
 import DESCRIPTIONS from './constants/description';
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import asyncWrrouterer from './utils/asyncWrrouterer';
+import asyncWrapper from './utils/asyncWrapper';
 
 // const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -63,10 +62,10 @@ router.get('/', async (req, res) => {
         routes,
     });
 });
-router.get("/media/:collectionId/:entryId/:photoId", asyncWrrouterer(async (req, res) => {
-    const { collectionId, entryId, photoId } = req.params
-    console.log(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
-    const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb?`?thumb=${req.query.thumb}`:''}`)
+router.get('/media/:collectionId/:entryId/:photoId', asyncWrapper(async (req, res) => {
+    const { collectionId, entryId, photoId } = req.params;
+    console.log(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`);
+    const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`);
 
     if (!fetchResponse.ok) {
         res.status(fetchResponse.status).send({
@@ -75,8 +74,8 @@ router.get("/media/:collectionId/:entryId/:photoId", asyncWrrouterer(async (req,
         });
     }
 
-    Readable.fromWeb( fetchResponse.body ).pipe( res );
-}))
+    Readable.fromWeb(fetchResponse.body).pipe(res);
+}));
 
 router.use('/user', userRoutes);
 router.use('/projects-k', projectsKRoutes);
@@ -121,4 +120,4 @@ router.use((err, req, res, next) => {
 //     })
 // })
 
-export default router
+export default router;
