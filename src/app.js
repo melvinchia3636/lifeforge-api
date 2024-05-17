@@ -35,7 +35,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: '.env.local' });
 
-const app = express();
 const router = express.Router();
 router.set('views', path.join(__dirname, '/views'));
 router.set('view engine', 'ejs');
