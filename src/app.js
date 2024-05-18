@@ -1,13 +1,13 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable max-len */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable camelcase */
 import express from 'express';
 import cors from 'cors';
 import request from 'request';
-import path, { dirname } from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import { exec } from 'child_process';
 import morganMiddleware from './middleware/morganMiddleware.js';
 import userRoutes from './routes/user/index.js';
 import projectsKRoutes from './routes/projects-k/index.js';
@@ -62,6 +62,7 @@ router.get('/', async (req, res) => {
         routes,
     });
 });
+
 router.get('/media/:collectionId/:entryId/:photoId', asyncWrapper(async (req, res) => {
     const { collectionId, entryId, photoId } = req.params;
     request(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`).pipe(res);
@@ -83,6 +84,25 @@ router.use('/journal', journalRoutes);
 router.use('/server', serverRoutes);
 router.use('/change-log', changeLogRoutes);
 
+router.get('/books-library/list', asyncWrapper(async (req, res) => {
+    exec('calibredb list --with-library ../calibre --for-machine -f cover,authors,title').stdout.once('data', (data) => {
+        const parsedData = JSON.parse(data);
+        parsedData.forEach((item) => {
+            item.cover = item.cover.replace(process.env.CALIBRE_PATH, '').replace(/^\//, '').replace(/cover.jpg$/, '');
+        });
+
+        res.json({
+            state: 'success',
+            data: parsedData,
+        });
+    });
+}));
+
+router.get('/books-library/cover/:author/:book', asyncWrapper(async (req, res) => {
+    const { author, book } = req.params;
+    res.sendFile(`/media/melvin/calibre/${author}/${book}/cover.jpg`);
+}));
+
 router.use((req, res) => {
     res.status(404);
 
@@ -100,15 +120,6 @@ router.use((err, req, res, next) => {
         message: err.message,
     });
 });
-
-// router.get("/books/list", (req, res) => {
-//     const { stdout, stderr } = exec("/routerlications/calibre.router/Contents/MacOS/calibredb list --for-machine", (err, stdout, stderr) => {
-//         if (err) {
-//             return
-//         }
-//         res.json(JSON.parse(stdout))
-//     })
-// })
 
 app.use('/', router);
 
