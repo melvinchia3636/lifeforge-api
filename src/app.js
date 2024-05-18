@@ -3,10 +3,10 @@
 /* eslint-disable camelcase */
 import express from 'express';
 import cors from 'cors';
+import request from 'request';
 import path, { dirname } from 'path';
 import all_routes from 'express-list-endpoints';
 import dotenv from 'dotenv';
-import { Readable } from 'stream';
 import { fileURLToPath } from 'url';
 import morganMiddleware from './middleware/morganMiddleware.js';
 import userRoutes from './routes/user/index.js';
@@ -64,17 +64,7 @@ router.get('/', async (req, res) => {
 });
 router.get('/media/:collectionId/:entryId/:photoId', asyncWrapper(async (req, res) => {
     const { collectionId, entryId, photoId } = req.params;
-    const fetchResponse = await fetch(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`);
-
-    if (!fetchResponse.ok) {
-        res.status(fetchResponse.status).send({
-            state: 'error',
-            message: fetchResponse.statusText,
-        });
-        return;
-    }
-
-    Readable.fromWeb(fetchResponse.body).pipe(res);
+    request(`${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`).pipe(res);
 }));
 
 router.use('/user', userRoutes);
