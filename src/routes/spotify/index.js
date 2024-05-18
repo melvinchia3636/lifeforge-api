@@ -8,9 +8,6 @@ import asyncWrapper from '../../utils/asyncWrapper.js';
 
 const router = express.Router();
 
-const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
-const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-
 function generateRandomString(length) {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -45,13 +42,13 @@ router.get('/auth/login', asyncWrapper(async (req, res) => {
 
     const auth_query_parameters = new URLSearchParams({
         response_type: 'code',
-        client_id: spotify_client_id,
+        client_id: process.env.SPOTIFY_CLIENT_ID,
         scope,
-        redirect_uri: 'http://api.lifeforge.thecodeblog.net:3636/spotify/auth/callback',
+        redirect_uri: 'https://lifeforge-api-proxy.onrender.com/spotify/auth/callback',
         state,
     });
 
-    res.redirect(`http://accounts.spotify.com/authorize/?${auth_query_parameters.toString()}`);
+    res.redirect(`https://accounts.spotify.com/authorize/?${auth_query_parameters.toString()}`);
 }));
 
 router.get('/auth/callback', asyncWrapper(async (req, res) => {
@@ -67,14 +64,14 @@ router.get('/auth/callback', asyncWrapper(async (req, res) => {
     const userId = user.id;
 
     const authOptions = {
-        url: 'http://accounts.spotify.com/api/token',
+        url: 'https://accounts.spotify.com/api/token',
         form: {
             code,
-            redirect_uri: 'http://api.lifeforge.thecodeblog.net:3636/spotify/auth/callback',
+            redirect_uri: 'https://lifeforge-api-proxy.onrender.com/spotify/auth/callback',
             grant_type: 'authorization_code',
         },
         headers: {
-            Authorization: `Basic ${Buffer.from(`${spotify_client_id}:${spotify_client_secret}`).toString('base64')}`,
+            Authorization: `Basic ${Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')}`,
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         json: true,
@@ -90,7 +87,7 @@ router.get('/auth/callback', asyncWrapper(async (req, res) => {
                 spotifyRefreshToken: refresh_token,
                 spotifyTokenExpires: new Date(Date.now() + (body.expires_in * 1000)).toISOString(),
             });
-            res.redirect('http://192.168.0.106:5173/spotify');
+            res.redirect('http://localhost:5173/spotify');
             return;
         }
         res.status(401).send({
@@ -113,10 +110,10 @@ router.get('/auth/refresh', asyncWrapper(async (req, res) => {
     const { spotifyRefreshToken: refresh_token } = user;
 
     const authOptions = {
-        url: 'http://accounts.spotify.com/api/token',
+        url: 'https://accounts.spotify.com/api/token',
         headers: {
             'content-type': 'application/x-www-form-urlencoded',
-            Authorization: `Basic ${new Buffer.from(`${spotify_client_id}:${spotify_client_secret}`).toString('base64')}`,
+            Authorization: `Basic ${new Buffer.from(`${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`).toString('base64')}`,
         },
         form: {
             grant_type: 'refresh_token',
