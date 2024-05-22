@@ -26,7 +26,7 @@ router.get('/list/:containerId', asyncWrapper(async (req, res) => {
 router.post('/create/:containerId', multer().single('image'), asyncWrapper(async (req, res) => {
     const { pb } = req;
     const {
-        title, content, link, type,
+        title, content, link, type, imageLink,
     } = req.body;
 
     const { file } = req;
@@ -55,12 +55,24 @@ router.post('/create/:containerId', multer().single('image'), asyncWrapper(async
             };
             break;
         case 'image':
-            data = {
-                title,
-                type,
-                image: new File([file.buffer], file.originalname, { type: file.mimetype }),
-                container: containerId,
-            };
+            if (imageLink) {
+                await fetch(imageLink).then(async (response) => {
+                    const buffer = await response.arrayBuffer();
+                    data = {
+                        title,
+                        type,
+                        image: new File([buffer], 'image.jpg', { type: 'image/jpeg' }),
+                        container: containerId,
+                    };
+                });
+            } else {
+                data = {
+                    title,
+                    type,
+                    image: new File([file.buffer], file.originalname, { type: file.mimetype }),
+                    container: containerId,
+                };
+            }
             break;
         default:
             clientError(res, 'Invalid type');
