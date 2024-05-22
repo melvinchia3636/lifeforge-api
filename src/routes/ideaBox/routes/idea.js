@@ -17,7 +17,24 @@ router.get('/list/:containerId', asyncWrapper(async (req, res) => {
     }
 
     const ideas = await pb.collection('idea_box_entry').getFullList({
-        filter: `container = "${containerId}" && archived = ${archived || 'false'}`,
+        filter: `container = "${containerId}" && archived = ${archived || 'false'} && folder=""`,
+        sort: '-pinned,-created',
+    });
+    success(res, ideas);
+}));
+
+router.get('/list/:containerId/:folderId', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { folderId } = req.params;
+    const { archived } = req.query;
+
+    if (!folderId) {
+        clientError(res, 'folderId is required');
+        return;
+    }
+
+    const ideas = await pb.collection('idea_box_entry').getFullList({
+        filter: `folder = "${folderId}" && archived = ${archived || 'false'}`,
         sort: '-pinned,-created',
     });
     success(res, ideas);
