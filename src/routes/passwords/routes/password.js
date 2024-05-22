@@ -1,33 +1,26 @@
 /* eslint-disable no-param-reassign */
 import express from 'express';
-import crypto from 'crypto';
+import { v4 } from 'uuid';
+import bcrypt from 'bcrypt';
 import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
+import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js';
 
 const router = express.Router();
 
-const ALGORITHM = 'aes-256-ctr';
+let challenge = v4();
 
-const encrypt = (buffer, key) => {
-    const iv = crypto.randomBytes(16);
-    key = crypto.createHash('sha256').update(String(key)).digest('base64').substr(0, 32);
-    const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
-    const result = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
-    return result;
-};
+setTimeout(() => {
+    challenge = v4();
+}, 1000 * 60);
 
-const decrypt = (encrypted, key) => {
-    const iv = encrypted.slice(0, 16);
-    encrypted = encrypted.slice(16);
-    key = crypto.createHash('sha256').update(String(key)).digest('base64').substr(0, 32);
-    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
-    const result = Buffer.concat([decipher.update(encrypted), decipher.final()]);
-    return result;
-};
+router.get('/challenge', asyncWrapper(async (req, res) => {
+    success(res, challenge);
+}));
 
 router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
-    const { master } = req.query;
+    const { master, user: userId } = req.query;
     const { pb } = req;
 
     if (!master) {
@@ -40,9 +33,21 @@ router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
         return;
     }
 
+    const user = await pb.collection('users').getOne(userId);
+    const { masterPasswordHash } = user;
+
+    const decryptedMaster = decrypt2(master, challenge);
+
+    const isMatch = await bcrypt.compare(decryptedMaster, masterPasswordHash);
+
+    if (!isMatch) {
+        clientError(res, 'Invalid master password');
+        return;
+    }
+
     const password = await pb.collection('passwords_entry').getOne(id);
 
-    const decryptedPassword = decrypt(Buffer.from(password.password, 'base64'), master);
+    const decryptedPassword = decrypt(Buffer.from(password.password, 'base64'), decryptedMaster);
 
     success(res, decryptedPassword.toString());
 }));
@@ -59,22 +64,36 @@ router.get('/list', asyncWrapper(async (req, res) => {
 
 router.post('/create', asyncWrapper(async (req, res) => {
     const {
+        userId,
         name,
         icon,
         color,
         website,
         username,
         password,
-        masterPassword,
+        master,
     } = req.body;
     const { pb } = req;
 
-    if (!name || !icon || !color || !website || !username || !password || !masterPassword) {
+    if (!userId || !name || !icon || !color || !website || !username || !password || !master) {
         clientError(res, 'Missing required fields');
         return;
     }
 
-    const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
+    const user = await pb.collection('users').getOne(userId);
+    const { masterPasswordHash } = user;
+
+    const decryptedMaster = decrypt2(master, challenge);
+
+    const isMatch = await bcrypt.compare(decryptedMaster, masterPasswordHash);
+
+    if (!isMatch) {
+        clientError(res, 'Invalid master password');
+        return;
+    }
+
+    const decryptedPassword = decrypt2(password, challenge);
+    const encryptedPassword = encrypt(Buffer.from(decryptedPassword), decryptedMaster);
 
     await pb.collection('passwords_entry').create({
         name,
@@ -91,17 +110,36 @@ router.post('/create', asyncWrapper(async (req, res) => {
 router.patch('/update/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
     const {
+        userId,
         name,
         icon,
         color,
         website,
         username,
         password,
-        masterPassword,
+        master,
     } = req.body;
     const { pb } = req;
 
-    const encryptedPassword = encrypt(Buffer.from(password), masterPassword);
+    if (!userId || !name || !icon || !color || !website || !username || !password || !master) {
+        clientError(res, 'Missing required fields');
+        return;
+    }
+
+    const user = await pb.collection('users').getOne(userId);
+    const { masterPasswordHash } = user;
+
+    const decryptedMaster = decrypt2(master, challenge);
+
+    const isMatch = await bcrypt.compare(decryptedMaster, masterPasswordHash);
+
+    if (!isMatch) {
+        clientError(res, 'Invalid master password');
+        return;
+    }
+
+    const decryptedPassword = decrypt2(password, challenge);
+    const encryptedPassword = encrypt(Buffer.from(decryptedPassword), decryptedMaster);
 
     await pb.collection('passwords_entry').update(id, {
         name,

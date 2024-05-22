@@ -48,6 +48,28 @@ router.get('/list', asyncWrapper(async (req, res) => {
     success(res, entries);
 }));
 
+router.post('/create', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { title, content } = req.body;
+
+    if (!title) {
+        clientError(res, 'title is required');
+        return;
+    }
+
+    if (!content) {
+        clientError(res, 'content is required');
+        return;
+    }
+
+    const entry = await pb.collection('journal_entry').create({
+        title,
+        content,
+    });
+
+    success(res, entry);
+}));
+
 router.patch('/update-title/:id', asyncWrapper(async (req, res) => {
     const { id } = req.params;
     const { pb } = req;
@@ -90,6 +112,20 @@ router.put('/update-content/:id', asyncWrapper(async (req, res) => {
     });
 
     success(res, 'Content updated');
+}));
+
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const { pb } = req;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    await pb.collection('journal_entry').delete(id);
+
+    success(res, 'Entry deleted');
 }));
 
 export default router;
