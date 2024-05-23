@@ -80,6 +80,19 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     success(res);
 }));
 
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    await pb.collection('idea_box_folder').delete(id);
+    success(res);
+}));
+
 router.post('/add-idea/:folderId', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { folderId } = req.params;
