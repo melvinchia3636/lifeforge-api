@@ -44,6 +44,7 @@ router.post('/create/:containerId', multer().single('image'), asyncWrapper(async
     const { pb } = req;
     const {
         title, content, link, type, imageLink,
+        folder,
     } = req.body;
 
     const { file } = req;
@@ -94,6 +95,10 @@ router.post('/create/:containerId', multer().single('image'), asyncWrapper(async
         default:
             clientError(res, 'Invalid type');
             return;
+    }
+
+    if (folder) {
+        data.folder = folder;
     }
 
     const idea = await pb.collection('idea_box_entry').create(data);
