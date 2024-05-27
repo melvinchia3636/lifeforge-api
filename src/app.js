@@ -27,6 +27,7 @@ import journalRoutes from './routes/journal/index.js';
 import serverRoutes from './routes/server/index.js';
 import changeLogRoutes from './routes/changeLog/index.js';
 import DNSRecordsRoutes from './routes/dns-records/index.js';
+import mailInboxRoutes from './routes/mail-inbox/index.js';
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
 
 import DESCRIPTIONS from './constants/description.js';
@@ -86,6 +87,7 @@ router.use('/photos', photosRoutes);
 router.use('/music', musicRoutes);
 router.use('/repositories', repositoriesRoutes);
 router.use('/passwords', passwordsRoutes);
+router.use('/mail-inbox', mailInboxRoutes);
 router.use('/dns-records', DNSRecordsRoutes);
 router.use('/server', serverRoutes);
 router.use('/change-log', changeLogRoutes);
