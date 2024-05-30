@@ -23,37 +23,30 @@ router.get('/list', asyncWrapper(async (req, res) => {
     imaps.connect(config).then(connection => {
         return connection.openBox('INBOX').then(() => {
             const searchCriteria = [
-                'UNSEEN',
+                'ALL',
             ];
     
             const fetchOptions = {
-                bodies: ['HEADER', 'TEXT', ''],
-                markSeen: false
+                bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)'],
+                markSeen: false,
+                struct: true
             };
     
             return connection.search(searchCriteria, fetchOptions);
         }).then(messages => {
-            const cleanedUpMessages = messages.map(message => {
-                const all = _.find(message.parts, { "which": "" });
-                const id = message.attributes.uid;
-                const idHeader = "Imap-Id: " + id + "\r\n";
-                
-                simpleParser(idHeader + all.body, (err, mail) => {
-                    if (err) {
-                        return {};
-                    } else {
-                        return {
-                            from: mail.from.text,
-                            date: mail.date,
-                            subject: mail.subject,
-                            text: mail.text
-                        };
-                    }
-                });
+            messages = messages.sort((a, b) => b.attributes.date - a.attributes.date);
+            
+            const cleanedUpMessages = messages.map(async message => {
+                const header = _.find(message.parts, { "which": "HEADER.FIELDS (FROM TO SUBJECT DATE)" });                const id = message.attributes.uid;
+                return Object.fromEntries(Object.entries(header.body).map(([key, value]) => {
+                    return [key, value[0]];
+                }))
             });
 
-            success(res, cleanedUpMessages);
-    
+            Promise.all(cleanedUpMessages).then(cleanedUpMessages => {
+                success(res, cleanedUpMessages);
+            })
+
             connection.end();
         }).catch(err => {
             res.status(500).json({
