@@ -28,6 +28,7 @@ import serverRoutes from './routes/server/index.js';
 import changeLogRoutes from './routes/changeLog/index.js';
 import DNSRecordsRoutes from './routes/dns-records/index.js';
 import mailInboxRoutes from './routes/mail-inbox/index.js';
+import walletRoutes from './routes/wallet/index.js';
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js';
 
 import DESCRIPTIONS from './constants/description.js';
@@ -82,6 +83,7 @@ router.use('/notes', notesRoutes);
 router.use('/flashcards', flashcardsRoutes);
 router.use('/journal', journalRoutes);
 router.use('/achievements', achievementsRoutes);
+router.use('/wallet', walletRoutes);
 router.use('/spotify', spotifyRoutes);
 router.use('/photos', photosRoutes);
 router.use('/music', musicRoutes);
