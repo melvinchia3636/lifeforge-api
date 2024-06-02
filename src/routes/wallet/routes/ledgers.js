@@ -30,6 +30,25 @@ router.post('/create', asyncWrapper(async (req, res) => {
     success(res, ledger);
 }));
 
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+    const { name, icon, color } = req.body;
+
+    if (!id) {
+        clientError(res, 'id is required');
+        return;
+    }
+
+    const ledger = await pb.collection('wallet_ledgers').update(id, {
+        name,
+        icon,
+        color,
+    });
+
+    success(res, ledger);
+}));
+
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;

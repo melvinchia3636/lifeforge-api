@@ -30,6 +30,25 @@ router.post('/create', asyncWrapper(async (req, res) => {
     success(res, asset);
 }));
 
+router.patch('/update/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+    const { name, icon, balance } = req.body;
+
+    if (!id || !name || !icon || !balance) {
+        clientError(res, 'Missing required fields');
+        return;
+    }
+
+    const asset = await pb.collection('wallet_assets').update(id, {
+        name,
+        icon,
+        balance,
+    });
+
+    success(res, asset);
+}));
+
 router.delete('/delete/:id', asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;

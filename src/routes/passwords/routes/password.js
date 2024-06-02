@@ -4,7 +4,9 @@ import { v4 } from 'uuid';
 import bcrypt from 'bcrypt';
 import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
-import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js';
+import {
+ decrypt, decrypt2, encrypt, encrypt2,
+} from '../../../utils/encryption.js';
 
 const router = express.Router();
 
@@ -49,7 +51,9 @@ router.get('/decrypt/:id', asyncWrapper(async (req, res) => {
 
     const decryptedPassword = decrypt(Buffer.from(password.password, 'base64'), decryptedMaster);
 
-    success(res, decryptedPassword.toString());
+    const encryptedPassword = encrypt2(decryptedPassword.toString(), challenge);
+
+    success(res, encryptedPassword);
 }));
 
 router.get('/list', asyncWrapper(async (req, res) => {

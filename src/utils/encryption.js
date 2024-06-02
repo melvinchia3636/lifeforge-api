@@ -21,6 +21,11 @@ const decrypt = (encrypted, key) => {
     return result;
 };
 
+const encrypt2 = (message, key) => CryptoJS
+                                    .AES
+                                    .encrypt(message, key)
+                                    .toString();
+
 const decrypt2 = (encrypted, key) => CryptoJS
                                     .AES
                                     .decrypt(encrypted, key)
@@ -29,5 +34,6 @@ const decrypt2 = (encrypted, key) => CryptoJS
 export {
     encrypt,
     decrypt,
+    encrypt2,
     decrypt2,
 };
