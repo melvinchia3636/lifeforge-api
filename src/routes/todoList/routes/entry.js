@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
@@ -83,7 +84,24 @@ router.get('/status-counter', asyncWrapper(async (req, res) => {
 
 router.post('/create', asyncWrapper(async (req, res) => {
     const { pb } = req;
-    const entry = await pb.collection('todo_entry').create(req.body);
+    const data = req.body;
+    if (data.subtasks) {
+        const subtasks = [];
+        for (const task of data.subtasks) {
+            if (!task.title) {
+                clientError(res, 'Subtask title is required');
+                return;
+            }
+
+            const subtask = await pb.collection('todo_subtask').create(task);
+
+            subtasks.push(subtask.id);
+        }
+
+        data.subtasks = subtasks;
+    }
+
+    const entry = await pb.collection('todo_entry').create(data);
     if (entry.list) {
         await pb.collection('todo_list').update(entry.list, {
             'amount+': 1,
@@ -102,6 +120,26 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     }
 
     const originalEntry = await pb.collection('todo_entry').getOne(id);
+
+    const { subtasks } = req.body;
+
+    for (const subtaskIndex in subtasks || []) {
+        const subtask = subtasks[subtaskIndex];
+        if (subtask.id.startsWith('new-')) {
+            const newSubtask = await pb.collection('todo_subtask').create({
+                title: subtask.title,
+            });
+            subtasks[subtaskIndex] = newSubtask.id;
+        } else if (subtask.hasChanged) {
+            await pb.collection('todo_subtask').update(subtask.id, {
+                title: subtask.title,
+            });
+            subtasks[subtaskIndex] = subtask.id;
+        } else {
+            subtasks[subtaskIndex] = subtask.id;
+        }
+    }
+
     const entry = await pb.collection('todo_entry').update(id, req.body);
 
     if (originalEntry.list !== entry.list) {
@@ -133,6 +171,12 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
         }
     }
 
+    for (const subtask of originalEntry.subtasks) {
+        if (!entry.subtasks.includes(subtask)) {
+            await pb.collection('todo_subtask').delete(subtask);
+        }
+    }
+
     success(res, entry);
 }));
 
@@ -145,7 +189,7 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
         return;
     }
 
-    const entry = await pb.collection('todo_entry').getOne();
+    const entry = await pb.collection('todo_entry').getOne(id);
 
     await pb.collection('todo_entry').delete(id);
     if (entry.list) {
@@ -158,6 +202,10 @@ router.delete('/delete/:id', asyncWrapper(async (req, res) => {
         await pb.collection('todo_tag').update(tag, {
             'amount-': 1,
         });
+    }
+
+    for (const subtask of entry.subtasks) {
+        await pb.collection('todo_subtask').delete(subtask);
     }
 
     success(res);

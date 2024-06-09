@@ -1,7 +1,12 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-underscore-dangle */
+import fs from 'fs';
 import express from 'express';
+import moment from 'moment';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 import { clientError, success } from '../../../utils/response.js';
+import { singleUploadMiddleware } from '../../../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
@@ -15,7 +20,61 @@ router.get('/list', asyncWrapper(async (req, res) => {
     success(res, transactions);
 }));
 
-router.post('/create', asyncWrapper(async (req, res) => {
+router.get('/income-expenses/:year/:month', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { year, month } = req.params;
+
+    const start = moment(`${year}-${month}-01`).startOf('month').format('YYYY-MM-DD');
+    const end = moment(`${year}-${month}-01`).endOf('month').format('YYYY-MM-DD');
+
+    const transactions = await pb.collection('wallet_transaction').getFullList({
+        filter: 'type = \'income\' || type = \'expenses\'',
+        sort: '-date,-created',
+    });
+
+    const inThisMonth = transactions.filter((transaction) => moment(transaction.date).isBetween(start, end));
+
+    const totalIncome = transactions.reduce((acc, cur) => {
+        if (cur.type === 'income') {
+            return acc + cur.amount;
+        }
+
+        return acc;
+    }, 0);
+
+    const totalExpenses = transactions.reduce((acc, cur) => {
+        if (cur.type === 'expenses') {
+            return acc + cur.amount;
+        }
+
+        return acc;
+    }, 0);
+
+    const monthlyIncome = inThisMonth.reduce((acc, cur) => {
+        if (cur.type === 'income') {
+            return acc + cur.amount;
+        }
+
+        return acc;
+    }, 0);
+
+    const monthlyExpenses = inThisMonth.reduce((acc, cur) => {
+        if (cur.type === 'expenses') {
+            return acc + cur.amount;
+        }
+
+        return acc;
+    }, 0);
+
+    success(res, {
+        totalIncome,
+        totalExpenses,
+        monthlyIncome,
+        monthlyExpenses,
+    });
+}));
+
+router.post('/create', singleUploadMiddleware, asyncWrapper(async (req, res) => {
     const { pb } = req;
     const {
         particulars,
@@ -30,6 +89,8 @@ router.post('/create', asyncWrapper(async (req, res) => {
         toAsset,
      } = req.body;
 
+    const file = req.file || {};
+
     if (type === 'transfer') {
         if (!fromAsset || !toAsset) {
             clientError(res, 'Missing required fields');
@@ -39,6 +100,11 @@ router.post('/create', asyncWrapper(async (req, res) => {
             clientError(res, 'Missing required fields');
             return;
         }
+
+    file.originalname = decodeURIComponent(file.originalname);
+
+    const path = file.originalname.split('/');
+    const name = path.pop();
 
     if (type === 'income' || type === 'expenses') {
         await pb.collection('wallet_transaction').create({
@@ -50,6 +116,10 @@ router.post('/create', asyncWrapper(async (req, res) => {
             ledger,
             type,
             side,
+            receipt: fs.existsSync(file.path) ? (() => {
+                const fileBuffer = fs.readFileSync(file.path);
+                return new File([fileBuffer], name, { type: file.mimetype });
+            })() : '',
         });
 
         if (asset) {
@@ -83,6 +153,10 @@ router.post('/create', asyncWrapper(async (req, res) => {
             amount,
             side: 'debit',
             asset: toAsset,
+            receipt: fs.existsSync(file.path) ? (() => {
+                const fileBuffer = fs.readFileSync(file.path);
+                return new File([fileBuffer], name, { type: file.mimetype });
+            })() : '',
         });
 
         await pb.collection('wallet_transaction').create({
@@ -92,6 +166,10 @@ router.post('/create', asyncWrapper(async (req, res) => {
             amount,
             side: 'credit',
             asset: fromAsset,
+            receipt: fs.existsSync(file.path) ? (() => {
+                const fileBuffer = fs.readFileSync(file.path);
+                return new File([fileBuffer], name, { type: file.mimetype });
+            })() : '',
         });
 
         await pb.collection('wallet_assets').update(fromAsset, {
@@ -103,10 +181,14 @@ router.post('/create', asyncWrapper(async (req, res) => {
         });
     }
 
+    if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+    }
+
     success(res);
 }));
 
-router.patch('/update/:id', asyncWrapper(async (req, res) => {
+router.patch('/update/:id', singleUploadMiddleware, asyncWrapper(async (req, res) => {
     const { pb } = req;
     const { id } = req.params;
     const {
@@ -118,12 +200,20 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
         ledger,
         type,
         side,
+        removeReceipt,
      } = req.body;
+
+    const file = req.file || {};
 
     if (!id) {
         clientError(res, 'id is required');
         return;
     }
+
+    file.originalname = decodeURIComponent(file.originalname);
+
+    const path = file.originalname.split('/');
+    const name = path.pop();
 
     const transaction = await pb.collection('wallet_transaction').getOne(id);
 
@@ -152,7 +242,23 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
         ledger,
         type,
         side,
+        receipt: (() => {
+            if (fs.existsSync(file.path)) {
+                const fileBuffer = fs.readFileSync(file.path);
+                return new File([fileBuffer], name, { type: file.mimetype });
+            }
+
+            if (removeReceipt) {
+                return '';
+            }
+
+            return transaction.receipt;
+        })(),
     });
+
+    if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+    }
 
     success(res);
 }));

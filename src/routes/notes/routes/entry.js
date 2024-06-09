@@ -5,7 +5,7 @@
 /* eslint-disable no-restricted-syntax */
 import express from 'express';
 import fs from 'fs';
-import uploadMiddleware from '../../../middleware/uploadMiddleware.js';
+import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js';
 import { clientError, success } from '../../../utils/response.js';
 import asyncWrapper from '../../../utils/asyncWrapper.js';
 

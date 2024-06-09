@@ -29,4 +29,12 @@ const uploadMiddleware = (req, res, next) => {
     });
 };
 
-export default uploadMiddleware;
+const singleUploadMiddleware = (req, res, next) => {
+    // Use multer upload instance
+    upload.single('file')(req, res, (err) => {
+        // Proceed to the next middleware or route handler
+        next();
+    });
+};
+
+export { uploadMiddleware, singleUploadMiddleware };

@@ -2,14 +2,15 @@
 
 <head>
   <title>API Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500;600&family=Urbanist:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-neutral-950 text-neutral-100 font-[Urbanist] px-64 py-32">
-  <h1 class="flex items-center gap-2 whitespace-nowrap mb-20 text-4xl font-semibold text-neutral-50">
+<body class="bg-neutral-950 text-neutral-100 font-[Urbanist] px-8 sm:px-16 lg:px-64 py-8 sm:py-16 lg:py-32">
+  <h1 class="flex items-center gap-2 whitespace-nowrap mb-20 text-3xl md:text-4xl font-semibold text-neutral-50">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="text-5xl text-teal-500 iconify iconify--tabler" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0L14.414 13m3.707 2.293l2.586-2.586a1 1 0 0 0 0-1.414l-7.586-7.586a1 1 0 0 0-1.414 0L9.121 6.293a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0"></path></svg>
       <div>
         LifeForge<span class="text-4xl text-teal-500"> .</span> API
@@ -20,7 +21,7 @@
       <h2 class="text-2xl font-semibold mb-4 uppercase tracking-widest border-l-4 border-lime-500 pl-4">
         <%= route.split("-").map(e=> e ? e[0].toUpperCase() + e.slice(1) : "/").join(" ") %>
       </h2>
-      <table class="table-auto w-full">
+      <table class="table-auto w-full hidden sm:table">
         <thead class="border-b-2 border-zinc-800">
           <tr>
             <th class="px-4 py-4 uppercase tracking-widest w-2/12">Method</th>
@@ -53,6 +54,30 @@
           <% }) %>
         </tbody>
       </table>
+      <div class="sm:hidden w-full flex flex-col">
+        <% methods.forEach(({method, path, description})=> { %>
+          <div class="p-4 w-full odd:bg-neutral-900/50 flex items-center justify-between gap-2">
+                <div class="text-center font-medium tracking-wider">
+                  <span class="<%= (() => {
+                    switch(method) {
+                      case "GET":
+                        return "text-blue-500";
+                      case "POST":
+                        return "text-green-500";
+                      case "PUT":
+                        return "text-fuchsia-500";
+                      case "DELETE":
+                        return "text-red-500";
+                      case "PATCH":
+                        return "text-yellow-500";
+                      default:
+                        return "text-neutral-500";
+                    }
+                  })() %>"><%= method %></span>
+                </div>
+                <div class="text-zinc-500 text-right"><%= path.replace(/:(\w+)/g, '{$1}') %></div>
+            </div>
+          <% }) %>
     </div>
   <% }) %>
 
