@@ -206,7 +206,7 @@ router.get('/statistics', asyncWrapper(async (req, res) => {
         'Most time spent': mostTimeSpent,
         'Total time spent': total,
         'Average time spent': average,
-        'Longest streak': longestStreak,
+        'Longest streak': Math.max(longestStreak, currentStreak),
         'Current streak': currentStreak,
     });
 }));

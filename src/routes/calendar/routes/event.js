@@ -77,4 +77,26 @@ router.patch('/update/:id', asyncWrapper(async (req, res) => {
     success(res, events);
 }));
 
+router.delete('/delete/:id', asyncWrapper(async (req, res) => {
+    const { pb } = req;
+    const { id } = req.params;
+
+    if (!id) {
+        clientError(res, 'Missing required fields');
+        return;
+    }
+
+    const event = await pb.collection('calendar_event').getOne(id);
+
+    await pb.collection('calendar_event').delete(id);
+
+    if (event.category) {
+        await pb.collection('calendar_category').update(event.category, {
+            'amount-': 1,
+        });
+    }
+
+    success(res);
+}));
+
 export default router;

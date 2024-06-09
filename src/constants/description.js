@@ -168,6 +168,18 @@ const DESCRIPTION = {
     '/wallet/ledgers/create': 'Create a new wallet ledger',
     '/wallet/ledgers/update/:id': 'Update a wallet ledger by ID',
     '/wallet/ledgers/delete/:id': 'Delete a wallet ledger by ID',
+    '/idea-box/folder/get/:id': 'Get details of an idea box folder by ID',
+    '/idea-box/folder/list/:id': 'Get list of idea box folders within a folder',
+    '/idea-box/folder/create': 'Create a new idea box folder',
+    '/idea-box/folder/update/:id': 'Update an idea box folder by ID',
+    '/idea-box/folder/delete/:id': 'Delete an idea box folder by ID',
+    '/idea-box/folder/add-idea/:folderId': 'Add an idea to an idea box folder',
+    '/idea-box/folder/remove-idea/:folderId': 'Remove an idea from an idea box folder',
+    '/todo-list/subtask/list/:id': 'Get list of subtasks for a todo entry',
+    '/todo-list/subtask/ai-generate': 'Generate subtasks using AI for a todo entry',
+    '/idea-box/idea/list/:containerId/:folderId': 'Get list of ideas within a folder',
+    '/wallet/transactions/income-expenses/:year/:month': 'Get income and expenses for a specific year and month',
+    '/calendar/event/delete/:id': 'Delete a calendar event by ID',
 };
 
 export default DESCRIPTION;
