@@ -2,20 +2,23 @@ import express from 'express'
 import multer from 'multer'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, query, validationResult } from 'express-validator'
 
 const router = express.Router()
 
 router.get(
     '/list/:containerId',
+    query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { containerId } = req.params
         const { archived } = req.query
-
-        if (!containerId) {
-            clientError(res, 'containerId is required')
-            return
-        }
 
         const ideas = await pb.collection('idea_box_entry').getFullList({
             filter: `container = "${containerId}" && archived = ${archived || 'false'} && folder=""`,
@@ -27,15 +30,17 @@ router.get(
 
 router.get(
     '/list/:containerId/:folderId',
+    query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { folderId } = req.params
         const { archived } = req.query
-
-        if (!folderId) {
-            clientError(res, 'folderId is required')
-            return
-        }
 
         const ideas = await pb.collection('idea_box_entry').getFullList({
             filter: `folder = "${folderId}" && archived = ${archived || 'false'}`,
@@ -48,17 +53,32 @@ router.get(
 router.post(
     '/create/:containerId',
     multer().single('image'),
+    [
+        body('title').isString().optional().notEmpty(),
+        body('content').isString().optional().notEmpty(),
+        body('link').isString().optional().notEmpty(),
+        body('type').isString().isIn(['text', 'link', 'image']).notEmpty(),
+        body('imageLink').isString().optional(),
+        body('folder').isString().optional(),
+        body('file').custom((value, { req }) => {
+            if (req.body.type === 'image' && !req.file && !req.body.imageLink) {
+                throw new Error('Image is required')
+            }
+            return true
+        })
+    ],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { title, content, link, type, imageLink, folder } = req.body
 
         const { file } = req
         const { containerId } = req.params
-
-        if (!containerId) {
-            clientError(res, 'containerId is required')
-            return
-        }
 
         let data
         switch (type) {
@@ -125,11 +145,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const idea = await pb.collection('idea_box_entry').getOne(id)
         await pb.collection('idea_box_entry').delete(id)
         await pb.collection('idea_box_container').update(idea.container, {
@@ -145,11 +160,6 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         const { title, content, link, type } = req.body
 
@@ -185,11 +195,6 @@ router.patch(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const idea = await pb.collection('idea_box_entry').getOne(id)
         await pb.collection('idea_box_entry').update(id, {
             pinned: !idea.pinned
@@ -204,11 +209,6 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         const idea = await pb.collection('idea_box_entry').getOne(id)
         await pb.collection('idea_box_entry').update(id, {

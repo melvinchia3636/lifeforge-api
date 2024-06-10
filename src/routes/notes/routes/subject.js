@@ -1,5 +1,5 @@
 import express from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -7,12 +7,6 @@ const router = express.Router()
 router.get(
     '/list/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-
-            return
-        }
-
         const { pb } = req
         const subjects = await pb.collection('notes_subject').getFullList({
             filter: `workspace = "${req.params.id}"`
@@ -48,12 +42,6 @@ router.post(
 router.delete(
     '/delete/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-
-            return
-        }
-
         const { pb } = req
         await pb.collection('notes_subject').delete(req.params.id)
 
@@ -64,12 +52,6 @@ router.delete(
 router.patch(
     '/update/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-
-            return
-        }
-
         const { pb } = req
         const subject = await pb
             .collection('notes_subject')

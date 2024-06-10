@@ -19,11 +19,6 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const entry = await pb.collection('todo_entry').getOne(id, {
             expand: 'subtasks'
         })
@@ -73,11 +68,6 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         const entry = await pb.collection('todo_subtask').getOne(id)
 

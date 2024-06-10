@@ -1,6 +1,7 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -22,22 +23,13 @@ router.get(
         const { id } = req.params
         const { pb } = req
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const { totalItems } = await pb
             .collection('journal_entry')
             .getList(1, 1, {
                 filter: `id = "${id}"`
             })
 
-        if (totalItems === 1) {
-            success(res, true)
-        } else {
-            success(res, false)
-        }
+        success(res, totalItems === 1)
     })
 )
 
@@ -60,19 +52,16 @@ router.get(
 
 router.post(
     '/create',
+    [body('title').notEmpty(), body('content').notEmpty()],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { title, content } = req.body
-
-        if (!title) {
-            clientError(res, 'title is required')
-            return
-        }
-
-        if (!content) {
-            clientError(res, 'content is required')
-            return
-        }
 
         const entry = await pb.collection('journal_entry').create({
             title,
@@ -85,20 +74,17 @@ router.post(
 
 router.patch(
     '/update-title/:id',
+    body('title').notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { id } = req.params
         const { pb } = req
         const { title } = req.body
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
-        if (!title) {
-            clientError(res, 'title is required')
-            return
-        }
 
         await pb.collection('journal_entry').update(id, {
             title
@@ -110,20 +96,17 @@ router.patch(
 
 router.put(
     '/update-content/:id',
+    body('content').notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { id } = req.params
         const { pb } = req
         const { content } = req.body
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
-        if (!content) {
-            clientError(res, 'content is required')
-            return
-        }
 
         await pb.collection('journal_entry').update(id, {
             content
@@ -138,11 +121,6 @@ router.delete(
     asyncWrapper(async (req, res) => {
         const { id } = req.params
         const { pb } = req
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         await pb.collection('journal_entry').delete(id)
 

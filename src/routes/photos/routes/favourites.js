@@ -1,6 +1,7 @@
 import express from 'express'
-import { success } from '../../../utils/response.js'
+import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -32,7 +33,18 @@ router.get(
 
 router.patch(
     '/add-photos',
+    [
+        body('photos').isArray(),
+        body('photos.*').isString(),
+        body('isInAlbum').isBoolean()
+    ],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { photos } = req.body
 

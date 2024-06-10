@@ -1,6 +1,7 @@
 import express from 'express'
 import { success, clientError } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -17,14 +18,20 @@ router.get(
 
 router.post(
     '/create',
+    [
+        body('title').exists().notEmpty(),
+        body('start').exists().notEmpty(),
+        body('end').exists().notEmpty()
+    ],
     asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { title, start, end, category } = req.body
-
-        if (!title || !start || !end) {
-            clientError(res, 'Missing required fields')
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
             return
         }
+
+        const { pb } = req
+        const { title, start, end, category } = req.body
 
         const events = await pb.collection('calendar_event').create({
             title,
@@ -50,13 +57,7 @@ router.patch(
         const { id } = req.params
         const { title, start, end, category } = req.body
 
-        if (!id) {
-            clientError(res, 'Missing required fields')
-            return
-        }
-
         const oldEvent = await pb.collection('calendar_event').getOne(id)
-
         const events = await pb.collection('calendar_event').update(id, {
             title,
             start,
@@ -89,11 +90,6 @@ router.delete(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'Missing required fields')
-            return
-        }
 
         const event = await pb.collection('calendar_event').getOne(id)
 

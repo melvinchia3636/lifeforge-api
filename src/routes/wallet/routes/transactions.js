@@ -312,11 +312,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const transaction = await pb.collection('wallet_transaction').getOne(id)
 
         if (transaction.asset) {

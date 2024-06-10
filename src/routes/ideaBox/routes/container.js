@@ -1,6 +1,7 @@
 import express from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body } from 'express-validator'
 
 const router = express.Router()
 
@@ -10,12 +11,8 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const container = await pb.collection('idea_box_container').getOne(id)
+
         success(res, container)
     })
 )
@@ -26,22 +23,13 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const { totalItems } = await pb
             .collection('idea_box_container')
             .getList(1, 1, {
                 filter: `id = "${id}"`
             })
 
-        if (totalItems === 1) {
-            success(res, true)
-        } else {
-            success(res, false)
-        }
+        success(res, totalItems === 1)
     })
 )
 
@@ -49,9 +37,11 @@ router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
+
         const containers = await pb
             .collection('idea_box_container')
             .getFullList()
+
         success(res, containers)
     })
 )
@@ -61,11 +51,13 @@ router.post(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { name, color, icon } = req.body
+
         const container = await pb.collection('idea_box_container').create({
             name,
             color,
             icon
         })
+
         success(res, container)
     })
 )
@@ -76,11 +68,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         await pb.collection('idea_box_container').delete(id)
 
         success(res)
@@ -89,16 +76,17 @@ router.delete(
 
 router.patch(
     '/update/:id',
+    [
+        body('name').isString().optional(),
+        body('color').isHexColor().optional(),
+        body('icon').isString().optional()
+    ],
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const { name, color, icon } = req.body
+
         await pb.collection('idea_box_container').update(id, {
             name,
             color,

@@ -9,6 +9,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
+
         const entries = await pb.collection('flashcards_card').getFullList({
             filter: `deck='${id}'`
         })

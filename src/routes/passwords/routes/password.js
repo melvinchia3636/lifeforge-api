@@ -9,6 +9,7 @@ import {
     encrypt,
     encrypt2
 } from '../../../utils/encryption.js'
+import { body, query, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -27,18 +28,20 @@ router.get(
 
 router.get(
     '/decrypt/:id',
+    [query('master').notEmpty(), query('user').notEmpty()],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { id } = req.params
         const { master, user: userId } = req.query
         const { pb } = req
 
         if (!master) {
             clientError(res, 'master is required')
-            return
-        }
-
-        if (!id) {
-            clientError(res, 'id is required')
             return
         }
 
@@ -88,7 +91,23 @@ router.get(
 
 router.post(
     '/create',
+    [
+        body('userId').notEmpty(),
+        body('name').notEmpty(),
+        body('icon').notEmpty(),
+        body('color').isHexColor(),
+        body('website').notEmpty(),
+        body('username').notEmpty(),
+        body('password').notEmpty(),
+        body('master').notEmpty()
+    ],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const {
             userId,
             name,
@@ -100,20 +119,6 @@ router.post(
             master
         } = req.body
         const { pb } = req
-
-        if (
-            !userId ||
-            !name ||
-            !icon ||
-            !color ||
-            !website ||
-            !username ||
-            !password ||
-            !master
-        ) {
-            clientError(res, 'Missing required fields')
-            return
-        }
 
         const user = await pb.collection('users').getOne(userId)
         const { masterPasswordHash } = user
@@ -151,7 +156,22 @@ router.post(
 
 router.patch(
     '/update/:id',
+    [
+        body('userId').notEmpty(),
+        body('name').notEmpty(),
+        body('icon').notEmpty(),
+        body('color').isHexColor(),
+        body('website').notEmpty(),
+        body('username').notEmpty(),
+        body('password').notEmpty(),
+        body('master').notEmpty()
+    ],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
         const { id } = req.params
         const {
             userId,
@@ -164,20 +184,6 @@ router.patch(
             master
         } = req.body
         const { pb } = req
-
-        if (
-            !userId ||
-            !name ||
-            !icon ||
-            !color ||
-            !website ||
-            !username ||
-            !password ||
-            !master
-        ) {
-            clientError(res, 'Missing required fields')
-            return
-        }
 
         const user = await pb.collection('users').getOne(userId)
         const { masterPasswordHash } = user
@@ -217,11 +223,6 @@ router.delete(
     '/delete/:id',
     asyncWrapper(async (req, res) => {
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         const { pb } = req
 

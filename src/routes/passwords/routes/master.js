@@ -4,6 +4,7 @@ import { v4 } from 'uuid'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt2 } from '../../../utils/encryption.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -22,17 +23,15 @@ router.get(
 
 router.post(
     '/create',
+    [body('id').exists().notEmpty(), body('password').exists().notEmpty()],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            return clientError(res, result.array())
+        }
+
         const { id, password } = req.body
         const { pb } = req
-
-        if (!id) {
-            clientError(res, 'id is required')
-        }
-
-        if (!password) {
-            clientError(res, 'password is required')
-        }
 
         const salt = await bcrypt.genSalt(10)
         const masterPasswordHash = await bcrypt.hash(password, salt)

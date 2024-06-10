@@ -1,5 +1,5 @@
 import express from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -9,6 +9,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
+
         const entry = await pb.collection('flashcards_deck').getOne(id)
 
         success(res, entry)
@@ -21,22 +22,13 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const { totalItems } = await pb
             .collection('flashcards_deck')
             .getList(1, 1, {
                 filter: `id = "${id}"`
             })
 
-        if (totalItems === 1) {
-            success(res, true)
-        } else {
-            success(res, false)
-        }
+        success(res, totalItems === 1)
     })
 )
 

@@ -5,7 +5,7 @@ import mime from 'mime-types'
 import ExifReader from 'exifreader'
 import moment from 'moment'
 import axios from 'axios'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -40,11 +40,6 @@ router.get(
         const { pb } = req
         const { id } = req.params
         const { isInAlbum } = req.query
-
-        if (!id) {
-            clientError(res, 'Photo ID is required')
-            return
-        }
 
         if (!pb.authStore.isValid) {
             await pb.admins.authWithPassword(
@@ -100,11 +95,6 @@ router.get(
         const { pb } = req
         const { id } = req.params
         const { raw, isInAlbum } = req.query
-
-        if (!id) {
-            clientError(res, 'Photo ID is required')
-            return
-        }
 
         if (!pb.authStore.isValid) {
             await pb.admins.authWithPassword(
@@ -375,13 +365,6 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { albumId } = req.params
-
-        if (!albumId) {
-            return res.status(400).json({
-                state: 'error',
-                message: 'Album ID is required'
-            })
-        }
 
         if (!pb.authStore.isValid) {
             await pb.admins.authWithPassword(

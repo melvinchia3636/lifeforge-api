@@ -65,11 +65,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const category = await pb.collection('wallet_category').delete(id)
 
         success(res, category)

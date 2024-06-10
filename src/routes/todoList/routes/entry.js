@@ -2,26 +2,24 @@ import express from 'express'
 import moment from 'moment'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { query, validationResult } from 'express-validator'
 
 const router = express.Router()
 
 router.get(
     '/list',
+    query('status')
+        .optional()
+        .isIn(['all', 'today', 'scheduled', 'overdue', 'completed']),
     asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const status = req.query.status || 'all'
-
-        if (
-            !['all', 'today', 'scheduled', 'overdue', 'completed'].includes(
-                status
-            )
-        ) {
-            res.status(400).send({
-                state: 'error',
-                message: 'Invalid status'
-            })
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
             return
         }
+
+        const { pb } = req
+        const status = req.query.status || 'all'
 
         const filters = {
             all: 'done = false',
@@ -154,11 +152,6 @@ router.patch(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const originalEntry = await pb.collection('todo_entry').getOne(id)
 
         const { subtasks } = req.body
@@ -228,11 +221,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const entry = await pb.collection('todo_entry').getOne(id)
 
         await pb.collection('todo_entry').delete(id)
@@ -261,11 +249,6 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         const entry = await pb.collection('todo_entry').getOne(id)
 

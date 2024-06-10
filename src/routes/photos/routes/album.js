@@ -1,6 +1,7 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, query, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -9,11 +10,6 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         if (!pb.authStore.isValid) {
             await pb.admins.authWithPassword(
@@ -51,11 +47,6 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         if (!pb.authStore.isValid) {
             await pb.admins.authWithPassword(
@@ -107,11 +98,6 @@ router.get(
 
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const album = await pb.collection('photos_album').getOne(id)
 
         success(res, album.is_public)
@@ -120,14 +106,16 @@ router.get(
 
 router.post(
     '/create',
+    body('name').notEmpty(),
     asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { name } = req.body
-
-        if (!name) {
-            clientError(res, 'name is required')
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
             return
         }
+
+        const { pb } = req
+        const { name } = req.body
 
         const album = await pb.collection('photos_album').create({ name })
 
@@ -137,20 +125,17 @@ router.post(
 
 router.patch(
     '/add-photos/:albumId',
+    body('photos').isArray().notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { albumId } = req.params
         const { photos } = req.body
-
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
-
-        if (!photos || !photos.length) {
-            clientError(res, 'photos is required')
-            return
-        }
 
         for (const photoId of photos) {
             await pb
@@ -180,20 +165,17 @@ router.patch(
 
 router.delete(
     '/remove-photo/:albumId',
+    body('photos').isArray().notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { albumId } = req.params
         const { photos } = req.body
-
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
-
-        if (!photos || !photos.length) {
-            clientError(res, 'photos is required')
-            return
-        }
 
         const { cover } = await pb.collection('photos_album').getOne(albumId)
 
@@ -233,11 +215,6 @@ router.delete(
         const { pb } = req
         const { albumId } = req.params
 
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
-
         await pb.collection('photos_album').delete(albumId)
 
         success(res)
@@ -246,15 +223,17 @@ router.delete(
 
 router.patch(
     '/rename/:albumId',
+    body('name').notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { albumId } = req.params
         const { name } = req.body
-
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
 
         if (!name) {
             clientError(res, 'name is required')
@@ -269,20 +248,17 @@ router.patch(
 
 router.post(
     '/set-cover/:albumId/:imageId',
+    query('isInAlbum').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { imageId, albumId } = req.params
         const { isInAlbum } = req.query
-
-        if (!imageId) {
-            clientError(res, 'imageId is required')
-            return
-        }
-
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
 
         let image
         if (isInAlbum === 'true') {
@@ -302,20 +278,17 @@ router.post(
 
 router.post(
     '/set-publicity/:albumId',
+    body('publicity').isBoolean(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { albumId } = req.params
         const { publicity } = req.body
-
-        if (!albumId) {
-            clientError(res, 'albumId is required')
-            return
-        }
-
-        if (publicity === undefined) {
-            clientError(res, 'publicity is required')
-            return
-        }
 
         await pb
             .collection('photos_album')

@@ -4,6 +4,7 @@ import mime from 'mime-types'
 import * as mm from 'music-metadata'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -89,15 +90,16 @@ router.post(
 
 router.patch(
     '/update/:id',
+    [body('name').notEmpty(), body('author').notEmpty()],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            return clientError(res, result.array())
+        }
+
         const { pb } = req
         const { id } = req.params
         const { name, author } = req.body
-
-        if (!name && !author) {
-            clientError(res, 'Missing required fields')
-            return
-        }
 
         await pb.collection('music_entry').update(id, {
             name,

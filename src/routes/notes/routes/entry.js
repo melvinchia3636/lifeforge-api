@@ -3,7 +3,7 @@
 import express from 'express'
 import fs from 'fs'
 import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -11,10 +11,6 @@ const router = express.Router()
 router.get(
     '/get/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-        }
-
         const { pb } = req
         const note = await pb.collection('notes_entry').getOne(req.params.id)
 
@@ -225,12 +221,6 @@ router.post(
 router.patch(
     '/update/folder/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-
-            return
-        }
-
         const { pb } = req
         const note = await pb
             .collection('notes_entry')
@@ -243,12 +233,6 @@ router.patch(
 router.delete(
     '/delete/:id',
     asyncWrapper(async (req, res) => {
-        if (!req.params.id) {
-            clientError(res, 'id is required')
-
-            return
-        }
-
         const { pb } = req
         await pb.collection('notes_entry').delete(req.params.id)
 

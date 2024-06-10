@@ -1,6 +1,7 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -16,14 +17,16 @@ router.get(
 
 router.post(
     '/create',
+    body('name').exists().notEmpty(),
     asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { name } = req.body
-
-        if (!name) {
-            clientError(res, 'name is required')
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
             return
         }
+
+        const { pb } = req
+        const { name } = req.body
 
         const tag = await pb.collection('todo_tag').create({
             name
@@ -35,20 +38,17 @@ router.post(
 
 router.patch(
     '/update/:id',
+    body('name').exists().notEmpty(),
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
         const { pb } = req
         const { id } = req.params
         const { name } = req.body
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
-        if (!name) {
-            clientError(res, 'name is required')
-            return
-        }
 
         const tag = await pb.collection('todo_tag').update(id, {
             name
@@ -63,11 +63,6 @@ router.delete(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
 
         await pb.collection('todo_tag').delete(id)
         success(res)

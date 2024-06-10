@@ -15,7 +15,7 @@ router.get(
         const { id } = req.params
         exec(
             `yt-dlp --skip-download --print "title,upload_date,uploader,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
-            (err, stdout, stderr) => {
+            (err, stdout) => {
                 if (err) {
                     res.status(500).json({ error: err.message })
                     return
@@ -70,7 +70,7 @@ router.post(
 
         exec(
             `yt-dlp -f bestaudio -o "${process.cwd()}/uploads/${downloadID}-%(title)s.%(ext)s" --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=${id}"`,
-            async (err, stdout, stderr) => {
+            async err => {
                 if (err) {
                     res.status(500).json({ error: err.message })
                     downloading = 'failed'

@@ -64,11 +64,6 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
-        }
-
         const ledger = await pb.collection('wallet_ledgers').delete(id)
 
         success(res, ledger)
