@@ -1,44 +1,55 @@
-import express from 'express';
-import { success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import express from 'express'
+import { clientError, success } from '../../../utils/response.js'
+import asyncWrapper from '../../../utils/asyncWrapper.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/get/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
-    const entry = await pb.collection('flashcards_deck').getOne(id);
+router.get(
+    '/get/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
+        const entry = await pb.collection('flashcards_deck').getOne(id)
 
-    success(res, entry);
-}));
+        success(res, entry)
+    })
+)
 
-router.get('/valid/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
+router.get(
+    '/valid/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
 
-    if (!id) {
-        clientError(res, 'id is required');
-        return;
-    }
+        if (!id) {
+            clientError(res, 'id is required')
+            return
+        }
 
-    const { totalItems } = await pb.collection('flashcards_deck').getList(1, 1, {
-        filter: `id = "${id}"`,
-    });
+        const { totalItems } = await pb
+            .collection('flashcards_deck')
+            .getList(1, 1, {
+                filter: `id = "${id}"`
+            })
 
-    if (totalItems === 1) {
-        success(res, true);
-    } else {
-        success(res, false);
-    }
-}));
+        if (totalItems === 1) {
+            success(res, true)
+        } else {
+            success(res, false)
+        }
+    })
+)
 
-router.get('/list', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const entries = await pb.collection('flashcards_deck').getFullList({
-        expand: 'tag',
-    });
+router.get(
+    '/list',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const entries = await pb.collection('flashcards_deck').getFullList({
+            expand: 'tag'
+        })
 
-    success(res, entries);
-}));
+        success(res, entries)
+    })
+)
 
-export default router;
+export default router

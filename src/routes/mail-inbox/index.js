@@ -1,11 +1,10 @@
-import imaps from 'imap-simple';
-import { simpleParser } from 'mailparser';
-import _ from 'underscore';
-import express from 'express';
-import { success } from '../../utils/response.js';
-import asyncWrapper from '../../utils/asyncWrapper.js';
+import imaps from 'imap-simple'
+import _ from 'underscore'
+import express from 'express'
+import { success } from '../../utils/response.js'
+import asyncWrapper from '../../utils/asyncWrapper.js'
 
-const router = express.Router();
+const router = express.Router()
 
 const config = {
     imap: {
@@ -17,49 +16,69 @@ const config = {
         authTimeout: 3000,
         tlsOptions: { rejectUnauthorized: false }
     }
-};
+}
 
-router.get('/list', asyncWrapper(async (req, res) => {
-    imaps.connect(config).then(connection => {
-        return connection.openBox('INBOX').then(() => {
-            const searchCriteria = [
-                'ALL',
-            ];
-    
-            const fetchOptions = {
-                bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)'],
-                markSeen: false,
-                struct: true
-            };
-    
-            return connection.search(searchCriteria, fetchOptions);
-        }).then(messages => {
-            messages = messages.sort((a, b) => b.attributes.date - a.attributes.date);
-            
-            const cleanedUpMessages = messages.map(async message => {
-                const header = _.find(message.parts, { "which": "HEADER.FIELDS (FROM TO SUBJECT DATE)" });                const id = message.attributes.uid;
-                return Object.fromEntries(Object.entries(header.body).map(([key, value]) => {
-                    return [key, value[0]];
-                }))
-            });
+router.get(
+    '/list',
+    asyncWrapper(async (req, res) => {
+        imaps
+            .connect(config)
+            .then(connection => {
+                return connection
+                    .openBox('INBOX')
+                    .then(() => {
+                        const searchCriteria = ['ALL']
 
-            Promise.all(cleanedUpMessages).then(cleanedUpMessages => {
-                success(res, cleanedUpMessages);
+                        const fetchOptions = {
+                            bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)'],
+                            markSeen: false,
+                            struct: true
+                        }
+
+                        return connection.search(searchCriteria, fetchOptions)
+                    })
+                    .then(messages => {
+                        messages = messages.sort(
+                            (a, b) => b.attributes.date - a.attributes.date
+                        )
+
+                        const cleanedUpMessages = messages.map(
+                            async message => {
+                                const header = _.find(message.parts, {
+                                    which: 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
+                                })
+                                return Object.fromEntries(
+                                    Object.entries(header.body).map(
+                                        ([key, value]) => {
+                                            return [key, value[0]]
+                                        }
+                                    )
+                                )
+                            }
+                        )
+
+                        Promise.all(cleanedUpMessages).then(
+                            cleanedUpMessages => {
+                                success(res, cleanedUpMessages)
+                            }
+                        )
+
+                        connection.end()
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            state: 'error',
+                            message: err.message
+                        })
+                    })
             })
-
-            connection.end();
-        }).catch(err => {
-            res.status(500).json({
-                state: 'error',
-                message: err.message
+            .catch(err => {
+                res.status(500).json({
+                    state: 'error',
+                    message: err.message
+                })
             })
-        });
-    }).catch(err => {
-        res.status(500).json({
-            state: 'error',
-            message: err.message
-        });
-    });
-}))
+    })
+)
 
-export default router;
+export default router

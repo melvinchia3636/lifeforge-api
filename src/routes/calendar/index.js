@@ -1,10 +1,10 @@
-import express from 'express';
-import event from './routes/event.js';
-import category from './routes/category.js';
+import express from 'express'
+import event from './routes/event.js'
+import category from './routes/category.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.use('/event', event);
-router.use('/category', category);
+router.use('/event', event)
+router.use('/category', category)
 
-export default router;
+export default router

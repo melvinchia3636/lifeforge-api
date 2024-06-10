@@ -1,10 +1,10 @@
-import express from 'express';
-import youtube from './routes/youtube.js';
-import entry from './routes/entry.js';
+import express from 'express'
+import youtube from './routes/youtube.js'
+import entry from './routes/entry.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.use('/entry', entry);
-router.use('/youtube', youtube);
+router.use('/entry', entry)
+router.use('/youtube', youtube)
 
-export default router;
+export default router

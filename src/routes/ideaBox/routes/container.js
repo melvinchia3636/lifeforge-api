@@ -1,90 +1,112 @@
-import express from 'express';
-import { clientError, success } from '../../../utils/response.js';
-import asyncWrapper from '../../../utils/asyncWrapper.js';
+import express from 'express'
+import { clientError, success } from '../../../utils/response.js'
+import asyncWrapper from '../../../utils/asyncWrapper.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/get/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
+router.get(
+    '/get/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
 
-    if (!id) {
-        clientError(res, 'id is required');
-        return;
-    }
+        if (!id) {
+            clientError(res, 'id is required')
+            return
+        }
 
-    const container = await pb.collection('idea_box_container').getOne(id);
-    success(res, container);
-}));
+        const container = await pb.collection('idea_box_container').getOne(id)
+        success(res, container)
+    })
+)
 
-router.get('/valid/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
+router.get(
+    '/valid/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
 
-    if (!id) {
-        clientError(res, 'id is required');
-        return;
-    }
+        if (!id) {
+            clientError(res, 'id is required')
+            return
+        }
 
-    const { totalItems } = await pb.collection('idea_box_container').getList(1, 1, {
-        filter: `id = "${id}"`,
-    });
+        const { totalItems } = await pb
+            .collection('idea_box_container')
+            .getList(1, 1, {
+                filter: `id = "${id}"`
+            })
 
-    if (totalItems === 1) {
-        success(res, true);
-    } else {
-        success(res, false);
-    }
-}));
+        if (totalItems === 1) {
+            success(res, true)
+        } else {
+            success(res, false)
+        }
+    })
+)
 
-router.get('/list', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const containers = await pb.collection('idea_box_container').getFullList();
-    success(res, containers);
-}));
+router.get(
+    '/list',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const containers = await pb
+            .collection('idea_box_container')
+            .getFullList()
+        success(res, containers)
+    })
+)
 
-router.post('/create', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { name, color, icon } = req.body;
-    const container = await pb.collection('idea_box_container').create({
-        name,
-        color,
-        icon,
-    });
-    success(res, container);
-}));
+router.post(
+    '/create',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { name, color, icon } = req.body
+        const container = await pb.collection('idea_box_container').create({
+            name,
+            color,
+            icon
+        })
+        success(res, container)
+    })
+)
 
-router.delete('/delete/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
+router.delete(
+    '/delete/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
 
-    if (!id) {
-        clientError(res, 'id is required');
-        return;
-    }
+        if (!id) {
+            clientError(res, 'id is required')
+            return
+        }
 
-    await pb.collection('idea_box_container').delete(id);
+        await pb.collection('idea_box_container').delete(id)
 
-    success(res);
-}));
+        success(res)
+    })
+)
 
-router.patch('/update/:id', asyncWrapper(async (req, res) => {
-    const { pb } = req;
-    const { id } = req.params;
+router.patch(
+    '/update/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
 
-    if (!id) {
-        clientError(res, 'id is required');
-        return;
-    }
+        if (!id) {
+            clientError(res, 'id is required')
+            return
+        }
 
-    const { name, color, icon } = req.body;
-    await pb.collection('idea_box_container').update(id, {
-        name,
-        color,
-        icon,
-    });
+        const { name, color, icon } = req.body
+        await pb.collection('idea_box_container').update(id, {
+            name,
+            color,
+            icon
+        })
 
-    success(res);
-}));
+        success(res)
+    })
+)
 
-export default router;
+export default router

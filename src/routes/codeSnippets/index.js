@@ -1,12 +1,12 @@
-import express from 'express';
-import labelRoutes from './routes/label.js';
-import languageRoutes from './routes/language.js';
-import entryRoutes from './routes/entry.js';
+import express from 'express'
+import labelRoutes from './routes/label.js'
+import languageRoutes from './routes/language.js'
+import entryRoutes from './routes/entry.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.use('/label', labelRoutes);
-router.use('/language', languageRoutes);
-router.use('/entry', entryRoutes);
+router.use('/label', labelRoutes)
+router.use('/language', languageRoutes)
+router.use('/entry', entryRoutes)
 
-export default router;
+export default router
