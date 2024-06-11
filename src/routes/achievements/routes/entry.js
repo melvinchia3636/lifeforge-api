@@ -1,7 +1,8 @@
 import express from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
-import { body, param, validationResult } from 'express-validator'
+import { success } from '../../../utils/response.js'
+import { body, param } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -11,11 +12,7 @@ router.get(
         .isString()
         .isIn(['easy', 'medium', 'hard', 'impossible']),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { difficulty } = req.params
@@ -41,11 +38,7 @@ router.post(
         body('thoughts').exists().notEmpty()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { difficulty, title, thoughts } = req.body
@@ -71,11 +64,7 @@ router.patch(
         body('thoughts').exists().notEmpty()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
         const { pb } = req
         const { id } = req.params
         const { difficulty, title, thoughts } = req.body

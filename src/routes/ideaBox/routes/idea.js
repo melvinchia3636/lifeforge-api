@@ -2,7 +2,8 @@ import express from 'express'
 import multer from 'multer'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body, query, validationResult } from 'express-validator'
+import { body, query } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -10,11 +11,7 @@ router.get(
     '/list/:containerId',
     query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { containerId } = req.params
@@ -32,11 +29,7 @@ router.get(
     '/list/:containerId/:folderId',
     query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { folderId } = req.params
@@ -54,9 +47,9 @@ router.post(
     '/create/:containerId',
     multer().single('image'),
     [
-        body('title').isString().optional().notEmpty(),
-        body('content').isString().optional().notEmpty(),
-        body('link').isString().optional().notEmpty(),
+        body('title').isString().optional(),
+        body('content').isString().optional(),
+        body('link').isString().optional(),
         body('type').isString().isIn(['text', 'link', 'image']).notEmpty(),
         body('imageLink').isString().optional(),
         body('folder').isString().optional(),
@@ -68,11 +61,7 @@ router.post(
         })
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { title, content, link, type, imageLink, folder } = req.body
@@ -126,9 +115,7 @@ router.post(
                 return
         }
 
-        if (folder) {
-            data.folder = folder
-        }
+        if (folder) data.folder = folder
 
         const idea = await pb.collection('idea_box_entry').create(data)
         await pb.collection('idea_box_container').update(containerId, {

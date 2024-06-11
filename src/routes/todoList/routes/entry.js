@@ -2,7 +2,8 @@ import express from 'express'
 import moment from 'moment'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { query, validationResult } from 'express-validator'
+import { query } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -12,11 +13,7 @@ router.get(
         .optional()
         .isIn(['all', 'today', 'scheduled', 'overdue', 'completed']),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const status = req.query.status || 'all'

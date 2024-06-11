@@ -1,7 +1,8 @@
 import express from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body, validationResult } from 'express-validator'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -24,11 +25,7 @@ router.post(
         body('color').exists().isHexColor()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { name, icon, color } = req.body
@@ -50,11 +47,7 @@ router.patch(
         body('color').exists().isHexColor()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { id } = req.params

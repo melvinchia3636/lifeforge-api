@@ -1,7 +1,8 @@
 import express from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body, validationResult } from 'express-validator'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -54,11 +55,7 @@ router.post(
     '/create',
     [body('title').notEmpty(), body('content').notEmpty()],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { title, content } = req.body
@@ -76,11 +73,7 @@ router.patch(
     '/update-title/:id',
     body('title').notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { id } = req.params
         const { pb } = req
@@ -98,11 +91,7 @@ router.put(
     '/update-content/:id',
     body('content').notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { id } = req.params
         const { pb } = req

@@ -1,7 +1,8 @@
 import express from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
-import { body, validationResult } from 'express-validator'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -39,11 +40,7 @@ router.post(
         body('color').exists().isHexColor()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { name, container, icon, color } = req.body
@@ -66,11 +63,7 @@ router.patch(
         body('color').exists().isHexColor()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { id } = req.params
@@ -101,11 +94,7 @@ router.post(
     '/add-idea/:folderId',
     body('ideaId').exists().notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { folderId } = req.params

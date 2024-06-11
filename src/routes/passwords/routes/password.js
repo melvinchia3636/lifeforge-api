@@ -9,7 +9,8 @@ import {
     encrypt,
     encrypt2
 } from '../../../utils/encryption.js'
-import { body, query, validationResult } from 'express-validator'
+import { body, query } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -30,11 +31,7 @@ router.get(
     '/decrypt/:id',
     [query('master').notEmpty(), query('user').notEmpty()],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { id } = req.params
         const { master, user: userId } = req.query
@@ -102,11 +99,7 @@ router.post(
         body('master').notEmpty()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const {
             userId,
@@ -167,11 +160,7 @@ router.patch(
         body('master').notEmpty()
     ],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
         const { id } = req.params
         const {
             userId,

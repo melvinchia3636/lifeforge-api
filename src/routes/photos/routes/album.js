@@ -1,7 +1,8 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body, query, validationResult } from 'express-validator'
+import { body, query } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -108,11 +109,7 @@ router.post(
     '/create',
     body('name').notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { name } = req.body
@@ -127,11 +124,7 @@ router.patch(
     '/add-photos/:albumId',
     body('photos').isArray().notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { albumId } = req.params
@@ -167,11 +160,7 @@ router.delete(
     '/remove-photo/:albumId',
     body('photos').isArray().notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { albumId } = req.params
@@ -225,11 +214,7 @@ router.patch(
     '/rename/:albumId',
     body('name').notEmpty(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { albumId } = req.params
@@ -250,11 +235,7 @@ router.post(
     '/set-cover/:albumId/:imageId',
     query('isInAlbum').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { imageId, albumId } = req.params
@@ -280,11 +261,7 @@ router.post(
     '/set-publicity/:albumId',
     body('publicity').isBoolean(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
-            return
-        }
+        if (hasError(req, res)) return
 
         const { pb } = req
         const { albumId } = req.params
