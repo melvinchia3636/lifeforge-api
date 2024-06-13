@@ -129,6 +129,12 @@ router.get(
     })
 )
 
+router.get("/cron", async (req, res) => {
+    res.json({
+        state: 'success',
+    })
+})
+
 router.use((req, res) => {
     res.status(404)
 

@@ -105,7 +105,13 @@ router.patch(
         const { id, data } = req.body
         const toBeUpdated = {}
 
-        for (let item of ['theme', 'color', 'bgTemp', 'language']) {
+        for (let item of [
+            'theme',
+            'color',
+            'bgTemp',
+            'language',
+            'dashboardLayout'
+        ]) {
             if (data[item]) {
                 toBeUpdated[item] = data[item]
             }

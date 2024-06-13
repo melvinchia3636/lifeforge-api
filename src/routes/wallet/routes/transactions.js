@@ -92,7 +92,7 @@ router.post(
     singleUploadMiddleware,
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const {
+        let {
             particulars,
             date,
             amount,
@@ -104,6 +104,8 @@ router.post(
             fromAsset,
             toAsset
         } = req.body
+
+        amount = +amount
 
         const file = req.file || {}
 
@@ -225,7 +227,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-        const {
+        let {
             particulars,
             date,
             amount,
@@ -251,7 +253,9 @@ router.patch(
 
         const transaction = await pb.collection('wallet_transaction').getOne(id)
 
-        if (amount !== transaction.amount) {
+        amount = +amount
+
+        if (amount.toFixed(2) !== transaction.amount.toFixed(2)) {
             if (transaction.asset) {
                 const _asset = await pb
                     .collection('wallet_assets')
