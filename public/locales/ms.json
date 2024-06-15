@@ -100,9 +100,11 @@
       "assets": "Lihat berapa banyak wang yang anda miliki 💰",
       "budgets": "Pastikan anda tidak menghabiskan terlalu banyak wang 💸",
       "ledgers": "Bahagikan perbelanjaan anda supaya anda tahu siapa yang berhutang kepada siapa 💸",
-      "transactions": "Ketahui di mana wang anda pergi 💸"
+      "transactions": "Ketahui di mana wang anda pergi 💸",
+      "guitarTabs": "Menyimpan dan menyusun tablatur gitar anda dengan mudah."
     },
-    "localizationManager": "Pengurus Penyetempatan"
+    "localizationManager": "Pengurus Penyetempatan",
+    "guitarTabs": "Tab Gitar"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -145,7 +147,7 @@
       "title": "Bahasa",
       "desc": "Pilih bahasa yang anda sukai."
     },
-    "BgTempSelector": {
+    "bgTempSelector": {
       "title": "Suhu Latar Belakang",
       "desc": "Pilih suhu latar belakang yang sesuai dengan mood anda.",
       "cool": "Sejuk",
@@ -234,6 +236,18 @@
       "recentTransactions": {
         "title": "Transaksi Terkini",
         "description": "Pantau dan semak perbelanjaan terkini anda dengan mudah."
+      },
+      "date": {
+        "title": "Tarikh",
+        "description": "Widget hiasan ringkas untuk menunjukkan tarikh hari ini."
+      },
+      "clock": {
+        "title": "Jam",
+        "description": "Sebuah jam untuk mengelakkan anda daripada kehilangan jejak masa."
+      },
+      "quotes": {
+        "description": "Petikan rawak yang diharapkan dapat memotivasikan anda sepanjang hari.",
+        "title": "Petikan Rawak"
       }
     }
   },
@@ -544,5 +558,6 @@
       "overdueTasks": "Tugas Lewat Masa",
       "completedTasks": "Tugas Selesai"
     }
-  }
+  },
+  "module": {}
 }

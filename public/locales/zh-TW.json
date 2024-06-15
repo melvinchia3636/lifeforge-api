@@ -101,9 +101,11 @@
       "assets": "查看您的資產，了解您的財務狀況。",
       "budgets": "管理您的預算，讓您的錢包保持健康。",
       "ledgers": "分類您的帳目，確保您知道您的錢花在誰身上。",
-      "transactions": "查看您的交易歷史，確保您的錢花在正確的地方。"
+      "transactions": "查看您的交易歷史，確保您的錢花在正確的地方。",
+      "guitarTabs": "輕鬆存放和整理您的吉他譜。"
     },
-    "localizationManager": "本地化管理器"
+    "localizationManager": "本地化管理器",
+    "guitarTabs": "吉他譜"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -146,7 +148,7 @@
       "title": "語言",
       "desc": "選擇最適合你的語言。"
     },
-    "BgTempSelector": {
+    "bgTempSelector": {
       "title": "背景溫度",
       "desc": "選擇適合你心情的背景溫度。",
       "cool": "冷色",
@@ -235,6 +237,18 @@
       "recentTransactions": {
         "title": "近期交易",
         "description": "輕鬆監控和查看您的最新支出。"
+      },
+      "date": {
+        "title": "日期",
+        "description": "一個簡單的裝飾小部件，用於顯示今天的日期。"
+      },
+      "clock": {
+        "title": "時鐘",
+        "description": "一個小時鐘，可以防止你忘記時間。"
+      },
+      "quotes": {
+        "description": "隨機的一个格言，希望能激勵您一整天。",
+        "title": "格言"
       }
     }
   },
@@ -545,5 +559,6 @@
       "overdueTasks": "逾期任務",
       "completedTasks": "已完成的任務"
     }
-  }
+  },
+  "module": {}
 }

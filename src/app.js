@@ -18,6 +18,7 @@ import achievementsRoutes from './routes/achievements/index.js'
 import spotifyRoutes from './routes/spotify/index.js'
 import photosRoutes from './routes/photos/index.js'
 import musicRoutes from './routes/music/index.js'
+import guitarTabsRoutes from './routes/guitarTabs/index.js'
 import repositoriesRoutes from './routes/repositories/index.js'
 import passwordsRoutes from './routes/passwords/index.js'
 import journalRoutes from './routes/journal/index.js'
@@ -95,6 +96,7 @@ router.use('/wallet', walletRoutes)
 router.use('/spotify', spotifyRoutes)
 router.use('/photos', photosRoutes)
 router.use('/music', musicRoutes)
+router.use('/guitar-tabs', guitarTabsRoutes)
 router.use('/repositories', repositoriesRoutes)
 router.use('/passwords', passwordsRoutes)
 router.use('/mail-inbox', mailInboxRoutes)

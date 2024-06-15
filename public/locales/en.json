@@ -100,9 +100,11 @@
       "assets": "See how much money you have 💰",
       "budgets": "Make sure you're not spending too much money 💸",
       "ledgers": "Split your expenses so you know who owes who 💸",
-      "transactions": "Know where your money is going 💸"
+      "transactions": "Know where your money is going 💸",
+      "guitarTabs": "Stores and organizes your guitar tablatures effortlessly."
     },
-    "localizationManager": "Localization Manager"
+    "localizationManager": "Localization Manager",
+    "guitarTabs": "Guitar Tabs"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -145,7 +147,7 @@
       "title": "Language",
       "desc": "Select a language that you prefer."
     },
-    "BgTempSelector": {
+    "bgTempSelector": {
       "title": "Background Temperature",
       "desc": "Choose a background temperature that suits your mood.",
       "cool": "Cool",
@@ -234,6 +236,18 @@
       "recentTransactions": {
         "title": "Recent Transactions",
         "description": "Easily monitor and review your latest expenditures."
+      },
+      "date": {
+        "title": "Date",
+        "description": "A simple decorative widget for showing today's date."
+      },
+      "clock": {
+        "title": "Clock",
+        "description": "A little clock to prevent you from losing track of time."
+      },
+      "quotes": {
+        "description": "A random quote to hopefully motivates you through the day.",
+        "title": "Quotes"
       }
     }
   },
