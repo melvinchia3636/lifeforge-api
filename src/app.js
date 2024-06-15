@@ -4,7 +4,8 @@ import request from 'request'
 import all_routes from 'express-list-endpoints'
 import dotenv from 'dotenv'
 import { exec } from 'child_process'
-import morganMiddleware from './middleware/morganMiddleware.js'
+
+import localesRoutes from './routes/locales/index.js'
 import userRoutes from './routes/user/index.js'
 import projectsKRoutes from './routes/projects-k/index.js'
 import todoListRoutes from './routes/todoList/index.js'
@@ -25,6 +26,8 @@ import changeLogRoutes from './routes/changeLog/index.js'
 import DNSRecordsRoutes from './routes/dns-records/index.js'
 import mailInboxRoutes from './routes/mail-inbox/index.js'
 import walletRoutes from './routes/wallet/index.js'
+
+import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
 
 import DESCRIPTIONS from './constants/description.js'
@@ -77,7 +80,7 @@ router.get(
         ).pipe(res)
     })
 )
-
+router.use('/locales', localesRoutes)
 router.use('/user', userRoutes)
 router.use('/projects-k', projectsKRoutes)
 router.use('/todo-list', todoListRoutes)
@@ -129,9 +132,9 @@ router.get(
     })
 )
 
-router.get("/cron", async (req, res) => {
+router.get('/cron', async (req, res) => {
     res.json({
-        state: 'success',
+        state: 'success'
     })
 })
 
