@@ -9,7 +9,7 @@ const router = express.Router()
 const config = {
     imap: {
         user: 'melvinchia623600@gmail.com',
-        password: 'yrwe noro hdms ffdz',
+        password: process.env.GMAIL_APP_PASSWORD,
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
