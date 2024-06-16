@@ -13,6 +13,12 @@ router.get(
     '/get-info/:id',
     asyncWrapper(async (req, res) => {
         const { id } = req.params
+
+        if (!id.match(/^[a-zA-Z0-9_-]{11}$/)) {
+            clientError(res, 'Invalid video ID')
+            return
+        }
+
         exec(
             `yt-dlp --skip-download --print "title,upload_date,uploader,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
             (err, stdout) => {
@@ -58,6 +64,11 @@ router.post(
 
         if (downloading === 'in_progress') {
             clientError(res, 'Already downloading')
+            return
+        }
+
+        if (!id.match(/^[a-zA-Z0-9_-]{11}$/)) {
+            clientError(res, 'Invalid video ID')
             return
         }
 
