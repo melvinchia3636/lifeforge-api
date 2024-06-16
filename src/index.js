@@ -2,6 +2,7 @@ import express from 'express'
 import router from './app.js'
 
 const app = express()
+app.disable('x-powered-by')
 app.set('view engine', 'ejs')
 
 app.use('/', router)
