@@ -4,6 +4,8 @@ import request from 'request'
 import all_routes from 'express-list-endpoints'
 import dotenv from 'dotenv'
 import { exec } from 'child_process'
+import { rateLimit } from 'express-rate-limit'
+import Pocketbase from 'pocketbase'
 
 import localesRoutes from './routes/locales/index.js'
 import userRoutes from './routes/user/index.js'
@@ -43,11 +45,44 @@ const app = express()
 app.set('view engine', 'ejs')
 const router = express.Router()
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 250,
+    skip: async req => {
+        if (
+            req.path.startsWith('/media/') ||
+            req.path.match(/\/locales\/[a-z]{2}\.json/)
+        ) {
+            return true
+        }
+
+        const bearerToken = req.headers.authorization?.split(' ')[1]
+        const pb = new Pocketbase(process.env.PB_HOST)
+
+        try {
+            pb.authStore.save(bearerToken, null)
+
+            try {
+                await pb.collection('users').authRefresh()
+                return true
+            } catch (error) {
+                if (error.response.code === 401) {
+                    return false
+                }
+            }
+        } catch {
+            return false
+        }
+        return false
+    }
+})
+
 router.use(cors())
 router.use(express.raw())
 router.use(express.json())
 router.use(morganMiddleware)
 router.use(pocketbaseMiddleware)
+router.use(limiter)
 
 router.get('/', async (req, res) => {
     const routes = all_routes(router)

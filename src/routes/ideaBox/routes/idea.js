@@ -88,6 +88,13 @@ router.post(
                 break
             case 'image':
                 if (imageLink) {
+                    if (
+                        !imageLink.match(/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/)
+                    ) {
+                        clientError(res, 'Invalid image link')
+                        return
+                    }
+
                     await fetch(imageLink).then(async response => {
                         const buffer = await response.arrayBuffer()
                         data = {
