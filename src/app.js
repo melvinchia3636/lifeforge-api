@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
 import request from 'request'
 import all_routes from 'express-list-endpoints'
 import dotenv from 'dotenv'
@@ -42,6 +43,7 @@ import asyncWrapper from './utils/asyncWrapper.js'
 dotenv.config({ path: '.env.local' })
 
 const app = express()
+app.disable('x-powered-by')
 app.set('view engine', 'ejs')
 const router = express.Router()
 
@@ -77,12 +79,27 @@ const limiter = rateLimit({
     }
 })
 
-router.use(cors())
+router.use(
+    helmet({
+        crossOriginResourcePolicy: {
+            policy: 'cross-origin'
+        }
+    })
+)
+router.use(
+    cors({
+        origin: [
+            'https://lifeforge.thecodeblog.net',
+            'https://localization-manager.lifeforge.thecodeblog.net'
+        ]
+    })
+)
 router.use(express.raw())
 router.use(express.json())
 router.use(morganMiddleware)
 router.use(pocketbaseMiddleware)
 router.use(limiter)
+router.use(express.static('static'))
 
 router.get('/', async (req, res) => {
     const routes = all_routes(router)

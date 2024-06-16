@@ -15,7 +15,8 @@ const NO_NEED_AUTH = [
     '/books/list',
     '/books-library/cover',
     '/cron',
-    '/locales'
+    '/locales',
+    '/style.css'
 ]
 
 const pocketbaseMiddleware = async (req, res, next) => {
