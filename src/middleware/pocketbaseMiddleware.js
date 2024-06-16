@@ -54,7 +54,7 @@ const pocketbaseMiddleware = async (req, res, next) => {
 
         req.pb = pb
         next()
-    } catch (error) {
+    } catch {
         res.status(500).send({
             state: 'error',
             message: 'Internal server error'
