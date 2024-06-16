@@ -15,7 +15,10 @@ const NO_NEED_AUTH = [
     '/books/list',
     '/books-library/cover',
     '/cron',
-    '/locales',
+    '/locales/en',
+    '/locales/zh-CN',
+    '/locales/zh-TW',
+    '/locales/ms',
     '/style.css'
 ]
 

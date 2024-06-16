@@ -3,6 +3,7 @@ import fs from 'fs'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 import { clientError, success } from '../../utils/response.js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -31,7 +32,14 @@ router.get(
 
 router.post(
     '/ai-generate',
+    [body('key').isString().notEmpty()],
     asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+        }
+
         const { key } = req.body
 
         if (!key.trim()) {
