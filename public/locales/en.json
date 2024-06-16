@@ -326,7 +326,9 @@
     "manageWidgets": "Manage Widgets",
     "newIdea": "New Idea",
     "createContainer": "Create Container",
-    "lockLayout": "Lock Layout"
+    "lockLayout": "Lock Layout",
+    "signOut": "Sign Out",
+    "accountSettings": "Account Settings"
   },
   "modals": {
     "header": {

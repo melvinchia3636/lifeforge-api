@@ -327,7 +327,9 @@
     "manageWidgets": "管理小工具",
     "newIdea": "新想法",
     "createContainer": "建立盒子",
-    "lockLayout": "鎖定佈局"
+    "lockLayout": "鎖定佈局",
+    "signOut": "登出",
+    "accountSettings": "帳戶設定"
   },
   "modals": {
     "header": {
@@ -559,6 +561,5 @@
       "overdueTasks": "逾期任務",
       "completedTasks": "已完成的任務"
     }
-  },
-  "module": {}
+  }
 }

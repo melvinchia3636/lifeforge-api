@@ -34,10 +34,10 @@ router.post(
     '/ai-generate',
     [body('key').isString().notEmpty()],
     asyncWrapper(async (req, res) => {
-        const result = validationResult(req)
+        const valRes = validationResult(req)
 
-        if (!result.isEmpty()) {
-            clientError(res, result.array())
+        if (!valRes.isEmpty()) {
+            clientError(res, valRes.array())
         }
 
         const { key } = req.body

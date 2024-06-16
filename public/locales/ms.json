@@ -326,7 +326,9 @@
     "manageWidgets": "Urus Widget",
     "newIdea": "Idea Baru",
     "createContainer": "Cipta Bekas",
-    "lockLayout": "Kunci Susun Atur"
+    "lockLayout": "Kunci Susun Atur",
+    "signOut": "Log Keluar",
+    "accountSettings": "Tetapan Akaun"
   },
   "modals": {
     "header": {
@@ -558,6 +560,5 @@
       "overdueTasks": "Tugas Lewat Masa",
       "completedTasks": "Tugas Selesai"
     }
-  },
-  "module": {}
+  }
 }
