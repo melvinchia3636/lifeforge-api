@@ -328,7 +328,10 @@
     "createContainer": "Cipta Bekas",
     "lockLayout": "Kunci Susun Atur",
     "signOut": "Log Keluar",
-    "accountSettings": "Tetapan Akaun"
+    "accountSettings": "Tetapan Akaun",
+    "refresh": "Muat Semula",
+    "hidePhotosInAlbums": "Sembunyikan Foto dalam Album",
+    "copyLink": "Salin Pautan"
   },
   "modals": {
     "header": {
@@ -435,7 +438,8 @@
     "lists": "Senarai",
     "subtasks": "Subtugas",
     "none": "Tiada",
-    "categoryType": "Jenis Kategori"
+    "categoryType": "Jenis Kategori",
+    "initialBalance": "Baki Awal"
   },
   "table": {
     "date": "Tarikh",

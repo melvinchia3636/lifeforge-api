@@ -329,7 +329,10 @@
     "createContainer": "创建盒子",
     "lockLayout": "锁定布局",
     "signOut": "退出登录",
-    "accountSettings": "账户设置"
+    "accountSettings": "账户设置",
+    "refresh": "刷新",
+    "hidePhotosInAlbums": "隐藏相册中的照片",
+    "copyLink": "复制链接"
   },
   "modals": {
     "header": {
@@ -436,7 +439,8 @@
     "lists": "列表",
     "subtasks": "子任务",
     "none": "无",
-    "categoryType": "类别类型"
+    "categoryType": "类别类型",
+    "initialBalance": "初始余额"
   },
   "table": {
     "date": "日期",

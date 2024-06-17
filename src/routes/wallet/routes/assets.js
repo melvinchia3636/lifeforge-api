@@ -10,6 +10,19 @@ router.get(
         const { pb } = req
 
         const assets = await pb.collection('wallet_assets').getFullList()
+        const transactions = await pb
+            .collection('wallet_transaction')
+            .getFullList()
+
+        assets.forEach(asset => {
+            asset.balance = transactions
+                .filter(transaction => transaction.asset === asset.id)
+                .reduce((acc, curr) => {
+                    return curr.side === 'credit'
+                        ? acc - curr.amount
+                        : acc + curr.amount
+                }, asset.starting_balance)
+        })
 
         success(res, assets)
     })
@@ -19,9 +32,9 @@ router.post(
     '/create',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const { name, icon, balance } = req.body
+        const { name, icon, starting_balance } = req.body
 
-        if (!name || !icon || !balance) {
+        if (!name || !icon || !starting_balance) {
             clientError(res, 'Missing required fields')
             return
         }
@@ -29,7 +42,7 @@ router.post(
         const asset = await pb.collection('wallet_assets').create({
             name,
             icon,
-            balance
+            starting_balance
         })
 
         success(res, asset)
@@ -41,9 +54,9 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-        const { name, icon, balance } = req.body
+        const { name, icon, starting_balance } = req.body
 
-        if (!id || !name || !icon || !balance) {
+        if (!id || !name || !icon || !starting_balance) {
             clientError(res, 'Missing required fields')
             return
         }
@@ -51,7 +64,7 @@ router.patch(
         const asset = await pb.collection('wallet_assets').update(id, {
             name,
             icon,
-            balance
+            starting_balance
         })
 
         success(res, asset)

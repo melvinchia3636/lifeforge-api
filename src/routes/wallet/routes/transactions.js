@@ -143,22 +143,6 @@ router.post(
                       })()
                     : ''
             })
-
-            if (asset) {
-                const _asset = await pb
-                    .collection('wallet_assets')
-                    .getOne(asset)
-
-                if (side === 'credit') {
-                    await pb.collection('wallet_assets').update(asset, {
-                        balance: _asset.balance - amount
-                    })
-                } else {
-                    await pb.collection('wallet_assets').update(asset, {
-                        balance: _asset.balance + amount
-                    })
-                }
-            }
         }
 
         if (type === 'transfer') {
@@ -202,14 +186,6 @@ router.post(
                           })
                       })()
                     : ''
-            })
-
-            await pb.collection('wallet_assets').update(fromAsset, {
-                balance: _from.balance - amount
-            })
-
-            await pb.collection('wallet_assets').update(toAsset, {
-                balance: _to.balance + amount
             })
         }
 
@@ -255,30 +231,6 @@ router.patch(
 
         amount = +amount
 
-        if (amount.toFixed(2) !== transaction.amount.toFixed(2)) {
-            if (transaction.asset) {
-                const _asset = await pb
-                    .collection('wallet_assets')
-                    .getOne(transaction.asset)
-
-                if (transaction.side === 'debit') {
-                    await pb
-                        .collection('wallet_assets')
-                        .update(transaction.asset, {
-                            balance:
-                                _asset.balance - transaction.amount + amount
-                        })
-                } else {
-                    await pb
-                        .collection('wallet_assets')
-                        .update(transaction.asset, {
-                            balance:
-                                _asset.balance + transaction.amount - amount
-                        })
-                }
-            }
-        }
-
         await pb.collection('wallet_transaction').update(id, {
             particulars,
             date,
@@ -317,22 +269,6 @@ router.delete(
         const { id } = req.params
 
         const transaction = await pb.collection('wallet_transaction').getOne(id)
-
-        if (transaction.asset) {
-            const asset = await pb
-                .collection('wallet_assets')
-                .getOne(transaction.asset)
-
-            if (transaction.side === 'debit') {
-                await pb.collection('wallet_assets').update(transaction.asset, {
-                    balance: asset.balance - transaction.amount
-                })
-            } else {
-                await pb.collection('wallet_assets').update(transaction.asset, {
-                    balance: asset.balance + transaction.amount
-                })
-            }
-        }
 
         await pb.collection('wallet_transaction').delete(id)
 

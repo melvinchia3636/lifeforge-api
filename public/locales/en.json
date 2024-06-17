@@ -328,7 +328,10 @@
     "createContainer": "Create Container",
     "lockLayout": "Lock Layout",
     "signOut": "Sign Out",
-    "accountSettings": "Account Settings"
+    "accountSettings": "Account Settings",
+    "refresh": "Refresh",
+    "hidePhotosInAlbums": "Hide Photos in Albums",
+    "copyLink": "Copy Link"
   },
   "modals": {
     "header": {
@@ -435,7 +438,8 @@
     "lists": "Lists",
     "subtasks": "Subtasks",
     "none": "None",
-    "categoryType": "Category Type"
+    "categoryType": "Category Type",
+    "initialBalance": "Initial Balance"
   },
   "table": {
     "date": "Date",
