@@ -28,110 +28,67 @@ router.get(
 
         const year = req.query.year || new Date().getFullYear()
 
-        const firstDayOfYear = new Date()
-        firstDayOfYear.setMonth(0)
-        firstDayOfYear.setDate(1)
-        firstDayOfYear.setHours(0)
-        firstDayOfYear.setMinutes(0)
-        firstDayOfYear.setSeconds(0)
-        firstDayOfYear.setFullYear(year)
-
-        const lastDayOfYear = new Date()
-        lastDayOfYear.setMonth(11)
-        lastDayOfYear.setDate(31)
-        lastDayOfYear.setHours(23)
-        lastDayOfYear.setMinutes(59)
-        lastDayOfYear.setSeconds(59)
-        lastDayOfYear.setFullYear(year)
-
-        const data = await pb.collection('code_time').getFullList({
-            sort: 'event_time',
-            filter: `event_time >= ${firstDayOfYear.getTime()} && event_time <= ${lastDayOfYear.getTime()}`
+        const data = await pb.collection('code_time_daily_entry').getFullList({
+            filter: `date >= "${year}-01-01 00:00:00.000Z" && date <= "${year}-12-31 23:59:59.999Z"`
         })
 
         const groupByDate = {}
 
         for (const item of data) {
-            const date = new Date(item.event_time)
-            date.setHours(0)
-            date.setMinutes(0)
-            date.setSeconds(0)
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+            const dateKey = moment(item.date).format('YYYY-MM-DD')
             if (!groupByDate[dateKey]) {
-                groupByDate[dateKey] = []
+                groupByDate[dateKey] = 0
             }
-            groupByDate[dateKey].push(item)
+            groupByDate[dateKey] = item.total_minutes
         }
 
-        const final = Object.entries(groupByDate).map(([date, items]) => ({
-            date,
-            count: items.length,
-            level: (() => {
-                const hours = items.length / 60
-                if (hours < 1) {
-                    return 1
-                }
-                if (hours >= 1 && hours < 3) {
-                    return 2
-                }
-                if (hours >= 3 && hours < 5) {
-                    return 3
-                }
-                return 4
-            })()
-        }))
+        const final = Object.entries(groupByDate).map(
+            ([date, totalMinutes]) => ({
+                date,
+                count: totalMinutes,
+                level: (() => {
+                    const hours = totalMinutes / 60
+                    if (hours < 1) {
+                        return 1
+                    }
+                    if (hours >= 1 && hours < 3) {
+                        return 2
+                    }
+                    if (hours >= 3 && hours < 5) {
+                        return 3
+                    }
+                    return 4
+                })()
+            })
+        )
 
-        if (
-            final[0].date !==
-            `${firstDayOfYear.getFullYear()}-${String(
-                firstDayOfYear.getMonth() + 1
-            ).padStart(
-                2,
-                '0'
-            )}-${String(firstDayOfYear.getDate()).padStart(2, '0')}`
-        ) {
+        if (final[0].date !== `${year}-01-01`) {
             final.unshift({
-                date: `${firstDayOfYear.getFullYear()}-${String(
-                    firstDayOfYear.getMonth() + 1
-                ).padStart(
-                    2,
-                    '0'
-                )}-${String(firstDayOfYear.getDate()).padStart(2, '0')}`,
+                date: `${year}-01-01`,
                 count: 0,
                 level: 0
             })
         }
 
-        if (
-            final[final.length - 1].date !==
-            `${lastDayOfYear.getFullYear()}-${String(
-                lastDayOfYear.getMonth() + 1
-            ).padStart(
-                2,
-                '0'
-            )}-${String(lastDayOfYear.getDate()).padStart(2, '0')}`
-        ) {
+        if (final[final.length - 1].date !== `${year}-12-31`) {
             final.push({
-                date: `${lastDayOfYear.getFullYear()}-${String(
-                    lastDayOfYear.getMonth() + 1
-                ).padStart(
-                    2,
-                    '0'
-                )}-${String(lastDayOfYear.getDate()).padStart(2, '0')}`,
+                date: `${year}-12-31`,
                 count: 0,
                 level: 0
             })
         }
 
-        const firstRecordEver = await pb.collection('code_time').getList(1, 1, {
-            sort: '+event_time'
-        })
+        const firstRecordEver = await pb
+            .collection('code_time_daily_entry')
+            .getList(1, 1, {
+                sort: '+date'
+            })
 
         success(res, {
             data: final,
-            firstYear: new Date(
-                firstRecordEver.items[0].event_time
-            ).getFullYear()
+            firstYear: +firstRecordEver.items[0].date
+                .split(' ')[0]
+                .split('-')[0]
         })
     })
 )
@@ -141,22 +98,17 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const everything = await pb.collection('code_time').getFullList({
-            sort: 'event_time'
-        })
+        const everything = await pb
+            .collection('code_time_daily_entry')
+            .getFullList({
+                sort: 'date'
+            })
 
         let groupByDate = {}
 
         for (const item of everything) {
-            const date = new Date(item.event_time)
-            date.setHours(0)
-            date.setMinutes(0)
-            date.setSeconds(0)
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-            if (!groupByDate[dateKey]) {
-                groupByDate[dateKey] = 0
-            }
-            groupByDate[dateKey] += 1
+            const dateKey = moment(item.date).format('YYYY-MM-DD')
+            groupByDate[dateKey] = item.total_minutes
         }
 
         groupByDate = Object.entries(groupByDate).map(([date, count]) => ({
@@ -175,7 +127,10 @@ router.get(
         })
 
         const mostTimeSpent = groupByDate[0].count
-        const total = everything.length
+        const total = everything.reduce(
+            (acc, curr) => acc + curr.total_minutes,
+            0
+        )
         const average = total / groupByDate.length
 
         groupByDate = groupByDate.sort((a, b) => a.date.localeCompare(b.date))
@@ -218,7 +173,7 @@ router.get(
             for (const date of dates) {
                 const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                 if (!allDates.includes(dateKey)) break
-                
+
                 streak += 1
             }
             return streak
@@ -239,42 +194,41 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const lastXDays = req.query.last || '24 hours'
+        const lastXDays = req.query.last
 
-        if (parseInt(lastXDays, 10) > 30) {
-            clientError(res, 'lastXDays must be less than 30')
+        if (!['24 hours', '7 days', '30 days'].includes(lastXDays)) {
+            clientError(
+                res,
+                'lastXDays must be one of 24 hours, 7 days, 30 days'
+            )
             return
         }
 
-        const date = new Date()
-        switch (lastXDays) {
-            case '24 hours':
-                date.setHours(date.getHours() - 24)
-                date.setMinutes(0)
-                date.setSeconds(0)
-                break
-            case '7 days':
-                date.setDate(date.getDate() - 7)
-                break
-            case '30 days':
-                date.setDate(date.getDate() - 30)
-                break
-            default:
-                date.setDate(date.getDate() - 7)
-                break
-        }
+        const date = moment()
+            .subtract(
+                ...({
+                    '24 hours': [24, 'hours'],
+                    '7 days': [7, 'days'],
+                    '30 days': [30, 'days']
+                }[lastXDays] || [7, 'days'])
+            )
+            .format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time').getFullList({
-            filter: `event_time >= ${date.getTime()}`
+        const data = await pb.collection('code_time_daily_entry').getFullList({
+            filter: `date >= "${date} 00:00:00.000Z"`
         })
+
+        const projects = data.map(item => item.projects)
 
         let groupByProject = {}
 
-        for (const item of data) {
-            if (!groupByProject[item.project]) {
-                groupByProject[item.project] = 0
+        for (const item of projects) {
+            for (const project in item) {
+                if (!groupByProject[project]) {
+                    groupByProject[project] = 0
+                }
+                groupByProject[project] += item[project]
             }
-            groupByProject[item.project] += 1
         }
 
         groupByProject = Object.fromEntries(
@@ -290,45 +244,41 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const lastXDays = req.query.last || '24 hours'
+        const lastXDays = req.query.last
 
-        if (lastXDays > 30) {
-            res.status(400).send({
-                state: 'error',
-                message: 'lastXDays must be less than 30'
-            })
+        if (!['24 hours', '7 days', '30 days'].includes(lastXDays)) {
+            clientError(
+                res,
+                'lastXDays must be one of 24 hours, 7 days, 30 days'
+            )
             return
         }
 
-        const date = new Date()
-        switch (lastXDays) {
-            case '24 hours':
-                date.setHours(date.getHours() - 24)
-                date.setMinutes(0)
-                date.setSeconds(0)
-                break
-            case '7 days':
-                date.setDate(date.getDate() - 7)
-                break
-            case '30 days':
-                date.setDate(date.getDate() - 30)
-                break
-            default:
-                date.setDate(date.getDate() - 7)
-                break
-        }
+        const date = moment()
+            .subtract(
+                ...({
+                    '24 hours': [24, 'hours'],
+                    '7 days': [7, 'days'],
+                    '30 days': [30, 'days']
+                }[lastXDays] || [7, 'days'])
+            )
+            .format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time').getFullList({
-            filter: `event_time >= ${date.getTime()}`
+        const data = await pb.collection('code_time_daily_entry').getFullList({
+            filter: `date >= "${date} 00:00:00.000Z"`
         })
+
+        const languages = data.map(item => item.languages)
 
         let groupByLanguage = {}
 
-        for (const item of data) {
-            if (!groupByLanguage[item.language]) {
-                groupByLanguage[item.language] = 0
+        for (const item of languages) {
+            for (const language in item) {
+                if (!groupByLanguage[language]) {
+                    groupByLanguage[language] = 0
+                }
+                groupByLanguage[language] += item[language]
             }
-            groupByLanguage[item.language] += 1
         }
 
         groupByLanguage = Object.fromEntries(
@@ -344,42 +294,27 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const lastDay = new Date()
-        lastDay.setHours(23)
-        lastDay.setMinutes(59)
-        lastDay.setSeconds(59)
+        const lastDay = moment().format('YYYY-MM-DD')
 
         // 30 days before today
-        const firstDay = new Date()
-        firstDay.setDate(lastDay.getDate() - 30)
-        firstDay.setHours(0)
-        firstDay.setMinutes(0)
-        firstDay.setSeconds(0)
+        const firstDay = moment().subtract(30, 'days').format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time').getFullList({
-            sort: 'event_time',
-            filter: `event_time >= ${firstDay.getTime()} && event_time <= ${lastDay.getTime()}`
+        const data = await pb.collection('code_time_daily_entry').getFullList({
+            filter: `date >= "${firstDay} 00:00:00.000Z" && date <= "${lastDay} 23:59:59.999Z"`
         })
 
         const groupByDate = {}
 
         for (const item of data) {
-            const date = new Date(item.event_time)
-            date.setHours(0)
-            date.setMinutes(0)
-            date.setSeconds(0)
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-            if (!groupByDate[dateKey]) {
-                groupByDate[dateKey] = []
-            }
-            groupByDate[dateKey].push(item)
+            const dateKey = moment(item.date).format('YYYY-MM-DD')
+            groupByDate[dateKey] = item.total_minutes
         }
 
         success(
             res,
-            Object.entries(groupByDate).map(([date, items]) => ({
+            Object.entries(groupByDate).map(([date, item]) => ({
                 date,
-                duration: items.length * 1000 * 60
+                duration: item * 1000 * 60
             }))
         )
     })
@@ -392,17 +327,24 @@ router.get(
             const { pb } = req
             // first day of current month
             const { minutes } = req.query
-            const minTime = moment().subtract(+minutes, 'minutes').valueOf()
+            const minTime = moment()
+                .subtract(+minutes, 'minutes')
+                .format('YYYY-MM-DD')
 
-            const { totalItems } = await pb
-                .collection('code_time')
+            const items = await pb
+                .collection('code_time_daily_entry')
                 .getList(1, 1, {
-                    sort: 'event_time',
-                    filter: `event_time >= ${minTime}`
+                    filter: `date >= "${minTime}"`
                 })
 
             res.json({
-                minutes: totalItems
+                minutes:
+                    items.totalItems > 0
+                        ? items.items.reduce(
+                              (acc, item) => acc + item.total_minutes,
+                              0
+                          )
+                        : 0
             })
         } catch (e) {
             console.log(e)
@@ -423,60 +365,69 @@ router.post(
 
         data.eventTime = Math.floor(Date.now() / 60000) * 60000
 
-        const lastData = await pb.collection('code_time').getList(1, 1, {
-            sort: 'event_time',
-            filter: `event_time = ${data.eventTime}`
-        })
+        const date = moment(data.eventTime).format('YYYY-MM-DD')
 
-        if (lastData.totalItems === 0) {
-            pb.collection('code_time').create({
-                project: data.project,
-                language: data.language,
-                event_time: data.eventTime,
-                relative_file: data.relativeFile
+        const lastData = await pb
+            .collection('code_time_daily_entry')
+            .getList(1, 1, {
+                filter: `date="${date} 00:00:00.000Z"`
             })
 
-            const language = await pb
-                .collection('code_time_languages')
-                .getList(1, 1, {
-                    sort: 'name',
-                    filter: `name = '${data.language}'`
-                })
+        if (lastData.totalItems === 0) {
+            await pb.collection('code_time_daily_entry').create({
+                date,
+                projects: {
+                    [data.project]: 1
+                },
+                relative_files: {
+                    [data.relativeFile]: 1
+                },
+                languages: {
+                    [data.language]: 1
+                },
+                total_minutes: 1,
+                last_timestamp: data.eventTime
+            })
+        } else {
+            const lastRecord = lastData.items[0]
 
-            if (language.totalItems === 0) {
-                pb.collection('code_time_languages').create({
-                    name: data.language,
-                    duration: 1
+            if (data.eventTime === lastRecord.last_timestamp) {
+                res.send({
+                    status: 'ok',
+                    data: [],
+                    message: 'success'
                 })
-            } else {
-                pb.collection('code_time_languages').update(
-                    language.items[0].id,
-                    {
-                        duration: language.items[0].duration + 1
-                    }
-                )
+                return
             }
 
-            const project = await pb
-                .collection('code_time_projects')
-                .getList(1, 1, {
-                    sort: 'name',
-                    filter: `name = '${data.project}'`
-                })
-
-            if (project.totalItems === 0) {
-                pb.collection('code_time_projects').create({
-                    name: data.project,
-                    duration: 1
-                })
+            const projects = lastRecord.projects
+            if (projects[data.project]) {
+                projects[data.project] += 1
             } else {
-                pb.collection('code_time_projects').update(
-                    project.items[0].id,
-                    {
-                        duration: project.items[0].duration + 1
-                    }
-                )
+                projects[data.project] = 1
             }
+
+            const relativeFiles = lastRecord.relative_files
+            if (relativeFiles[data.relativeFile]) {
+                relativeFiles[data.relativeFile] += 1
+            } else {
+                relativeFiles[data.relativeFile] = 1
+            }
+
+            const languages = lastRecord.languages
+            if (languages[data.language]) {
+                languages[data.language] += 1
+            } else {
+                languages[data.language] = 1
+            }
+
+            await pb.collection('code_time_daily_entry').update(lastRecord.id, {
+                projects,
+                relative_files: relativeFiles,
+                languages,
+                total_minutes: lastRecord.total_minutes + 1,
+                last_timestamp: data.eventTime
+            })
         }
 
         res.send({

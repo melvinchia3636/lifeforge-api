@@ -53,7 +53,7 @@ const limiter = rateLimit({
     skip: async req => {
         if (
             req.path.startsWith('/media/') ||
-            req.path.match(/\/locales\/[a-z]{2}\.json/)
+            req.path.match(/$\/locales\/[a-z]{2,5}$/)
         ) {
             return true
         }
