@@ -5,7 +5,7 @@ import asyncWrapper from '../../../utils/asyncWrapper.js'
 const router = express.Router()
 
 router.get(
-    '/list/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const subjects = await pb.collection('notes_subject').getFullList({
@@ -17,7 +17,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
@@ -39,18 +39,8 @@ router.post(
     })
 )
 
-router.delete(
-    '/delete/:id',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        await pb.collection('notes_subject').delete(req.params.id)
-
-        success(res, null)
-    })
-)
-
 router.patch(
-    '/update/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const subject = await pb
@@ -58,6 +48,16 @@ router.patch(
             .update(req.params.id, req.body)
 
         success(res, subject)
+    })
+)
+
+router.delete(
+    '/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        await pb.collection('notes_subject').delete(req.params.id)
+
+        success(res, null)
     })
 )
 

@@ -8,7 +8,7 @@ import hasError from '../../../utils/checkError.js'
 const router = express.Router()
 
 router.get(
-    '/list/:containerId',
+    '/:containerId',
     query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
@@ -26,7 +26,7 @@ router.get(
 )
 
 router.get(
-    '/list/:containerId/:folderId',
+    '/:containerId/:folderId',
     query('archived').isBoolean().optional(),
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
@@ -44,7 +44,7 @@ router.get(
 )
 
 router.post(
-    '/create/:containerId',
+    '/:containerId',
     multer().single('image'),
     [
         body('title').isString().optional(),
@@ -134,7 +134,7 @@ router.post(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -150,7 +150,7 @@ router.delete(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -183,7 +183,7 @@ router.patch(
     })
 )
 
-router.patch(
+router.post(
     '/pin/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
@@ -198,7 +198,7 @@ router.patch(
     })
 )
 
-router.patch(
+router.post(
     '/archive/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req

@@ -101,10 +101,12 @@
       "budgets": "Pastikan anda tidak menghabiskan terlalu banyak wang 💸",
       "ledgers": "Bahagikan perbelanjaan anda supaya anda tahu siapa yang berhutang kepada siapa 💸",
       "transactions": "Ketahui di mana wang anda pergi 💸",
-      "guitarTabs": "Menyimpan dan menyusun tablatur gitar anda dengan mudah."
+      "guitarTabs": "Menyimpan dan menyusun tablatur gitar anda dengan mudah.",
+      "accountSettings": "Tempat untuk mengurus semua maklumat dan profil akaun anda"
     },
     "localizationManager": "Pengurus Penyetempatan",
-    "guitarTabs": "Tab Gitar"
+    "guitarTabs": "Tab Gitar",
+    "accountSettings": "Tetapan Akaun"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -331,7 +333,8 @@
     "accountSettings": "Tetapan Akaun",
     "refresh": "Muat Semula",
     "hidePhotosInAlbums": "Sembunyikan Foto dalam Album",
-    "copyLink": "Salin Pautan"
+    "copyLink": "Salin Pautan",
+    "changePassword": "Tukar Kata Laluan"
   },
   "modals": {
     "header": {
@@ -562,7 +565,24 @@
       "todaysTasks": "Tugas Hari Ini",
       "scheduledTasks": "Tugasan Berjadual",
       "overdueTasks": "Tugas Lewat Masa",
-      "completedTasks": "Tugas Selesai"
+      "completedTasks": "Tugas Selesai",
+      "filteredTasks": "Tugas Tertapis"
+    }
+  },
+  "accountSettings": {
+    "title": {
+      "profilePicture": "Gambar Profil",
+      "username": "Nama Pengguna",
+      "displayName": "Nama Paparan",
+      "email": "Alamat Emel",
+      "password": "Kata Laluan"
+    },
+    "desc": {
+      "profilePicture": "Muat naik gambar profil untuk memperibadikan akaun anda.",
+      "username": "Nama yang mengenal pasti anda pada platform.",
+      "displayName": "Nama yang dipaparkan kepada pengguna lain.",
+      "email": "Alamat e-mel yang anda gunakan untuk log masuk ke akaun anda.",
+      "password": "Tetapkan kata laluan yang kukuh untuk melindungi akaun anda."
     }
   }
 }

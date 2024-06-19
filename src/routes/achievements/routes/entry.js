@@ -7,7 +7,7 @@ import hasError from '../../../utils/checkError.js'
 const router = express.Router()
 
 router.get(
-    '/list/:difficulty',
+    '/:difficulty',
     param('difficulty')
         .isString()
         .isIn(['easy', 'medium', 'hard', 'impossible']),
@@ -28,7 +28,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     [
         body('difficulty')
             .exists()
@@ -54,7 +54,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     [
         body('difficulty')
             .exists()
@@ -82,7 +82,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params

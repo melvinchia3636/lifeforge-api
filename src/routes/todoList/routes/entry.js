@@ -8,7 +8,7 @@ import hasError from '../../../utils/checkError.js'
 const router = express.Router()
 
 router.get(
-    '/list',
+    '/',
     query('status')
         .optional()
         .isIn(['all', 'today', 'scheduled', 'overdue', 'completed']),
@@ -105,7 +105,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     asyncWrapper(async (req, res) => {
         async function createSubtask() {
             if (!data.subtasks) return
@@ -144,7 +144,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -213,7 +213,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -241,7 +241,7 @@ router.delete(
     })
 )
 
-router.patch(
+router.post(
     '/toggle/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req

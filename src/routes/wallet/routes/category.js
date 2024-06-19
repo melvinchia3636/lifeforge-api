@@ -5,7 +5,7 @@ import { clientError, success } from '../../../utils/response.js'
 const router = express.Router()
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
@@ -16,7 +16,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { name, icon, color, type } = req.body
@@ -38,7 +38,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -60,7 +60,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params

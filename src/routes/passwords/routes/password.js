@@ -74,7 +74,7 @@ router.get(
 )
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
@@ -87,7 +87,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     [
         body('userId').notEmpty(),
         body('name').notEmpty(),
@@ -148,7 +148,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     [
         body('userId').notEmpty(),
         body('name').notEmpty(),
@@ -209,7 +209,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { id } = req.params
 

@@ -8,7 +8,7 @@ import { singleUploadMiddleware } from '../../../middleware/uploadMiddleware.js'
 const router = express.Router()
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
@@ -88,7 +88,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     singleUploadMiddleware,
     asyncWrapper(async (req, res) => {
         const { pb } = req
@@ -198,7 +198,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     singleUploadMiddleware,
     asyncWrapper(async (req, res) => {
         const { pb } = req
@@ -263,7 +263,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params

@@ -7,7 +7,7 @@ import hasError from '../../../utils/checkError.js'
 const router = express.Router()
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const categories = await pb
@@ -18,7 +18,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     [
         body('name').exists().notEmpty(),
         body('icon').exists().notEmpty(),
@@ -40,7 +40,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     [
         body('name').exists().notEmpty(),
         body('icon').exists().notEmpty(),
@@ -64,7 +64,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params

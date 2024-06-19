@@ -1,8 +1,11 @@
+import fs from 'fs'
 import express from 'express'
 import passkey from './routes/passkey.js'
 import Pocketbase from 'pocketbase'
-import { success } from '../../utils/response.js'
+import { clientError, success } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
+import { singleUploadMiddleware } from '../../middleware/uploadMiddleware.js'
+import { body, validationResult } from 'express-validator'
 
 const router = express.Router()
 
@@ -122,6 +125,79 @@ router.patch(
         }
 
         await pb.collection('users').update(id, toBeUpdated)
+
+        success(res)
+    })
+)
+
+router.put(
+    '/settings/avatar',
+    singleUploadMiddleware,
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+
+        const file = req.file
+
+        if (!file) {
+            throw new Error('No file uploaded')
+        }
+
+        const id = pb.authStore.model.id
+
+        const fileBuffer = fs.readFileSync(file.path)
+
+        const newRecord = await pb.collection('users').update(id, {
+            avatar: new File(
+                [fileBuffer],
+                `${id}.${file.originalname.split('.').pop()}`
+            )
+        })
+
+        fs.unlinkSync(file.path)
+
+        success(res, newRecord.avatar)
+    })
+)
+
+router.delete(
+    '/settings/avatar',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const id = pb.authStore.model.id
+
+        const newRecord = await pb.collection('users').update(id, {
+            avatar: null
+        })
+
+        success(res, newRecord.avatar)
+    })
+)
+
+router.patch(
+    '/settings',
+    [
+        body('data.username').optional().isAlphanumeric(),
+        body('data.email').optional().isEmail(),
+        body('data.name').optional().isString()
+    ],
+    asyncWrapper(async (req, res) => {
+        const result = validationResult(req)
+        if (!result.isEmpty()) {
+            clientError(res, result.array())
+            return
+        }
+
+        const { pb } = req
+        const id = pb.authStore.model.id
+        const { data } = req.body
+
+        const newData = {}
+
+        if (data.username) newData.username = data.username
+        if (data.email) newData.email = data.email
+        if (data.name) newData.name = data.name
+
+        await pb.collection('users').update(id, newData)
 
         success(res)
     })

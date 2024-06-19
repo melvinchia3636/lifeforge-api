@@ -22,7 +22,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     [body('id').exists().notEmpty(), body('password').exists().notEmpty()],
     asyncWrapper(async (req, res) => {
         const result = validationResult(req)

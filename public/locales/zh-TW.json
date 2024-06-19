@@ -102,10 +102,12 @@
       "budgets": "管理您的預算，讓您的錢包保持健康。",
       "ledgers": "分類您的帳目，確保您知道您的錢花在誰身上。",
       "transactions": "查看您的交易歷史，確保您的錢花在正確的地方。",
-      "guitarTabs": "輕鬆存放和整理您的吉他譜。"
+      "guitarTabs": "輕鬆存放和整理您的吉他譜。",
+      "accountSettings": "管理所有帳號資訊和資料的地方"
     },
     "localizationManager": "本地化管理器",
-    "guitarTabs": "吉他譜"
+    "guitarTabs": "吉他譜",
+    "accountSettings": "帳戶設定"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -332,7 +334,8 @@
     "accountSettings": "帳戶設定",
     "refresh": "重新整理",
     "hidePhotosInAlbums": "隱藏相簿中的照片",
-    "copyLink": "複製連結"
+    "copyLink": "複製連結",
+    "changePassword": "變更密碼"
   },
   "modals": {
     "header": {
@@ -563,7 +566,24 @@
       "todaysTasks": "今日任務",
       "scheduledTasks": "已排程的任務",
       "overdueTasks": "逾期任務",
-      "completedTasks": "已完成的任務"
+      "completedTasks": "已完成的任務",
+      "filteredTasks": "已篩選任務"
+    }
+  },
+  "accountSettings": {
+    "title": {
+      "profilePicture": "個人頭像",
+      "username": "使用者名稱",
+      "displayName": "顯示名稱",
+      "email": "電子郵件地址",
+      "password": "密碼"
+    },
+    "desc": {
+      "profilePicture": "上傳頭像以個人化您的帳戶。",
+      "username": "在平台上識別您身分的名稱。",
+      "displayName": "顯示給其他使用者的名稱。",
+      "email": "您用於登入帳戶的電子郵件地址。",
+      "password": "設定強密碼來保護您的帳戶。"
     }
   }
 }

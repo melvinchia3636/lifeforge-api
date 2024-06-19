@@ -101,10 +101,12 @@
       "budgets": "Make sure you're not spending too much money 💸",
       "ledgers": "Split your expenses so you know who owes who 💸",
       "transactions": "Know where your money is going 💸",
-      "guitarTabs": "Stores and organizes your guitar tablatures effortlessly."
+      "guitarTabs": "Stores and organizes your guitar tablatures effortlessly.",
+      "accountSettings": "A place to manage all your accounts details and info"
     },
     "localizationManager": "Localization Manager",
-    "guitarTabs": "Guitar Tabs"
+    "guitarTabs": "Guitar Tabs",
+    "accountSettings": "Account Settings"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -331,7 +333,8 @@
     "accountSettings": "Account Settings",
     "refresh": "Refresh",
     "hidePhotosInAlbums": "Hide Photos in Albums",
-    "copyLink": "Copy Link"
+    "copyLink": "Copy Link",
+    "changePassword": "Change Password"
   },
   "modals": {
     "header": {
@@ -563,7 +566,24 @@
       "todaysTasks": "Today's Tasks",
       "scheduledTasks": "Scheduled Tasks",
       "overdueTasks": "Overdue Tasks",
-      "completedTasks": "Completed Tasks"
+      "completedTasks": "Completed Tasks",
+      "filteredTasks": "Filtered Tasks"
+    }
+  },
+  "accountSettings": {
+    "title": {
+      "profilePicture": "Profile Picture",
+      "username": "Username",
+      "displayName": "Display Name",
+      "email": "Email Address",
+      "password": "Password"
+    },
+    "desc": {
+      "profilePicture": " Upload a profile picture to personalize your account.",
+      "username": "The name that identifies you on the platform.",
+      "displayName": "The name that is displayed to other users.",
+      "email": "The email address you use to sign in to your account.",
+      "password": "Set a strong password to protect your account."
     }
   }
 }

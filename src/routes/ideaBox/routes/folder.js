@@ -32,7 +32,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     [
         body('name').exists().notEmpty(),
         body('container').exists().notEmpty(),
@@ -56,7 +56,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     [
         body('name').exists().notEmpty(),
         body('icon').exists().notEmpty(),
@@ -80,7 +80,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -91,7 +91,7 @@ router.delete(
 )
 
 router.post(
-    '/add-idea/:folderId',
+    '/idea/:folderId',
     body('ideaId').exists().notEmpty(),
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
@@ -109,7 +109,7 @@ router.post(
 )
 
 router.delete(
-    '/remove-idea/:folderId',
+    '/idea/:folderId',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { folderId } = req.params

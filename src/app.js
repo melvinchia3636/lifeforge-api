@@ -53,7 +53,7 @@ const limiter = rateLimit({
     skip: async req => {
         if (
             req.path.startsWith('/media/') ||
-            req.path.match(/$\/locales\/[a-z]{2,5}$/)
+            req.path.match(/$\/locales\/[a-zA-z\-]{2,5}$/)
         ) {
             return true
         }
@@ -102,22 +102,45 @@ router.use(limiter)
 router.use(express.static('static'))
 
 router.get('/', async (req, res) => {
-    const routes = all_routes(router)
-        .flatMap(route =>
-            route.methods.map(method => ({
-                path: route.path,
-                method,
-                description: DESCRIPTIONS[route.path]
-            }))
-        )
-        .reduce((acc, route) => {
-            if (acc[route.path.split('/')[1]]) {
-                acc[route.path.split('/')[1]].push(route)
-            } else {
-                acc[route.path.split('/')[1]] = [route]
-            }
-            return acc
-        }, {})
+    const routes = Object.fromEntries(
+        Object.entries(
+            all_routes(router)
+                .flatMap(route =>
+                    route.methods.map(method => ({
+                        path: route.path,
+                        method,
+                        description:
+                            DESCRIPTIONS[
+                                `${method} ${route.path.replace(/:(\w+)/g, '{$1}')}`
+                            ]
+                    }))
+                )
+
+                .reduce((acc, route) => {
+                    if (acc[route.path.split('/')[1]]) {
+                        acc[route.path.split('/')[1]].push(route)
+                    } else {
+                        acc[route.path.split('/')[1]] = [route]
+                    }
+                    return acc
+                }, {})
+        ).map(([key, value]) => [
+            key,
+            value.sort((a, b) => {
+                if (a.path.split('/')[2] === b.path.split('/')[2]) {
+                    return (
+                        ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].indexOf(
+                            a.method
+                        ) -
+                        ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'].indexOf(
+                            b.method
+                        )
+                    )
+                }
+                return a.path.localeCompare(b.path)
+            })
+        ])
+    )
 
     res.render('api-explorer', {
         routes

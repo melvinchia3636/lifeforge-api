@@ -11,7 +11,7 @@ const router = express.Router()
 let importProgress = 'empty'
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const entries = await pb.collection('music_entry').getFullList({
@@ -89,7 +89,7 @@ router.post(
 )
 
 router.patch(
-    '/update/:id',
+    '/:id',
     [body('name').notEmpty(), body('author').notEmpty()],
     asyncWrapper(async (req, res) => {
         const result = validationResult(req)
@@ -111,7 +111,7 @@ router.patch(
 )
 
 router.delete(
-    '/delete/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params

@@ -6,7 +6,7 @@ import { body } from 'express-validator'
 const router = express.Router()
 
 router.get(
-    '/get/:id',
+    '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
@@ -34,7 +34,7 @@ router.get(
 )
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
@@ -47,7 +47,7 @@ router.get(
 )
 
 router.post(
-    '/create',
+    '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { name, color, icon } = req.body
@@ -62,20 +62,8 @@ router.post(
     })
 )
 
-router.delete(
-    '/delete/:id',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { id } = req.params
-
-        await pb.collection('idea_box_container').delete(id)
-
-        success(res)
-    })
-)
-
 router.patch(
-    '/update/:id',
+    '/:id',
     [
         body('name').isString().optional(),
         body('color').isHexColor().optional(),
@@ -92,6 +80,18 @@ router.patch(
             color,
             icon
         })
+
+        success(res)
+    })
+)
+
+router.delete(
+    '/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
+
+        await pb.collection('idea_box_container').delete(id)
 
         success(res)
     })
