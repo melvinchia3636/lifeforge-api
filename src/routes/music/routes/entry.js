@@ -82,7 +82,7 @@ router.post(
                 fs.unlinkSync(fp)
             }
             importProgress = 'completed'
-        } catch (err) {
+        } catch {
             importProgress = 'failed'
         }
     })

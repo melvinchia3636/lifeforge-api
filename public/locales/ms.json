@@ -267,7 +267,8 @@
     "musics": "Cari Muzik...",
     "albums": "Cari Album...",
     "projects": "Cari Projek...",
-    "transactions": "Cari Transaksi..."
+    "transactions": "Cari Transaksi...",
+    "guitarTabs": "Cari Tab Gitar..."
   },
   "button": {
     "create": "Cipta",
@@ -334,7 +335,11 @@
     "refresh": "Muat Semula",
     "hidePhotosInAlbums": "Sembunyikan Foto dalam Album",
     "copyLink": "Salin Pautan",
-    "changePassword": "Tukar Kata Laluan"
+    "changePassword": "Tukar Kata Laluan",
+    "importFromNas": "Import dari NAS",
+    "downloadFromYoutube": "Muat turun dari YouTube",
+    "previous": "Sebelum",
+    "next": "Seterus"
   },
   "modals": {
     "header": {
@@ -370,7 +375,10 @@
       "editTransaction": "Edit Transaksi",
       "viewReceipt": "Lihat Resit",
       "manageWidgets": "Urus Widget",
-      "downloadFromYoutube": "Muat turun dari YouTube"
+      "downloadFromYoutube": "Muat turun dari YouTube",
+      "updateUsername": "Kemas Kini Nama Pengguna",
+      "updateEmail": "Kemas Kini Emel",
+      "updateDisplayname": "Kemas Kini Nama Paparan"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -442,7 +450,10 @@
     "subtasks": "Subtugas",
     "none": "Tiada",
     "categoryType": "Jenis Kategori",
-    "initialBalance": "Baki Awal"
+    "initialBalance": "Baki Awal",
+    "username": "Nama Pengguna",
+    "displayname": "Nama Paparan",
+    "email": "Alamat Emel"
   },
   "table": {
     "date": "Tarikh",

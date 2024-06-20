@@ -267,7 +267,8 @@
     "musics": "Search Music...",
     "albums": "Search Albums...",
     "projects": "Search Projects...",
-    "transactions": "Search Transactions..."
+    "transactions": "Search Transactions...",
+    "guitarTabs": "Search Guitar Tabs..."
   },
   "button": {
     "create": "Create",
@@ -334,7 +335,11 @@
     "refresh": "Refresh",
     "hidePhotosInAlbums": "Hide Photos in Albums",
     "copyLink": "Copy Link",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "importFromNas": "Import from NAS",
+    "downloadFromYoutube": "Download from YouTube",
+    "previous": "Previous",
+    "next": "Next"
   },
   "modals": {
     "header": {
@@ -370,7 +375,10 @@
       "editTransaction": "Edit Transaction",
       "viewReceipt": "View Receipt",
       "manageWidgets": "Manage Widgets",
-      "downloadFromYoutube": "Download from YouTube"
+      "downloadFromYoutube": "Download from YouTube",
+      "updateUsername": "Update Username",
+      "updateEmail": "Update Email",
+      "updateDisplayname": "Update Display Name"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -442,7 +450,10 @@
     "subtasks": "Subtasks",
     "none": "None",
     "categoryType": "Category Type",
-    "initialBalance": "Initial Balance"
+    "initialBalance": "Initial Balance",
+    "username": "Username",
+    "displayname": "Display Name",
+    "email": "Email Address"
   },
   "table": {
     "date": "Date",

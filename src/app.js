@@ -21,7 +21,7 @@ import achievementsRoutes from './routes/achievements/index.js'
 import spotifyRoutes from './routes/spotify/index.js'
 import photosRoutes from './routes/photos/index.js'
 import musicRoutes from './routes/music/index.js'
-import guitarTabsRoutes from './routes/guitarTabs/index.js'
+import guitarTabsRoutes from './routes/guitar-tabs/index.js'
 import repositoriesRoutes from './routes/repositories/index.js'
 import passwordsRoutes from './routes/passwords/index.js'
 import journalRoutes from './routes/journal/index.js'
@@ -53,7 +53,15 @@ const limiter = rateLimit({
     skip: async req => {
         if (
             req.path.startsWith('/media/') ||
-            req.path.match(/$\/locales\/[a-zA-z\-]{2,5}$/)
+            req.path.match(/\/locales\/(\w|-){2,5}$/) ||
+            [
+                '/codetime/minutes',
+                '/codetime/eventLog',
+                '/user/passkey/challenge',
+                '/user/passkey/login',
+                '/user/auth/verify',
+                '/user/auth/login'
+            ].some(route => req.path.startsWith(route))
         ) {
             return true
         }

@@ -16,7 +16,10 @@ router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const entries = await pb.collection('guitar_tabs_entry').getFullList()
+        const page = req.query.page || 1
+        const entries = await pb
+            .collection('guitar_tabs_entry')
+            .getList(page, 20)
 
         success(res, entries)
     })

@@ -268,7 +268,8 @@
     "musics": "搜索音乐...",
     "albums": "搜索相册...",
     "projects": "搜索项目...",
-    "transactions": "搜索交易..."
+    "transactions": "搜索交易...",
+    "guitarTabs": "搜索吉他谱..."
   },
   "button": {
     "create": "创建",
@@ -335,7 +336,11 @@
     "refresh": "刷新",
     "hidePhotosInAlbums": "隐藏相册中的照片",
     "copyLink": "复制链接",
-    "changePassword": "更改密码"
+    "changePassword": "更改密码",
+    "importFromNas": "从 NAS 导入",
+    "downloadFromYoutube": "从 YouTube 下载",
+    "previous": "上一页",
+    "next": "下一页"
   },
   "modals": {
     "header": {
@@ -371,7 +376,10 @@
       "editTransaction": "编辑交易",
       "viewReceipt": "查看收据",
       "manageWidgets": "管理小部件",
-      "downloadFromYoutube": "从 YouTube 下载"
+      "downloadFromYoutube": "从 YouTube 下载",
+      "updateUsername": "更新用户名",
+      "updateEmail": "更新邮箱",
+      "updateDisplayname": "更新显示名称"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -443,7 +451,10 @@
     "subtasks": "子任务",
     "none": "无",
     "categoryType": "类别类型",
-    "initialBalance": "初始余额"
+    "initialBalance": "初始余额",
+    "username": "用户名",
+    "displayname": "显示名称",
+    "email": "邮箱地址"
   },
   "table": {
     "date": "日期",

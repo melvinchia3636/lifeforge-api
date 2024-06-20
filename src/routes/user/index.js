@@ -17,9 +17,16 @@ router.post(
         const { email, password } = req.body
         const pb = new Pocketbase(process.env.PB_HOST)
 
-        await pb.collection('users').authWithPassword(email, password)
+        let failed = false
 
-        if (pb.authStore.isValid) {
+        await pb
+            .collection('users')
+            .authWithPassword(email, password)
+            .catch(() => {
+                failed = true
+            })
+
+        if (pb.authStore.isValid && !failed) {
             const userData = pb.authStore.model
 
             for (let key in userData) {
@@ -191,13 +198,29 @@ router.patch(
         const id = pb.authStore.model.id
         const { data } = req.body
 
+        if (data.email) {
+            await pb.collection('users').requestEmailChange(data.email)
+        }
+
         const newData = {}
 
         if (data.username) newData.username = data.username
-        if (data.email) newData.email = data.email
         if (data.name) newData.name = data.name
 
         await pb.collection('users').update(id, newData)
+
+        success(res)
+    })
+)
+
+router.post(
+    '/settings/request-password-reset',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+
+        await pb
+            .collection('users')
+            .requestPasswordReset(pb.authStore.model.email)
 
         success(res)
     })
