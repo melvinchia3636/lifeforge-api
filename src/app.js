@@ -10,6 +10,7 @@ import Pocketbase from 'pocketbase'
 
 import localesRoutes from './routes/locales/index.js'
 import userRoutes from './routes/user/index.js'
+import projectsMRoutes from './routes/projects-m/index.js'
 import projectsKRoutes from './routes/projects-k/index.js'
 import todoListRoutes from './routes/todoList/index.js'
 import calendarRoutes from './routes/calendar/index.js'
@@ -60,7 +61,8 @@ const limiter = rateLimit({
                 '/user/passkey/challenge',
                 '/user/passkey/login',
                 '/user/auth/verify',
-                '/user/auth/login'
+                '/user/auth/login',
+                '/books-library/cover'
             ].some(route => req.path.startsWith(route))
         ) {
             return true
@@ -166,6 +168,7 @@ router.get(
 )
 router.use('/locales', localesRoutes)
 router.use('/user', userRoutes)
+router.use('/projects-m', projectsMRoutes)
 router.use('/projects-k', projectsKRoutes)
 router.use('/todo-list', todoListRoutes)
 router.use('/calendar', calendarRoutes)

@@ -106,7 +106,8 @@
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
-    "accountSettings": "Account Settings"
+    "accountSettings": "Account Settings",
+    "documentation": "Documentation"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -378,7 +379,8 @@
       "downloadFromYoutube": "Download from YouTube",
       "updateUsername": "Update Username",
       "updateEmail": "Update Email",
-      "updateDisplayname": "Update Display Name"
+      "updateDisplayname": "Update Display Name",
+      "addStatus": "Add Status"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -453,7 +455,10 @@
     "initialBalance": "Initial Balance",
     "username": "Username",
     "displayname": "Display Name",
-    "email": "Email Address"
+    "email": "Email Address",
+    "statusName": "Status Name",
+    "statusColor": "Status Color",
+    "statusIcon": "Status Icon"
   },
   "table": {
     "date": "Date",
@@ -508,7 +513,14 @@
       "allBooks": "All Books"
     },
     "photos": {
-      "favourites": "Favourites"
+      "favourites": "Favourites",
+      "archive": "Archived",
+      "lockedFolder": "Locked Folder",
+      "trash": "Trash"
+    },
+    "projects-m": {
+      "allProjects": "All Projects",
+      "starred": "Starred Projects"
     }
   },
   "calendar": {

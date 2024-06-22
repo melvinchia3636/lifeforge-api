@@ -106,7 +106,8 @@
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
-    "accountSettings": "Tetapan Akaun"
+    "accountSettings": "Tetapan Akaun",
+    "documentation": "Dokumentasi"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -378,7 +379,8 @@
       "downloadFromYoutube": "Muat turun dari YouTube",
       "updateUsername": "Kemas Kini Nama Pengguna",
       "updateEmail": "Kemas Kini Emel",
-      "updateDisplayname": "Kemas Kini Nama Paparan"
+      "updateDisplayname": "Kemas Kini Nama Paparan",
+      "addStatus": "Tambahkan Status"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -453,7 +455,10 @@
     "initialBalance": "Baki Awal",
     "username": "Nama Pengguna",
     "displayname": "Nama Paparan",
-    "email": "Alamat Emel"
+    "email": "Alamat Emel",
+    "statusName": "Nama Status",
+    "statusColor": "Warna Status",
+    "statusIcon": "Ikon Status"
   },
   "table": {
     "date": "Tarikh",
@@ -508,7 +513,14 @@
       "allBooks": "Semua Buku"
     },
     "photos": {
-      "favourites": "Kegemaran"
+      "favourites": "Kegemaran",
+      "archive": "Diarkib",
+      "lockedFolder": "Folder Terkunci",
+      "trash": "Sampah"
+    },
+    "projects-m": {
+      "allProjects": "Semua Projek",
+      "starred": "Projek Berbintang"
     }
   },
   "calendar": {

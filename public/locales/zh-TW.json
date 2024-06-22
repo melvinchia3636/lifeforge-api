@@ -107,7 +107,8 @@
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
-    "accountSettings": "帳戶設定"
+    "accountSettings": "帳戶設定",
+    "documentation": "文件"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -379,7 +380,8 @@
       "downloadFromYoutube": "從 YouTube 下載",
       "updateUsername": "更新使用者名稱",
       "updateEmail": "更新電子郵件",
-      "updateDisplayname": "更新顯示名稱"
+      "updateDisplayname": "更新顯示名稱",
+      "addStatus": "新增狀態"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -454,7 +456,10 @@
     "initialBalance": "初始餘額",
     "username": "使用者名稱",
     "displayname": "顯示名稱",
-    "email": "電子郵件地址"
+    "email": "電子郵件地址",
+    "statusName": "狀態名稱",
+    "statusColor": "狀態顏色",
+    "statusIcon": "狀態圖示"
   },
   "table": {
     "date": "日期",
@@ -509,7 +514,14 @@
       "allBooks": "所有書籍"
     },
     "photos": {
-      "favourites": "收藏"
+      "favourites": "收藏",
+      "archive": "已歸檔照片",
+      "lockedFolder": "鎖定資料夾",
+      "trash": "資源回收桶"
+    },
+    "projects-m": {
+      "allProjects": "所有專案",
+      "starred": "收藏的專案"
     }
   },
   "calendar": {

@@ -241,7 +241,25 @@ const DESCRIPTION = {
     'GET /books-library/cover/{author}/{book}':
         'Get book cover by author and book name',
     'GET /books-library/list': 'List all books in the library',
-    'GET /cron': 'Cron job to prevent server from sleeping'
+    'GET /cron': 'Cron job to prevent server from sleeping',
+    'GET /projects-m/category': 'Get a list of project categories',
+    'POST /projects-m/category': 'Create a new project category',
+    'PATCH /projects-m/category/{id}': 'Update a project category by ID',
+    'DELETE /projects-m/category/{id}': 'Delete a project category by ID',
+    'GET /projects-m/status': 'Get project status',
+    'POST /projects-m/status': 'Create a new project status',
+    'PATCH /projects-m/status/{id}': 'Update project status by ID',
+    'DELETE /projects-m/status/{id}': 'Delete project status by ID',
+    'GET /projects-m/technology': 'Get a list of project technologies',
+    'POST /projects-m/technology': 'Create a new project technology',
+    'PATCH /projects-m/technology/{id}': 'Update a project technology by ID',
+    'DELETE /projects-m/technology/{id}': 'Delete a project technology by ID',
+    'GET /projects-m/visibility': 'Get a list of project visibility options',
+    'POST /projects-m/visibility': 'Create a new project visibility option',
+    'PATCH /projects-m/visibility/{id}':
+        'Update a project visibility option by ID',
+    'DELETE /projects-m/visibility/{id}':
+        'Delete a project visibility option by ID'
 }
 
 export default DESCRIPTION

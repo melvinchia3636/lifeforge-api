@@ -107,7 +107,8 @@
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
-    "accountSettings": "帐户设置"
+    "accountSettings": "帐户设置",
+    "documentation": "文档"
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -379,7 +380,8 @@
       "downloadFromYoutube": "从 YouTube 下载",
       "updateUsername": "更新用户名",
       "updateEmail": "更新邮箱",
-      "updateDisplayname": "更新显示名称"
+      "updateDisplayname": "更新显示名称",
+      "addStatus": "添加状态"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -454,7 +456,10 @@
     "initialBalance": "初始余额",
     "username": "用户名",
     "displayname": "显示名称",
-    "email": "邮箱地址"
+    "email": "邮箱地址",
+    "statusName": "状态名称",
+    "statusColor": "状态颜色",
+    "statusIcon": "状态图标"
   },
   "table": {
     "date": "日期",
@@ -509,7 +514,14 @@
       "allBooks": "所有书籍"
     },
     "photos": {
-      "favourites": "收藏"
+      "favourites": "收藏",
+      "archive": "已归档照片",
+      "lockedFolder": "锁定文件夹",
+      "trash": "回收站"
+    },
+    "projects-m": {
+      "allProjects": "所有项目",
+      "starred": "收藏的项目"
     }
   },
   "calendar": {
