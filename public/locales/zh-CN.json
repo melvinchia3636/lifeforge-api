@@ -343,7 +343,8 @@
     "downloadFromYoutube": "从 YouTube 下载",
     "previous": "上一页",
     "next": "下一页",
-    "newProject": "新建项目"
+    "newProject": "新建项目",
+    "copied": "已复制"
   },
   "modals": {
     "header": {

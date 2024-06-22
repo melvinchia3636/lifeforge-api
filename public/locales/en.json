@@ -341,7 +341,8 @@
     "downloadFromYoutube": "Download from YouTube",
     "previous": "Previous",
     "next": "Next",
-    "newProject": "New Project"
+    "newProject": "New Project",
+    "copied": "Copied"
   },
   "modals": {
     "header": {
