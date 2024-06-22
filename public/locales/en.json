@@ -340,7 +340,8 @@
     "importFromNas": "Import from NAS",
     "downloadFromYoutube": "Download from YouTube",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "newProject": "New Project"
   },
   "modals": {
     "header": {
@@ -380,7 +381,14 @@
       "updateUsername": "Update Username",
       "updateEmail": "Update Email",
       "updateDisplayname": "Update Display Name",
-      "addStatus": "Add Status"
+      "addStatus": "Add Status",
+      "addVisibility": "Add Visibility",
+      "editStatus": "Edit Status",
+      "editVisibility": "Edit Visibility",
+      "addTechnology": "Add Technology",
+      "editTechnology": "Edit Technology",
+      "addProject": "Add Project",
+      "editProject": "Edit Project"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -458,7 +466,18 @@
     "email": "Email Address",
     "statusName": "Status Name",
     "statusColor": "Status Color",
-    "statusIcon": "Status Icon"
+    "statusIcon": "Status Icon",
+    "visibilityName": "Visibility Name",
+    "visibilityIcon": "Visibility Icon",
+    "technologyName": "Technology Name",
+    "technologyIcon": "Technology Icon",
+    "projectColor": "Project Color",
+    "projectIcon": "Project Icon",
+    "status": "Status",
+    "projectStatus": "Project Status",
+    "projectCategory": "Project Category",
+    "projectVisibility": "Project Visibility",
+    "projectTechnologies": "Project Technologies"
   },
   "table": {
     "date": "Date",

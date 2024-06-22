@@ -108,7 +108,8 @@
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
     "accountSettings": "帐户设置",
-    "documentation": "文档"
+    "documentation": "文档",
+    "header": {}
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -341,7 +342,8 @@
     "importFromNas": "从 NAS 导入",
     "downloadFromYoutube": "从 YouTube 下载",
     "previous": "上一页",
-    "next": "下一页"
+    "next": "下一页",
+    "newProject": "新建项目"
   },
   "modals": {
     "header": {
@@ -381,7 +383,14 @@
       "updateUsername": "更新用户名",
       "updateEmail": "更新邮箱",
       "updateDisplayname": "更新显示名称",
-      "addStatus": "添加状态"
+      "addStatus": "添加状态",
+      "addVisibility": "添加可见性",
+      "editStatus": "编辑状态",
+      "editVisibility": "编辑可见性",
+      "addTechnology": "添加技术",
+      "editTechnology": "编辑技术",
+      "addProject": "添加项目",
+      "editProject": "编辑项目"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -459,7 +468,18 @@
     "email": "邮箱地址",
     "statusName": "状态名称",
     "statusColor": "状态颜色",
-    "statusIcon": "状态图标"
+    "statusIcon": "状态图标",
+    "visibilityName": "可见性名称",
+    "visibilityIcon": "可见性图标",
+    "technologyName": "技术名称",
+    "technologyIcon": "技术图标",
+    "projectColor": "项目颜色",
+    "projectIcon": "项目图标",
+    "status": "状态",
+    "projectStatus": "项目状态",
+    "projectCategory": "项目类别",
+    "projectVisibility": "项目可见性",
+    "projectTechnologies": "项目技术"
   },
   "table": {
     "date": "日期",

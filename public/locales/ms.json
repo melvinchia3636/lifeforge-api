@@ -107,7 +107,8 @@
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
     "accountSettings": "Tetapan Akaun",
-    "documentation": "Dokumentasi"
+    "documentation": "Dokumentasi",
+    "header": {}
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -340,7 +341,8 @@
     "importFromNas": "Import dari NAS",
     "downloadFromYoutube": "Muat turun dari YouTube",
     "previous": "Sebelum",
-    "next": "Seterus"
+    "next": "Seterus",
+    "newProject": "Projek Baharu"
   },
   "modals": {
     "header": {
@@ -380,7 +382,14 @@
       "updateUsername": "Kemas Kini Nama Pengguna",
       "updateEmail": "Kemas Kini Emel",
       "updateDisplayname": "Kemas Kini Nama Paparan",
-      "addStatus": "Tambahkan Status"
+      "addStatus": "Tambahkan Status",
+      "addVisibility": "Tambah Kelihatan",
+      "editStatus": "Edit Status",
+      "editVisibility": "Edit Keterlihatan",
+      "addTechnology": "Tambah Teknologi",
+      "editTechnology": "Sunting Teknologi",
+      "addProject": "Tambah Projek",
+      "editProject": "Edit Projek"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -458,7 +467,18 @@
     "email": "Alamat Emel",
     "statusName": "Nama Status",
     "statusColor": "Warna Status",
-    "statusIcon": "Ikon Status"
+    "statusIcon": "Ikon Status",
+    "visibilityName": "Nama Kelihatan",
+    "visibilityIcon": "Icon Keterlihatan",
+    "technologyName": "Nama Teknologi",
+    "technologyIcon": "Ikon Teknologi",
+    "projectColor": "Warna Projek",
+    "projectIcon": "Ikon Projek",
+    "status": "Status",
+    "projectStatus": "Status Projek",
+    "projectCategory": "Kategori Projek",
+    "projectVisibility": "Keterlihatan Projek",
+    "projectTechnologies": "Teknologi Projek"
   },
   "table": {
     "date": "Tarikh",

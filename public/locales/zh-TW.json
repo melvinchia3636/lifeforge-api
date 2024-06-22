@@ -108,7 +108,8 @@
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
     "accountSettings": "帳戶設定",
-    "documentation": "文件"
+    "documentation": "文件",
+    "header": {}
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -341,7 +342,8 @@
     "importFromNas": "從 NAS 匯入",
     "downloadFromYoutube": "從 YouTube 下載",
     "previous": "上一頁",
-    "next": "下一頁"
+    "next": "下一頁",
+    "newProject": "新增專案"
   },
   "modals": {
     "header": {
@@ -381,7 +383,14 @@
       "updateUsername": "更新使用者名稱",
       "updateEmail": "更新電子郵件",
       "updateDisplayname": "更新顯示名稱",
-      "addStatus": "新增狀態"
+      "addStatus": "新增狀態",
+      "addVisibility": "新增可見性",
+      "editStatus": "編輯狀態",
+      "editVisibility": "編輯可見性",
+      "addTechnology": "新增技術",
+      "editTechnology": "編輯技術",
+      "addProject": "新增專案",
+      "editProject": "編輯專案"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -459,7 +468,18 @@
     "email": "電子郵件地址",
     "statusName": "狀態名稱",
     "statusColor": "狀態顏色",
-    "statusIcon": "狀態圖示"
+    "statusIcon": "狀態圖示",
+    "visibilityName": "可見性名稱",
+    "visibilityIcon": "可見性圖示",
+    "technologyName": "技術名稱",
+    "technologyIcon": "技術圖示",
+    "projectColor": "專案顏色",
+    "projectIcon": "專案圖示",
+    "status": "狀態",
+    "projectStatus": "專案狀態",
+    "projectCategory": "專案類別",
+    "projectVisibility": "專案可見度",
+    "projectTechnologies": "專案技術"
   },
   "table": {
     "date": "日期",
