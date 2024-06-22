@@ -21,6 +21,7 @@
     "helmet": "^7.1.0",
     "http-proxy-middleware": "^3.0.0",
     "imap-simple": "^5.1.0",
+    "jsdom": "^24.1.0",
     "mailparser": "^3.7.1",
     "mime-types": "^2.1.35",
     "moment": "^2.30.1",
@@ -35,6 +36,7 @@
     "request": "^2.88.2",
     "serverless-http": "^3.2.0",
     "systeminformation": "^5.21.24",
+    "table": "^6.8.2",
     "underscore": "^1.13.6",
     "uuid": "^9.0.1"
   },

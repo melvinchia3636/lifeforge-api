@@ -3,6 +3,7 @@ import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import validate from '../../../common/validate.js'
 
 const router = express.Router()
 
@@ -18,21 +19,7 @@ router.get(
     })
 )
 
-router.get(
-    '/valid/:id',
-    asyncWrapper(async (req, res) => {
-        const { id } = req.params
-        const { pb } = req
-
-        const { totalItems } = await pb
-            .collection('journal_entry')
-            .getList(1, 1, {
-                filter: `id = "${id}"`
-            })
-
-        success(res, totalItems === 1)
-    })
-)
+router.get('/valid/:id', validate('journal_entry'))
 
 router.get(
     '/list',

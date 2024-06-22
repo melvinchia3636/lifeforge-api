@@ -3,6 +3,7 @@ import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import validate from '../../../common/validate.js'
 
 const router = express.Router()
 
@@ -43,28 +44,7 @@ router.get(
     })
 )
 
-router.get(
-    '/valid/:id',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { id } = req.params
-
-        if (!pb.authStore.isValid) {
-            await pb.admins.authWithPassword(
-                process.env.PB_EMAIL,
-                process.env.PB_PASSWORD
-            )
-        }
-
-        const { totalItems } = await pb
-            .collection('photos_album')
-            .getList(1, 1, {
-                filter: `id = "${id}"`
-            })
-
-        success(res, totalItems === 1)
-    })
-)
+router.get('/valid/:id', validate('photos_album'))
 
 router.get(
     '/list',

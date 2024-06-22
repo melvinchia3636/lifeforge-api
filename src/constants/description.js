@@ -259,7 +259,20 @@ const DESCRIPTION = {
     'PATCH /projects-m/visibility/{id}':
         'Update a project visibility option by ID',
     'DELETE /projects-m/visibility/{id}':
-        'Delete a project visibility option by ID'
+        'Delete a project visibility option by ID',
+    'GET /projects-m/entry': 'Get a list of project entries',
+    'GET /projects-m/entry/{id}': 'Get a specific project entry by ID',
+    'GET /projects-m/entry/valid/{id}':
+        'Validate a specific project entry by ID',
+    'POST /projects-m/entry': 'Create a new project entry',
+    'PATCH /projects-m/entry/{id}': 'Update a project entry by ID',
+    'DELETE /projects-m/entry/{id}': 'Delete a project entry by ID',
+    'GET /projects-m/kanban/column/{projectId}':
+        'Get kanban columns for a specific project',
+    'POST /projects-m/kanban/column/{projectId}':
+        'Create a new kanban column for a specific project',
+    'PATCH /projects-m/kanban/column/{id}': 'Update a kanban column by ID',
+    'DELETE /projects-m/kanban/column/{id}': 'Delete a kanban column by ID'
 }
 
 export default DESCRIPTION

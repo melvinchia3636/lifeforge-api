@@ -1,6 +1,7 @@
 import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import validate from '../../../common/validate.js'
 
 const router = express.Router()
 
@@ -16,21 +17,7 @@ router.get(
     })
 )
 
-router.get(
-    '/valid/:id',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { id } = req.params
-
-        const { totalItems } = await pb
-            .collection('flashcards_deck')
-            .getList(1, 1, {
-                filter: `id = "${id}"`
-            })
-
-        success(res, totalItems === 1)
-    })
-)
+router.get('/valid/:id', validate('flashcards_deck'))
 
 router.get(
     '/list',
