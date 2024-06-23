@@ -64,7 +64,8 @@
       "type": "Jenis",
       "assets": "Aset",
       "sso": "Log Masuk Tunggal",
-      "ledgers": "Buku Besar"
+      "ledgers": "Buku Besar",
+      "technology": "Teknologi"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -390,7 +391,9 @@
       "addTechnology": "Tambah Teknologi",
       "editTechnology": "Sunting Teknologi",
       "addProject": "Tambah Projek",
-      "editProject": "Edit Projek"
+      "editProject": "Edit Projek",
+      "addColumn": "Tambah Lajur",
+      "editColumn": "Edit Lajur"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -479,7 +482,10 @@
     "projectStatus": "Status Projek",
     "projectCategory": "Kategori Projek",
     "projectVisibility": "Keterlihatan Projek",
-    "projectTechnologies": "Teknologi Projek"
+    "projectTechnologies": "Teknologi Projek",
+    "columnName": "Nama Lajur",
+    "columnIcon": "Ikon Lajur",
+    "columnColor": "Warna Lajur"
   },
   "table": {
     "date": "Tarikh",

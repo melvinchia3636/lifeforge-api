@@ -65,7 +65,8 @@
       "assets": "资产",
       "ledger": "账簿",
       "sso": "单点登录",
-      "ledgers": "账本"
+      "ledgers": "账本",
+      "technology": "技术"
     },
     "descriptions": {
       "dashboard": "您的任务控制中心，妙不可言！",
@@ -391,7 +392,9 @@
       "addTechnology": "添加技术",
       "editTechnology": "编辑技术",
       "addProject": "添加项目",
-      "editProject": "编辑项目"
+      "editProject": "编辑项目",
+      "addColumn": "添加列",
+      "editColumn": "编辑列"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -480,7 +483,10 @@
     "projectStatus": "项目状态",
     "projectCategory": "项目类别",
     "projectVisibility": "项目可见性",
-    "projectTechnologies": "项目技术"
+    "projectTechnologies": "项目技术",
+    "columnName": "列名",
+    "columnIcon": "列图标",
+    "columnColor": "列颜色"
   },
   "table": {
     "date": "日期",

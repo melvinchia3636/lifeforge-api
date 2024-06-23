@@ -13,8 +13,17 @@ router.get(
         const columns = await pb
             .collection('projects_m_kanban_column')
             .getFullList({
-                filter: `project="${projectId}"`
+                filter: `project="${projectId}"`,
+                expand: 'projects_m_kanban_entry_via_column'
             })
+
+        columns.forEach(column => {
+            if (column.expand) {
+                column.entries =
+                    column.expand.projects_m_kanban_entry_via_column
+                delete column.expand
+            }
+        })
 
         success(res, columns)
     })
@@ -24,10 +33,10 @@ router.post(
     '/:projectId',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const { name, icon } = req.body
+        const { name, icon, color } = req.body
         const { projectId } = req.params
 
-        if (!name || !icon) {
+        if (!name || !icon || !color) {
             clientError(res, 'Missing required fields')
             return
         }
@@ -35,6 +44,7 @@ router.post(
         const column = await pb.collection('projects_m_kanban_column').create({
             name,
             icon,
+            color,
             project: projectId
         })
 
@@ -47,7 +57,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-        const { name, icon } = req.body
+        const { name, icon, color } = req.body
 
         if (!id) {
             clientError(res, 'id is required')
@@ -58,7 +68,8 @@ router.patch(
             .collection('projects_m_kanban_column')
             .update(id, {
                 name,
-                icon
+                icon,
+                color
             })
 
         success(res, column)

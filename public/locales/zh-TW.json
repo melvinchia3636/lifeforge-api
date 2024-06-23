@@ -65,7 +65,8 @@
       "assets": "資產",
       "ledger": "帳簿",
       "sso": "單點登入",
-      "ledgers": "帳本"
+      "ledgers": "帳本",
+      "technology": "技術"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -391,7 +392,9 @@
       "addTechnology": "新增技術",
       "editTechnology": "編輯技術",
       "addProject": "新增專案",
-      "editProject": "編輯專案"
+      "editProject": "編輯專案",
+      "addColumn": "新增欄位",
+      "editColumn": "編輯欄"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -480,7 +483,10 @@
     "projectStatus": "專案狀態",
     "projectCategory": "專案類別",
     "projectVisibility": "專案可見度",
-    "projectTechnologies": "專案技術"
+    "projectTechnologies": "專案技術",
+    "columnName": "欄位名稱",
+    "columnIcon": "欄位圖示",
+    "columnColor": "欄位顏色"
   },
   "table": {
     "date": "日期",

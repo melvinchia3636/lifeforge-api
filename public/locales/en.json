@@ -64,7 +64,8 @@
       "type": "Type",
       "assets": "Assets",
       "sso": "Single Sign-On",
-      "ledgers": "Ledgers"
+      "ledgers": "Ledgers",
+      "technology": "Technology"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -389,7 +390,9 @@
       "addTechnology": "Add Technology",
       "editTechnology": "Edit Technology",
       "addProject": "Add Project",
-      "editProject": "Edit Project"
+      "editProject": "Edit Project",
+      "addColumn": "Add Column",
+      "editColumn": "Edit Column"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -478,7 +481,10 @@
     "projectStatus": "Project Status",
     "projectCategory": "Project Category",
     "projectVisibility": "Project Visibility",
-    "projectTechnologies": "Project Technologies"
+    "projectTechnologies": "Project Technologies",
+    "columnName": "Column Name",
+    "columnIcon": "Column Icon",
+    "columnColor": "Column Color"
   },
   "table": {
     "date": "Date",
