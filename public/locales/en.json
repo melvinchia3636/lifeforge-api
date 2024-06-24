@@ -65,7 +65,9 @@
       "assets": "Assets",
       "sso": "Single Sign-On",
       "ledgers": "Ledgers",
-      "technology": "Technology"
+      "technology": "Technology",
+      "changiAirport": "Changi Airport",
+      "aviation": "Aviation"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -103,12 +105,17 @@
       "ledgers": "Split your expenses so you know who owes who 💸",
       "transactions": "Know where your money is going 💸",
       "guitarTabs": "Stores and organizes your guitar tablatures effortlessly.",
-      "accountSettings": "A place to manage all your accounts details and info"
+      "accountSettings": "A place to manage all your accounts details and info",
+      "flightStatus": "Tracks Changi Airport flight statuses in real-time",
+      "airports": "View all sorts of information about airports around the world"
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
     "accountSettings": "Account Settings",
-    "documentation": "Documentation"
+    "documentation": "Documentation",
+    "airlineInformation": "Airline Information",
+    "changiFlightStatus": "Changi Airport Flight Status",
+    "airports": "Airports"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -270,7 +277,9 @@
     "albums": "Search Albums...",
     "projects": "Search Projects...",
     "transactions": "Search Transactions...",
-    "guitarTabs": "Search Guitar Tabs..."
+    "guitarTabs": "Search Guitar Tabs...",
+    "flights": "Search flights...",
+    "airports": "Search Airports..."
   },
   "button": {
     "create": "Create",

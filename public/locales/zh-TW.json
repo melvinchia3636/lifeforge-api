@@ -66,7 +66,9 @@
       "ledger": "帳簿",
       "sso": "單點登入",
       "ledgers": "帳本",
-      "technology": "技術"
+      "technology": "技術",
+      "changiAirport": "樟宜機場",
+      "aviation": "航空"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -104,13 +106,18 @@
       "ledgers": "分類您的帳目，確保您知道您的錢花在誰身上。",
       "transactions": "查看您的交易歷史，確保您的錢花在正確的地方。",
       "guitarTabs": "輕鬆存放和整理您的吉他譜。",
-      "accountSettings": "管理所有帳號資訊和資料的地方"
+      "accountSettings": "管理所有帳號資訊和資料的地方",
+      "flightStatus": "即時追蹤樟宜機場航班狀態",
+      "airports": "查看有關世界各地機場的各種信息"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
     "accountSettings": "帳戶設定",
     "documentation": "文件",
-    "header": {}
+    "header": {},
+    "airlineInformation": "航空公司資訊",
+    "changiFlightStatus": "樟宜機場航班狀態",
+    "airports": "機場"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -272,7 +279,9 @@
     "albums": "搜尋相簿...",
     "projects": "搜尋專案...",
     "transactions": "搜尋交易...",
-    "guitarTabs": "搜尋吉他譜..."
+    "guitarTabs": "搜尋吉他譜...",
+    "flights": "搜尋航班...",
+    "airports": "搜尋機場..."
   },
   "button": {
     "create": "創建",

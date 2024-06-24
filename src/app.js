@@ -25,6 +25,8 @@ import musicRoutes from './routes/music/index.js'
 import guitarTabsRoutes from './routes/guitar-tabs/index.js'
 import repositoriesRoutes from './routes/repositories/index.js'
 import passwordsRoutes from './routes/passwords/index.js'
+import airportsRoutes from './routes/airports/index.js'
+import changiRoutes from './routes/changi/index.js'
 import journalRoutes from './routes/journal/index.js'
 import serverRoutes from './routes/server/index.js'
 import changeLogRoutes from './routes/changeLog/index.js'
@@ -185,6 +187,8 @@ router.use('/music', musicRoutes)
 router.use('/guitar-tabs', guitarTabsRoutes)
 router.use('/repositories', repositoriesRoutes)
 router.use('/passwords', passwordsRoutes)
+router.use('/airports', airportsRoutes)
+router.use('/changi', changiRoutes)
 router.use('/mail-inbox', mailInboxRoutes)
 router.use('/dns-records', DNSRecordsRoutes)
 router.use('/server', serverRoutes)

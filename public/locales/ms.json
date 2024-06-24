@@ -65,7 +65,9 @@
       "assets": "Aset",
       "sso": "Log Masuk Tunggal",
       "ledgers": "Buku Besar",
-      "technology": "Teknologi"
+      "technology": "Teknologi",
+      "changiAirport": "Lapangan Terbang Changi",
+      "aviation": "Penerbangan"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -103,13 +105,18 @@
       "ledgers": "Bahagikan perbelanjaan anda supaya anda tahu siapa yang berhutang kepada siapa 💸",
       "transactions": "Ketahui di mana wang anda pergi 💸",
       "guitarTabs": "Menyimpan dan menyusun tablatur gitar anda dengan mudah.",
-      "accountSettings": "Tempat untuk mengurus semua maklumat dan profil akaun anda"
+      "accountSettings": "Tempat untuk mengurus semua maklumat dan profil akaun anda",
+      "flightStatus": "Menjejaki status penerbangan Lapangan Terbang Changi dalam masa nyata",
+      "airports": "Lihat semua jenis maklumat tentang lapangan terbang di seluruh dunia"
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
     "accountSettings": "Tetapan Akaun",
     "documentation": "Dokumentasi",
-    "header": {}
+    "header": {},
+    "airlineInformation": "Maklumat Penerbangan",
+    "changiFlightStatus": "Status Penerbangan Changi Airport",
+    "airports": "Lapangan Terbang"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -271,7 +278,9 @@
     "albums": "Cari Album...",
     "projects": "Cari Projek...",
     "transactions": "Cari Transaksi...",
-    "guitarTabs": "Cari Tab Gitar..."
+    "guitarTabs": "Cari Tab Gitar...",
+    "flights": "Cari penerbangan...",
+    "airports": "Carian Lapangan Terbang..."
   },
   "button": {
     "create": "Cipta",
