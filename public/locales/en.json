@@ -279,7 +279,11 @@
     "transactions": "Search Transactions...",
     "guitarTabs": "Search Guitar Tabs...",
     "flights": "Search flights...",
-    "airports": "Search Airports..."
+    "airports": "Search Airports...",
+    "continents": "Search Continents...",
+    "countries": "Search Countries...",
+    "regions": "Search Regions...",
+    "allAirports": "Search All Airports..."
   },
   "button": {
     "create": "Create",
@@ -352,7 +356,12 @@
     "previous": "Previous",
     "next": "Next",
     "newProject": "New Project",
-    "copied": "Copied"
+    "copied": "Copied",
+    "goToWebsite": "Visit Website",
+    "previousFlights": "Previous Flights",
+    "nextFlights": "Next Flights",
+    "summarizeWithAi": "Summarize with AI",
+    "loadMore": "Load More"
   },
   "modals": {
     "header": {
@@ -401,7 +410,8 @@
       "addProject": "Add Project",
       "editProject": "Edit Project",
       "addColumn": "Add Column",
-      "editColumn": "Edit Column"
+      "editColumn": "Edit Column",
+      "notamDetails": "NOTAM Details"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",

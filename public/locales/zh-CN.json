@@ -281,7 +281,11 @@
     "transactions": "搜索交易...",
     "guitarTabs": "搜索吉他谱...",
     "flights": "搜索航班...",
-    "airports": "搜索机场..."
+    "airports": "搜索机场...",
+    "continents": "搜索大陆...",
+    "countries": "搜索国家...",
+    "regions": "搜索地区...",
+    "allAirports": "搜索所有机场"
   },
   "button": {
     "create": "创建",
@@ -354,7 +358,12 @@
     "previous": "上一页",
     "next": "下一页",
     "newProject": "新建项目",
-    "copied": "已复制"
+    "copied": "已复制",
+    "goToWebsite": "访问网站",
+    "previousFlights": "之前的航班",
+    "nextFlights": "之后的航班",
+    "summarizeWithAi": "AI 摘要",
+    "loadMore": "加载更多"
   },
   "modals": {
     "header": {
@@ -403,7 +412,8 @@
       "addProject": "添加项目",
       "editProject": "编辑项目",
       "addColumn": "添加列",
-      "editColumn": "编辑列"
+      "editColumn": "编辑列",
+      "notamDetails": "NOTAM 详细信息"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",

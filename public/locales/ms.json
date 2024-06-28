@@ -280,7 +280,11 @@
     "transactions": "Cari Transaksi...",
     "guitarTabs": "Cari Tab Gitar...",
     "flights": "Cari penerbangan...",
-    "airports": "Carian Lapangan Terbang..."
+    "airports": "Carian Lapangan Terbang...",
+    "continents": "Cari Benua...",
+    "countries": "Carian Negara...",
+    "regions": "Cari Kawasan...",
+    "allAirports": "Cari Semua Lapangan Terbang"
   },
   "button": {
     "create": "Cipta",
@@ -353,7 +357,12 @@
     "previous": "Sebelum",
     "next": "Seterus",
     "newProject": "Projek Baharu",
-    "copied": "Disalin"
+    "copied": "Disalin",
+    "goToWebsite": "Lawati Laman Web",
+    "previousFlights": "Penerbangan Sebelumnya",
+    "nextFlights": "Penerbangan Seterusnya",
+    "summarizeWithAi": "Ringkaskan dengan AI",
+    "loadMore": "Muat Lagi"
   },
   "modals": {
     "header": {
@@ -402,7 +411,8 @@
       "addProject": "Tambah Projek",
       "editProject": "Edit Projek",
       "addColumn": "Tambah Lajur",
-      "editColumn": "Edit Lajur"
+      "editColumn": "Edit Lajur",
+      "notamDetails": "Maklumat NOTAM"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",

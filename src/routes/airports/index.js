@@ -2,6 +2,17 @@ import express from 'express'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 import { clientError, success } from '../../utils/response.js'
 import JSDOM from 'jsdom'
+import fs from 'fs'
+import COUNTRIES from './countries.js'
+import REGIONS from './regions.js'
+import metarParser from 'aewx-metar-parser'
+import notamnDecoder from './notamdecoder.js'
+import FIRs from './FIRs.js'
+import { GoogleGenerativeAI } from '@google/generative-ai'
+
+const AIRPORT_DATA = JSON.parse(
+    fs.readFileSync('src/routes/airports/airports.json')
+).slice(1)
 
 const cache = new Map()
 const cacheTime = 1000 * 60 * 60
@@ -9,38 +20,147 @@ const cacheTime = 1000 * 60 * 60
 const router = express.Router()
 
 router.get(
-    '/continents',
+    '/search',
     asyncWrapper(async (req, res) => {
-        const TARGET = 'https://ourairports.com/airports.html'
-        if (
-            cache.has('continents') &&
-            new Date() - cache.get('continents').lastFetch < cacheTime
-        ) {
-            success(res, cache.get('continents').data)
+        let { query } = req.query
+
+        if (!query) {
+            clientError(res, 'Query is required')
             return
         }
 
-        const rawData = await fetch(TARGET).then(res => res.text())
+        query = decodeURIComponent(query).toLowerCase()
 
-        const dom = new JSDOM.JSDOM(rawData)
+        const result = AIRPORT_DATA.filter(airport => {
+            const continentName = {
+                AF: 'Africa',
+                AN: 'Antarctica',
+                AS: 'Asia',
+                EU: 'Europe',
+                NA: 'North America',
+                OC: 'Oceania',
+                SA: 'South America'
+            }[airport[7]]
+            const countryName = COUNTRIES[airport[8]]?.toLowerCase()
+            const regionName = REGIONS[airport[9]].toLowerCase()
+            const locationName = airport[10].toLowerCase()
+            const airportName = airport[3].toLowerCase()
+            const icao = airport[12].toLowerCase()
+            const iata = airport[13].toLowerCase()
 
-        const result = Object.fromEntries(
-            Array.from(dom.window.document.querySelectorAll('.geo.listing'))
-                .map(e =>
-                    e.textContent
-                        .trim()
-                        .split('\n')
-                        .map(e => e.trim())
-                )
-                .map(([name, count]) => [
-                    name,
-                    parseInt(count.replace(/,|\(/g, ''))
-                ])
-        )
-        cache.set('continents', {
-            data: result,
-            lastFetch: new Date()
+            return (
+                continentName.includes(query) ||
+                countryName?.includes(query) ||
+                regionName.includes(query) ||
+                locationName.includes(query) ||
+                airportName.includes(query) ||
+                iata.includes(query) ||
+                icao.includes(query)
+            )
         })
+            .map(airport => ({
+                id: airport[1],
+                name: airport[3],
+                continentCode: airport[7],
+                country: {
+                    code: airport[8],
+                    name: COUNTRIES[airport[8]]
+                },
+                region: {
+                    code: airport[9],
+                    name: REGIONS[airport[9]]
+                },
+                locationName: airport[10],
+                iata: airport[13],
+                icao: airport[12],
+                type: airport[2],
+                match: (() => {
+                    const continentName = {
+                        AF: 'Africa',
+                        AN: 'Antarctica',
+                        AS: 'Asia',
+                        EU: 'Europe',
+                        NA: 'North America',
+                        OC: 'Oceania',
+                        SA: 'South America'
+                    }[airport[7]].toLowerCase()
+                    const countryName = COUNTRIES[airport[8]]?.toLowerCase()
+                    const regionName = REGIONS[airport[9]].toLowerCase()
+                    const locationName = airport[10].toLowerCase()
+                    const airportName = airport[3].toLowerCase()
+                    const icao = airport[12].toLowerCase()
+                    const iata = airport[13].toLowerCase()
+
+                    if (iata.includes(query)) return 'iata'
+                    if (icao.includes(query)) return 'icao'
+                    if (airportName.includes(query)) return 'name'
+                    if (locationName.includes(query)) return 'location'
+                    if (regionName.includes(query)) return 'region'
+                    if (countryName.includes(query)) return 'country'
+                    if (continentName.includes(query)) return 'continent'
+                })()
+            }))
+            .sort(
+                (a, b) =>
+                    [
+                        'large_airport',
+                        'medium_airport',
+                        'small_airport',
+                        'heliport',
+                        'seaplane_base',
+                        'balloonport',
+                        'closed'
+                    ].indexOf(a.type) -
+                    [
+                        'large_airport',
+                        'medium_airport',
+                        'small_airport',
+                        'heliport',
+                        'seaplane_base',
+                        'balloonport',
+                        'closed'
+                    ].indexOf(b.type)
+            )
+            .sort((a, b) => {
+                return (
+                    [
+                        'iata',
+                        'icao',
+                        'name',
+                        'location',
+                        'region',
+                        'country',
+                        'continent'
+                    ].indexOf(a.match) -
+                    [
+                        'iata',
+                        'icao',
+                        'name',
+                        'location',
+                        'region',
+                        'country',
+                        'continent'
+                    ].indexOf(b.match)
+                )
+            })
+            .slice(0, 10)
+
+        success(res, result)
+    })
+)
+
+router.get(
+    '/continents',
+    asyncWrapper(async (req, res) => {
+        const result = AIRPORT_DATA.reduce((acc, airport) => {
+            if (!acc[airport[7]]) {
+                acc[airport[7]] = 1
+            } else {
+                acc[airport[7]]++
+            }
+
+            return acc
+        }, {})
 
         success(res, result)
     })
@@ -56,42 +176,27 @@ router.get(
             return
         }
 
-        const continentID = `countries/${id}`
+        const result = AIRPORT_DATA.reduce((acc, airport) => {
+            if (airport[7] === id) {
+                const country = airport[8]
+                if (!acc[country]) {
+                    acc[country] = 1
+                } else {
+                    acc[country]++
+                }
+            }
 
-        const TARGET = `https://ourairports.com/continents/${id}/`
-        if (
-            cache.has(continentID) &&
-            new Date() - cache.get(continentID).lastFetch < cacheTime
-        ) {
-            success(res, cache.get(continentID).data)
-            return
-        }
+            return acc
+        }, {})
 
-        const rawData = await fetch(TARGET).then(res => res.text())
-
-        const dom = new JSDOM.JSDOM(rawData)
-
-        const result = Object.fromEntries(
-            Array.from(dom.window.document.querySelectorAll('.geo.listing'))
-                .map(e => [
-                    e.querySelector('img').src.match(/\/([A-Z]+)\.png/)[1],
-                    ...e.textContent
-                        .trim()
-                        .split('\n')
-                        .map(e => e.trim())
-                ])
-                .map(([img, name, count]) => [
-                    name,
-                    [img, parseInt(count.replace(/,|\(/g, ''))]
-                ])
+        const final = Object.fromEntries(
+            Object.keys(result).map(country => [
+                country,
+                [COUNTRIES[country], result[country]]
+            ])
         )
 
-        cache.set(continentID, {
-            data: result,
-            lastFetch: new Date()
-        })
-
-        success(res, result)
+        success(res, final)
     })
 )
 
@@ -100,54 +205,50 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { id } = req.params
 
-        const countryID = `regions/${id}`
+        const result = AIRPORT_DATA.reduce((acc, airport) => {
+            if (airport[8] === id) {
+                const region = airport[9]
+                if (!acc[region]) {
+                    acc[region] = 1
+                } else {
+                    acc[region]++
+                }
+            }
 
-        if (
-            cache.has(countryID) &&
-            new Date() - cache.get(countryID).lastFetch < cacheTime
-        ) {
-            success(res, cache.get(countryID).data)
-            return
-        }
+            return acc
+        }, {})
 
-        const rawData = await fetch(
-            `https://ourairports.com/countries/${id}/airports.html`
-        ).then(res => res.text())
-
-        const dom = new JSDOM.JSDOM(rawData)
-
-        const result = Object.fromEntries(
-            Array.from(dom.window.document.querySelectorAll('.geo.listing'))
-                .map(e => [
-                    e
-                        .querySelector('a')
-                        .href.split('/')
-                        .filter(e => e)
-                        .pop(),
-                    ...e.textContent
-                        .trim()
-                        .split('\n')
-                        .map(e => e.trim())
-                ])
-                .map(([id, name, count]) => [
-                    name,
-                    [id, parseInt(count.replace(/,|\(/g, ''))]
-                ])
+        const final = Object.fromEntries(
+            Object.keys(result).map(region => [
+                region,
+                [REGIONS[region], result[region]]
+            ])
         )
 
-        const breadcrumbs = Array.from(
-            dom.window.document.querySelectorAll(
-                'nav[aria-label="breadcrumb"] li'
-            )
-        ).map(e => e.textContent.trim())
+        const breadcrumbs = [COUNTRIES[Object.keys(final)[0].split('-')[0]]]
 
-        cache.set(countryID, {
-            data: {
-                data: result,
-                breadcrumbs
-            },
-            lastFetch: new Date()
+        success(res, {
+            data: final,
+            breadcrumbs
         })
+    })
+)
+
+router.get(
+    '/airports/:id',
+    asyncWrapper(async (req, res) => {
+        const { id } = req.params
+
+        const result = AIRPORT_DATA.filter(airport => airport[9] === id).map(
+            airport => ({
+                id: airport[1],
+                location: airport[10],
+                type: airport[2],
+                name: airport[3]
+            })
+        )
+
+        const breadcrumbs = [COUNTRIES[id.split('-')[0]], REGIONS[id]]
 
         success(res, {
             data: result,
@@ -157,60 +258,282 @@ router.get(
 )
 
 router.get(
-    '/airports/:countryID/:regID',
+    '/airport/:airportID',
     asyncWrapper(async (req, res) => {
-        const { countryID, regID } = req.params
+        const { airportID } = req.params
 
-        const regionID = `airports/${countryID}/${regID}`
+        const result = AIRPORT_DATA.find(airport => airport[1] === airportID)
+
+        const final = {
+            id: result[1],
+            type: result[2],
+            name: result[3],
+            iata: result[13],
+            icao: result[12],
+            latitude: result[4],
+            longitude: result[5],
+            elevation: result[6],
+            website: result[15],
+            wikipedia: result[16],
+            has_airline_service: result[11] === 'yes'
+        }
+
+        const breadcrumbs = [
+            COUNTRIES[result[8]],
+            REGIONS[result[9]],
+            result[10],
+            final.name
+        ]
+
+        success(res, {
+            data: final,
+            breadcrumbs
+        })
+    })
+)
+
+router.get(
+    '/airport/:airportID/flights/:type',
+    asyncWrapper(async (req, res) => {
+        const { airportID, type } = req.params
+        const { page } = req.query
+
+        if (!['arrivals', 'departures'].includes(type)) {
+            clientError(res, 'Invalid type')
+            return
+        }
+
+        if (page && isNaN(parseInt(page))) {
+            clientError(res, 'Invalid page')
+            return
+        }
+
+        const flightIDKey = `airport/${airportID}/flights/${type}/${page}`
 
         if (
-            cache.has(regionID) &&
-            new Date() - cache.get(regionID).lastFetch < cacheTime
+            cache.has(flightIDKey) &&
+            new Date() - cache.get(flightIDKey).lastFetch < 1000 * 60
         ) {
-            success(res, cache.get(regionID).data)
+            success(res, cache.get(flightIDKey).data)
             return
         }
 
         const rawData = await fetch(
-            `https://ourairports.com/countries/${countryID}/${regID}/airports.html`
+            `https://www.avionio.com/widget/en/${airportID}/${type}?page=${page || 0}`
         ).then(res => res.text())
 
         const dom = new JSDOM.JSDOM(rawData)
 
-        const result = Array.from(
-            dom.window.document.querySelectorAll('.airport.listing.row')
-        ).map(e => {
-            const name = e.querySelector('h3').textContent.trim()
-            const location = e.querySelector('p.text-muted').textContent.trim()
-            const type = e.querySelector('img').alt.replace(' marker', '')
-            const id = e.querySelector('a').href.match(/\/airports\/(.+)\//)[1]
+        const flights = []
+        dom.window.document.querySelectorAll('.tt-row').forEach(row => {
+            if (row.classList.contains('tt-child')) return
 
-            return {
-                name,
-                location,
-                type,
-                id
+            const flight = {
+                time: row.querySelector('.tt-t').textContent.trim(),
+                date: row.querySelector('.tt-d').textContent.trim(),
+                origin: {
+                    iata: row
+                        .querySelector('.tt-i a')
+                        .title.replace(/ •.*$/, ''),
+                    name: row.querySelector('.tt-ap').textContent.trim()
+                },
+                flightNumber: row.querySelector('.tt-f a').textContent.trim(),
+                airline: row
+                    .querySelector('.tt-al')
+                    .textContent.replace(/\s+\d+$/, '')
+                    .trim(),
+                status: row.querySelector('.tt-s').textContent.trim()
             }
+
+            const timeDetails = row.querySelector('.tt-s')
+            if (timeDetails.classList.contains('estimated')) {
+                flight.estimatedTime = timeDetails.textContent
+                    .replace('Estimated ', '')
+                    .trim()
+            } else if (timeDetails.classList.contains('scheduled')) {
+                flight.scheduledTime = timeDetails.textContent
+                    .replace('Scheduled ', '')
+                    .trim()
+            }
+
+            flights.push(flight)
         })
 
-        const breadcrumbs = Array.from(
-            dom.window.document.querySelectorAll(
-                'nav[aria-label="breadcrumb"] li'
-            )
-        ).map(e => e.textContent.trim())
-
-        cache.set(regionID, {
-            data: {
-                data: result,
-                breadcrumbs: breadcrumbs
-            },
+        cache.set(flightIDKey, {
+            data: flights,
             lastFetch: new Date()
         })
 
-        success(res, {
-            data: result,
-            breadcrumbs
+        success(res, flights)
+    })
+)
+
+router.get(
+    '/airport/:airportID/METAR',
+    asyncWrapper(async (req, res) => {
+        const { airportID } = req.params
+        try {
+            const response = await fetch(
+                `https://metar-taf.com/${airportID}`
+            ).then(res => res.text())
+
+            const dom = new JSDOM.JSDOM(response)
+
+            const metar = dom.window.document.querySelector('code').textContent
+
+            const parsedMETAR = metarParser(metar)
+
+            success(res, parsedMETAR)
+        } catch {
+            try {
+                const response = await fetch(
+                    `https://tgftp.nws.noaa.gov/data/observations/metar/stations/${airportID}.TXT`
+                ).then(res => res.text())
+
+                const data = response.trim()
+                const metar = data.split('\n')[1]
+
+                const parsedMETAR = metarParser(metar)
+
+                success(res, parsedMETAR)
+            } catch {
+                success(res, 'none')
+            }
+        }
+    })
+)
+
+router.get(
+    '/airport/:airportID/NOTAM',
+    asyncWrapper(async (req, res) => {
+        const { airportID } = req.params
+        const page = req.query.page ?? '-1'
+
+        try {
+            const response = await fetch(
+                `https://metar-taf.com/notams/${airportID}?page=${page}`
+            ).then(res => res.text())
+
+            if (response === 'DONE') {
+                success(res, [])
+                return
+            }
+
+            const dom = new JSDOM.JSDOM(response)
+
+            const NOTAMs = Array.from(
+                dom.window.document.querySelectorAll('a')
+            ).map(e => {
+                const title = e.querySelector('h5')
+                const status = title.nextElementSibling
+                const distance = status.nextElementSibling
+                const time = distance.nextElementSibling
+                const codeSummary = e.querySelector('pre')
+                const duration = codeSummary.nextSibling
+
+                return {
+                    id: e.href.replace('/notam/', ''),
+                    title: title.innerHTML
+                        .replace(/<.*?span.*?>/g, '')
+                        .split('·')
+                        .map(e => e.trim()),
+                    status: status.innerHTML,
+                    distance: distance.innerHTML.trim(),
+                    time: time.innerHTML.replace('&gt;', '>'),
+                    codeSummary: codeSummary.innerHTML,
+                    duration: duration.data.trim()
+                }
+            })
+
+            success(res, NOTAMs)
+        } catch (err) {
+            console.log(err)
+            success(res, 'none')
+        }
+    })
+)
+
+router.get(
+    '/NOTAM/:NOTAMID',
+    asyncWrapper(async (req, res) => {
+        const { NOTAMID } = req.params
+        try {
+            const response = await fetch(
+                `https://metar-taf.com/notam/${NOTAMID}?frame=1`
+            ).then(res => res.text())
+
+            const dom = new JSDOM.JSDOM(response)
+
+            const NOTAM = dom.window.document.querySelector('pre').innerHTML
+
+            const result = notamnDecoder.decode(NOTAM)
+
+            result.raw = NOTAM
+
+            if (result.qualification && result.qualification.location) {
+                result.qualification.location = [
+                    result.qualification.location,
+                    FIRs[result.qualification.location]
+                ]
+            }
+
+            success(res, result)
+        } catch (err) {
+            console.log(err)
+            success(res, 'none')
+        }
+    })
+)
+
+router.get(
+    '/NOTAM/:NOTAMID/summarize',
+    asyncWrapper(async (req, res) => {
+        const { NOTAMID } = req.params
+
+        const response = await fetch(
+            `https://metar-taf.com/notam/${NOTAMID}?frame=1`
+        ).then(res => res.text())
+
+        const dom = new JSDOM.JSDOM(response)
+
+        const NOTAM = dom.window.document.querySelector('pre').innerHTML
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+
+        const model = genAI.getGenerativeModel({
+            model: 'gemini-1.5-flash'
         })
+
+        const prompt = `
+            Please summarize the following NOTAM (Notice to Airmen) data into a concise and easy-to-understand format, including:
+
+                Location
+                Dates and times of operation
+                Type of activity or operation
+                Coordinates or area affected
+                Altitude or height restrictions
+                Any additional remarks or notes
+
+            Please provide a clear and concise summary that can be easily understood by pilots, air traffic controllers, and other aviation professionals.
+            
+            ${NOTAM}
+            `
+
+        let MAX_RETRY = 5
+
+        while (MAX_RETRY > 0) {
+            try {
+                const result = await model.generateContent(prompt)
+                const final = result.response
+                const text = final.text()
+
+                success(res, text)
+                return
+            } catch {
+                MAX_RETRY--
+                continue
+            }
+        }
     })
 )
 
