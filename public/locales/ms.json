@@ -362,7 +362,11 @@
     "previousFlights": "Penerbangan Sebelumnya",
     "nextFlights": "Penerbangan Seterusnya",
     "summarizeWithAi": "Ringkaskan dengan AI",
-    "loadMore": "Muat Lagi"
+    "loadMore": "Muat Lagi",
+    "confirm": "Sahkan",
+    "viewRaw": "Papar Teks Mentah",
+    "regenerate": "Jana semula",
+    "uploadPhotos": "Muat Naik Foto"
   },
   "modals": {
     "header": {
@@ -412,7 +416,10 @@
       "editProject": "Edit Projek",
       "addColumn": "Tambah Lajur",
       "editColumn": "Edit Lajur",
-      "notamDetails": "Maklumat NOTAM"
+      "notamDetails": "Maklumat NOTAM",
+      "viewJournalEntry": "Lihat Journal Entri",
+      "modifyJournalEntry": "Sunting Entri Journal",
+      "createJournalEntry": "Buat Entri Jurnal"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -504,7 +511,9 @@
     "projectTechnologies": "Teknologi Projek",
     "columnName": "Nama Lajur",
     "columnIcon": "Ikon Lajur",
-    "columnColor": "Warna Lajur"
+    "columnColor": "Warna Lajur",
+    "moodOfTheDay": "Mood untuk hari ini",
+    "emoji": "Emoji"
   },
   "table": {
     "date": "Tarikh",
@@ -598,7 +607,9 @@
       "replace": "menggantikan",
       "clearMedium": "membersihkan",
       "thumbnail": "mengemaskini imej kecil bagi",
-      "generate": "menjana"
+      "generate": "menjana",
+      "summarized": "meringkaskan",
+      "cleanedup": "membersihkan"
     },
     "redirected": "Dilencongkan"
   },
@@ -653,5 +664,10 @@
       "email": "Alamat e-mel yang anda gunakan untuk log masuk ke akaun anda.",
       "password": "Tetapkan kata laluan yang kukuh untuk melindungi akaun anda."
     }
+  },
+  "journal": {
+    "lockedMessage": "Jurnal Dikunci",
+    "passwordRequired": "Kata laluan diperlukan untuk menyahsulit entri jurnal anda",
+    "failedToUnlock": "Gagal Buka Kunci"
   }
 }

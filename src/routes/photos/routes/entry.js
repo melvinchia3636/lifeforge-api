@@ -7,6 +7,7 @@ import moment from 'moment'
 import axios from 'axios'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import sizeOf from 'image-size'
 
 const router = express.Router()
 
@@ -204,7 +205,7 @@ router.get(
 
         if (allPhotosDimensions === undefined) {
             allPhotosDimensions = 'pending'
-            const filter = `is_deleted = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `
+            const filter = `is_deleted = false && is_locked = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `
             const response = await pb
                 .collection('photos_entry_dimensions')
                 .getList(1, 1, { filter })
@@ -322,7 +323,7 @@ router.get(
         }
 
         const { hideInAlbum } = req.query
-        const filter = `is_deleted = false && shot_time >= '${moment(
+        const filter = `is_deleted = false && is_locked = false && shot_time >= '${moment(
             date,
             'YYYY - MM - DD'
         )
@@ -386,7 +387,7 @@ router.get(
         let photos = await pb
             .collection('photos_entry_dimensions')
             .getFullList({
-                filter: `photo.album = "${albumId}"`,
+                filter: `photo.album = "${albumId}" && is_deleted = false && is_locked = false`,
                 expand: 'photo',
                 fields: 'expand.photo.id,expand.photo.image,expand,shot_time.photo.raw,width,height,id,expand.photo.collectionId',
                 sort: '-shot_time'
@@ -414,6 +415,8 @@ router.post(
     '/import',
     asyncWrapper(async (req, res) => {
         const { pb } = req
+        const locked = req.query.locked === 'true'
+
         fs.readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
             .filter(file => file.startsWith('.'))
             .forEach(file =>
@@ -519,43 +522,9 @@ router.post(
                     }
                 }
 
-                if (tags.Orientation) {
-                    if (tags.PixelXDimension && tags.PixelYDimension) {
-                        data.width =
-                            tags.Orientation.value === 6 ||
-                            tags.Orientation.value === 8
-                                ? tags.PixelYDimension.value
-                                : tags.PixelXDimension.value
-                        data.height =
-                            tags.Orientation.value === 6 ||
-                            tags.Orientation.value === 8
-                                ? tags.PixelXDimension.value
-                                : tags.PixelYDimension.value
-                    } else if (tags['Image Width'] && tags['Image Height']) {
-                        data.width =
-                            tags.Orientation.value === 6 ||
-                            tags.Orientation.value === 8
-                                ? tags['Image Height'].value
-                                : tags['Image Width'].value
-                        data.height =
-                            tags.Orientation.value === 6 ||
-                            tags.Orientation.value === 8
-                                ? tags['Image Width'].value
-                                : tags['Image Height'].value
-                    } else {
-                        data.width = 0
-                        data.height = 0
-                    }
-                } else if (tags.PixelXDimension && tags.PixelYDimension) {
-                    data.width = tags.PixelXDimension.value
-                    data.height = tags.PixelYDimension.value
-                } else if (tags['Image Width'] && tags['Image Height']) {
-                    data.width = tags['Image Width'].value
-                    data.height = tags['Image Height'].value
-                } else {
-                    data.width = 0
-                    data.height = 0
-                }
+                const size = await sizeOf(filePath)
+                data.width = size.width
+                data.height = size.height
             } else {
                 completed += 1
                 progress = completed / Object.keys(distinctFiles).length
@@ -584,7 +553,8 @@ router.post(
                 photo: newEntry.id,
                 width: data.width,
                 height: data.height,
-                shot_time: data.shot_time
+                shot_time: data.shot_time,
+                is_locked: locked
             })
 
             const thumbnailImageUrl = pb.files.getUrl(

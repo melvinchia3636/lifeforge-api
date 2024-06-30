@@ -363,7 +363,11 @@
     "previousFlights": "之前的航班",
     "nextFlights": "之后的航班",
     "summarizeWithAi": "AI 摘要",
-    "loadMore": "加载更多"
+    "loadMore": "加载更多",
+    "confirm": "确认",
+    "viewRaw": "查看原始文字",
+    "regenerate": "重新生成",
+    "uploadPhotos": "上传照片"
   },
   "modals": {
     "header": {
@@ -413,7 +417,10 @@
       "editProject": "编辑项目",
       "addColumn": "添加列",
       "editColumn": "编辑列",
-      "notamDetails": "NOTAM 详细信息"
+      "notamDetails": "NOTAM 详细信息",
+      "viewJournalEntry": "查看日记条目",
+      "modifyJournalEntry": "修改日记条目",
+      "createJournalEntry": "创建日记条目"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -505,7 +512,9 @@
     "projectTechnologies": "项目技术",
     "columnName": "列名",
     "columnIcon": "列图标",
-    "columnColor": "列颜色"
+    "columnColor": "列颜色",
+    "moodOfTheDay": "今日心情",
+    "emoji": "表情符号"
   },
   "table": {
     "date": "日期",
@@ -598,7 +607,9 @@
       "replace": "替换",
       "clearMedium": "清除",
       "thumbnail": "更新缩略图",
-      "generate": "生成"
+      "generate": "生成",
+      "cleanedup": "已清理",
+      "summarized": "摘要"
     },
     "fetchError": "从服务器获取数据失败",
     "redirected": "已重定向"
@@ -654,5 +665,10 @@
       "email": "您用于登录帐户的电子邮件地址。",
       "password": "设置强密码来保护您的帐户。"
     }
+  },
+  "journal": {
+    "lockedMessage": "日志已锁定",
+    "passwordRequired": "需要密码才能解密您的日记条目",
+    "failedToUnlock": "日记解锁失败"
   }
 }

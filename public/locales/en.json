@@ -115,7 +115,8 @@
     "documentation": "Documentation",
     "airlineInformation": "Airline Information",
     "changiFlightStatus": "Changi Airport Flight Status",
-    "airports": "Airports"
+    "airports": "Airports",
+    "header": {}
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -361,7 +362,11 @@
     "previousFlights": "Previous Flights",
     "nextFlights": "Next Flights",
     "summarizeWithAi": "Summarize with AI",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "confirm": "Confirm",
+    "viewRaw": "View Raw Text",
+    "regenerate": "Regenerate",
+    "uploadPhotos": "Upload Photos"
   },
   "modals": {
     "header": {
@@ -411,7 +416,10 @@
       "editProject": "Edit Project",
       "addColumn": "Add Column",
       "editColumn": "Edit Column",
-      "notamDetails": "NOTAM Details"
+      "notamDetails": "NOTAM Details",
+      "viewJournalEntry": "View Journal Entry",
+      "modifyJournalEntry": "Modify Journal Entry",
+      "createJournalEntry": "Create Journal Entry"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -503,7 +511,9 @@
     "projectTechnologies": "Project Technologies",
     "columnName": "Column Name",
     "columnIcon": "Column Icon",
-    "columnColor": "Column Color"
+    "columnColor": "Column Color",
+    "moodOfTheDay": "Mood of the day",
+    "emoji": "Emoji"
   },
   "table": {
     "date": "Date",
@@ -597,7 +607,9 @@
       "replace": "replaced",
       "clearMedium": "cleared",
       "thumbnail": "updated thumbnail of",
-      "generate": "generated"
+      "generate": "generated",
+      "cleanedup": "cleaned up",
+      "summarized": "summarized"
     },
     "redirected": "Redirected",
     "redirecting": "Redirecting..."
@@ -653,5 +665,10 @@
       "email": "The email address you use to sign in to your account.",
       "password": "Set a strong password to protect your account."
     }
+  },
+  "journal": {
+    "lockedMessage": "Journal Locked",
+    "passwordRequired": "A password is required to decrypt your journal entries",
+    "failedToUnlock": "Journal Unlock Failed"
   }
 }

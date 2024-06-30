@@ -1,18 +1,12 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
-import { v4 } from 'uuid'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt2 } from '../../../utils/encryption.js'
 import { body, validationResult } from 'express-validator'
+import { challenge } from '../index.js'
 
 const router = express.Router()
-
-let challenge = v4()
-
-setTimeout(() => {
-    challenge = v4()
-}, 1000 * 60)
 
 router.get(
     '/challenge',
@@ -34,10 +28,10 @@ router.post(
         const { pb } = req
 
         const salt = await bcrypt.genSalt(10)
-        const masterPasswordHash = await bcrypt.hash(password, salt)
+        const journalMasterPasswordHash = await bcrypt.hash(password, salt)
 
         await pb.collection('users').update(id, {
-            masterPasswordHash
+            journalMasterPasswordHash
         })
 
         res.json({
@@ -55,11 +49,11 @@ router.post(
         const decryptedMaster = decrypt2(password, challenge)
 
         const user = await pb.collection('users').getOne(id)
-        const { masterPasswordHash } = user
+        const { journalMasterPasswordHash } = user
 
         const isMatch = await bcrypt.compare(
             decryptedMaster,
-            masterPasswordHash
+            journalMasterPasswordHash
         )
 
         success(res, isMatch)

@@ -36,7 +36,11 @@ router.post(
             }
 
             userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
+            userData.hasJournalMasterPassword = Boolean(
+                userData.journalMasterPasswordHash
+            )
             delete userData['masterPasswordHash']
+            delete userData['journalMasterPasswordHash']
 
             res.json({
                 state: 'success',
@@ -71,7 +75,11 @@ router.post(
             }
 
             userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
+            userData.hasJournalMasterPassword = Boolean(
+                userData.journalMasterPasswordHash
+            )
             delete userData['masterPasswordHash']
+            delete userData['journalMasterPasswordHash']
 
             res.json({
                 state: 'success',

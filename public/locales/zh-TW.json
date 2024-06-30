@@ -363,7 +363,11 @@
     "previousFlights": "之前的航班",
     "nextFlights": "之後的航班",
     "summarizeWithAi": "AI 摘要",
-    "loadMore": "載入更多"
+    "loadMore": "載入更多",
+    "confirm": "確認",
+    "viewRaw": "查看原始文字",
+    "regenerate": "重新生成",
+    "uploadPhotos": "上傳照片"
   },
   "modals": {
     "header": {
@@ -413,7 +417,10 @@
       "editProject": "編輯專案",
       "addColumn": "新增欄位",
       "editColumn": "編輯欄",
-      "notamDetails": "NOTAM 詳細資訊"
+      "notamDetails": "NOTAM 詳細資訊",
+      "viewJournalEntry": "查看日誌項目",
+      "modifyJournalEntry": "修改日誌項目",
+      "createJournalEntry": "建立日記條目"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -505,7 +512,9 @@
     "projectTechnologies": "專案技術",
     "columnName": "欄位名稱",
     "columnIcon": "欄位圖示",
-    "columnColor": "欄位顏色"
+    "columnColor": "欄位顏色",
+    "moodOfTheDay": "今日心情",
+    "emoji": "表情符號"
   },
   "table": {
     "date": "日期",
@@ -599,7 +608,9 @@
       "replace": "替換",
       "clearMedium": "清除",
       "thumbnail": "更新縮略圖",
-      "generate": "生成"
+      "generate": "生成",
+      "cleanedup": "已清理",
+      "summarized": "摘要"
     },
     "redirected": "已重新導向"
   },
@@ -654,5 +665,10 @@
       "email": "您用於登入帳戶的電子郵件地址。",
       "password": "設定強密碼來保護您的帳戶。"
     }
+  },
+  "journal": {
+    "lockedMessage": "日誌已鎖定",
+    "passwordRequired": "需要密碼才能解密您的日記條目",
+    "failedToUnlock": "日誌解鎖失敗"
   }
 }
