@@ -3,15 +3,15 @@ import asyncWrapper from '../../utils/asyncWrapper.js'
 import { clientError, success } from '../../utils/response.js'
 import JSDOM from 'jsdom'
 import fs from 'fs'
-import COUNTRIES from './countries.js'
-import REGIONS from './regions.js'
+import COUNTRIES from './data/countries.js'
+import REGIONS from './data/regions.js'
 import metarParser from 'aewx-metar-parser'
 import notamnDecoder from './notamdecoder.js'
-import FIRs from './FIRs.js'
+import FIRs from './data/FIRs.js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
 const AIRPORT_DATA = JSON.parse(
-    fs.readFileSync('src/routes/airports/airports.json')
+    fs.readFileSync('src/routes/airports/data/airports.json')
 ).slice(1)
 
 const cache = new Map()
@@ -534,6 +534,34 @@ router.get(
                 continue
             }
         }
+    })
+)
+
+router.get(
+    '/airport/:airportID/radios',
+    asyncWrapper(async (req, res) => {
+        const { airportID } = req.params
+
+        const response = await fetch(
+            `https://www.liveatc.net/search/?icao=${airportID}`
+        ).then(res => res.text())
+
+        const dom = new JSDOM.JSDOM(response)
+
+        const radios = Array.from(
+            dom.window.document.querySelectorAll('.freqTable tr')
+        )
+            .slice(1)
+            .map(radio => {
+                const [name, frequency] = radio.querySelectorAll('td')
+
+                return {
+                    name: name.textContent,
+                    frequency: frequency.textContent
+                }
+            })
+
+        success(res, radios)
     })
 )
 

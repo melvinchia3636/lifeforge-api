@@ -68,7 +68,8 @@
       "ledgers": "帳本",
       "technology": "技術",
       "changiAirport": "樟宜機場",
-      "aviation": "航空"
+      "aviation": "航空",
+      "dateRange": "日期範圍"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -514,7 +515,10 @@
     "columnIcon": "欄位圖示",
     "columnColor": "欄位顏色",
     "moodOfTheDay": "今日心情",
-    "emoji": "表情符號"
+    "emoji": "表情符號",
+    "journalTitle": "日誌名稱",
+    "startDate": "開始日期",
+    "endDate": "結束日期"
   },
   "table": {
     "date": "日期",
@@ -610,7 +614,8 @@
       "thumbnail": "更新縮略圖",
       "generate": "生成",
       "cleanedup": "已清理",
-      "summarized": "摘要"
+      "summarized": "摘要",
+      "unlock": "解鎖"
     },
     "redirected": "已重新導向"
   },

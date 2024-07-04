@@ -67,7 +67,8 @@
       "ledgers": "Ledgers",
       "technology": "Technology",
       "changiAirport": "Changi Airport",
-      "aviation": "Aviation"
+      "aviation": "Aviation",
+      "dateRange": "Date Range"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -513,7 +514,10 @@
     "columnIcon": "Column Icon",
     "columnColor": "Column Color",
     "moodOfTheDay": "Mood of the day",
-    "emoji": "Emoji"
+    "emoji": "Emoji",
+    "journalTitle": "Journal Title",
+    "startDate": "Start Date",
+    "endDate": "End Date"
   },
   "table": {
     "date": "Date",
@@ -589,7 +593,7 @@
   "fetch": {
     "fetchError": "Failed to fetch data from the server",
     "success": "Yay! Successfully {{action}} the item!",
-    "failure": "Uhh... Failed to {{action}} the item. Please try again.",
+    "failure": "Uhh... Failed to get the item {{action}}. Please try again.",
     "action": {
       "create": "created",
       "update": "updated",
@@ -609,7 +613,8 @@
       "thumbnail": "updated thumbnail of",
       "generate": "generated",
       "cleanedup": "cleaned up",
-      "summarized": "summarized"
+      "summarized": "summarized",
+      "unlock": "Unlocked"
     },
     "redirected": "Redirected",
     "redirecting": "Redirecting..."

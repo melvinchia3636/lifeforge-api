@@ -163,8 +163,18 @@ router.get(
     '/media/:collectionId/:entryId/:photoId',
     asyncWrapper(async (req, res) => {
         const { collectionId, entryId, photoId } = req.params
+        const searchParams = new URLSearchParams()
+
+        if (req.query.thumb) {
+            searchParams.append('thumb', req.query.thumb)
+        }
+
+        if (req.query.token) {
+            searchParams.append('token', req.query.token)
+        }
+
         request(
-            `${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}${req.query.thumb ? `?thumb=${req.query.thumb}` : ''}`
+            `${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}?${searchParams.toString()}`
         ).pipe(res)
     })
 )

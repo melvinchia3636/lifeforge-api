@@ -1,13 +1,13 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body } from 'express-validator'
-import hasError from '../../../utils/checkError.js'
 import validate from '../../../common/validate.js'
-import { decrypt, decrypt2 } from '../../../utils/encryption.js'
+import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js'
 import { challenge } from '../index.js'
 import bcrypt from 'bcrypt'
 import Groq from 'groq-sdk'
+import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
+import fs from 'fs'
 
 const router = express.Router()
 
@@ -39,6 +39,10 @@ router.get(
 
         const entry = await pb.collection('journal_entry').getOne(id)
 
+        const decryptedTitle = entry.title
+            ? decrypt(Buffer.from(entry.title, 'base64'), decryptedMaster)
+            : ''
+
         const decryptedContent = decrypt(
             Buffer.from(entry.content, 'base64'),
             decryptedMaster
@@ -54,9 +58,12 @@ router.get(
             decryptedMaster
         )
 
+        entry.title = decryptedTitle.toString()
         entry.content = decryptedContent.toString()
         entry.summary = decryptedSummary.toString()
         entry.raw = decryptedRaw.toString()
+
+        entry.token = await pb.files.getToken()
 
         success(res, entry)
     })
@@ -94,11 +101,16 @@ router.get(
         })
 
         for (const journal of journals) {
+            const decryptedTitle = journal.title
+                ? decrypt(Buffer.from(journal.title, 'base64'), decryptedMaster)
+                : ''
+
             const decryptedSummary = decrypt(
                 Buffer.from(journal.summary, 'base64'),
                 decryptedMaster
             )
 
+            journal.title = decryptedTitle.toString()
             journal.content = decryptedSummary.toString()
 
             delete journal.summary
@@ -111,55 +123,114 @@ router.get(
 
 router.post(
     '/create',
-    [body('title').notEmpty(), body('content').notEmpty()],
+    uploadMiddleware,
     asyncWrapper(async (req, res) => {
-        if (hasError(req, res)) return
-
         const { pb } = req
-        const { title, content } = req.body
+        const { data } = req.body
 
-        const entry = await pb.collection('journal_entry').create({
-            title,
-            content
+        const files = req.files
+
+        if (!data) {
+            clientError(res, 'data is required')
+
+            for (const file of files) {
+                fs.unlinkSync(file.path)
+            }
+
+            return
+        }
+
+        let { title, date, raw, cleanedUp, summarized, mood, master } =
+            JSON.parse(decrypt2(data, challenge))
+
+        master = decrypt2(master, challenge)
+        title = decrypt2(title, master)
+        raw = decrypt2(raw, master)
+        cleanedUp = decrypt2(cleanedUp, master)
+        summarized = decrypt2(summarized, master)
+        mood = JSON.parse(decrypt2(mood, master))
+
+        const { journalMasterPasswordHash } = pb.authStore.model
+
+        const isMatch = await bcrypt.compare(master, journalMasterPasswordHash)
+
+        if (!isMatch) {
+            clientError(res, 'Invalid master password')
+
+            for (const file of files) {
+                fs.unlinkSync(file.path)
+            }
+
+            return
+        }
+
+        await pb.collection('journal_entry').create({
+            date,
+            title: encrypt(Buffer.from(title), master).toString('base64'),
+            raw: encrypt(Buffer.from(raw), master).toString('base64'),
+            content: encrypt(Buffer.from(cleanedUp), master).toString('base64'),
+            summary: encrypt(Buffer.from(summarized), master).toString(
+                'base64'
+            ),
+            mood,
+            photos: files.map(
+                file =>
+                    new File([fs.readFileSync(file.path)], file.originalname)
+            )
         })
 
-        success(res, entry)
-    })
-)
+        for (const file of files) {
+            fs.unlinkSync(file.path)
+        }
 
-router.patch(
-    '/update-title/:id',
-    body('title').notEmpty(),
-    asyncWrapper(async (req, res) => {
-        if (hasError(req, res)) return
-
-        const { id } = req.params
-        const { pb } = req
-        const { title } = req.body
-
-        await pb.collection('journal_entry').update(id, {
-            title
-        })
-
-        success(res, 'Title updated')
+        success(res)
     })
 )
 
 router.put(
-    '/update-content/:id',
-    body('content').notEmpty(),
+    '/update/:id',
     asyncWrapper(async (req, res) => {
-        if (hasError(req, res)) return
-
         const { id } = req.params
         const { pb } = req
-        const { content } = req.body
+        const { data } = req.body
+
+        if (!data) {
+            clientError(res, 'data is required')
+            return
+        }
+
+        let { title, date, raw, cleanedUp, summarized, mood, master } =
+            JSON.parse(decrypt2(data, challenge))
+
+        master = decrypt2(master, challenge)
+        title = decrypt2(title, master)
+        raw = decrypt2(raw, master)
+        cleanedUp = decrypt2(cleanedUp, master)
+        summarized = decrypt2(summarized, master)
+        mood = JSON.parse(decrypt2(mood, master))
+
+        const { journalMasterPasswordHash } = pb.authStore.model
+
+        const isMatch = await bcrypt.compare(master, journalMasterPasswordHash)
+
+        if (!isMatch) {
+            clientError(res, 'Invalid master password')
+
+            return
+        }
 
         await pb.collection('journal_entry').update(id, {
-            content
+            date,
+            title: encrypt(Buffer.from(title), master).toString('base64'),
+            raw: encrypt(Buffer.from(raw), master).toString('base64'),
+            content: encrypt(Buffer.from(cleanedUp), master).toString('base64'),
+            summary: encrypt(Buffer.from(summarized), master).toString(
+                'base64'
+            ),
+            mood
         })
 
-        success(res, 'Content updated')
+        success(res)
     })
 )
 
@@ -176,7 +247,59 @@ router.delete(
 )
 
 router.post(
-    '/cleanup',
+    '/ai/title',
+    asyncWrapper(async (req, res) => {
+        const { text, master } = req.body
+        const { pb } = req
+
+        if (!text || !master) {
+            clientError(res, 'text and master are required')
+            return
+        }
+
+        const { journalMasterPasswordHash } = pb.authStore.model
+
+        const decryptedMaster = decrypt2(master, challenge)
+
+        const isMatch = await bcrypt.compare(
+            decryptedMaster,
+            journalMasterPasswordHash
+        )
+
+        if (!isMatch) {
+            clientError(res, 'Invalid master password')
+            return
+        }
+
+        const rawText = decrypt2(text, decryptedMaster)
+
+        const groq = new Groq({
+            apiKey: process.env.GROQ_API_KEY
+        })
+
+        const prompt = `This text is a journal entry. Please give me a suitable title for this journal, highlighting the stuff that happended that day. The title should not be longer than 10 words. Give the title in title case, which means the first letter of each word should be in uppercase, and lowercase otherwise. The response should contains ONLY the title, without any other unrelated text, especially those that are in the beginning of the response, like "Here is the..." or "The title is...".
+        
+        ${rawText}
+        `
+
+        const response = await groq.chat.completions.create({
+            messages: [
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ],
+            model: 'llama3-70b-8192'
+        })
+
+        const title = response.choices[0]?.message?.content
+
+        success(res, title)
+    })
+)
+
+router.post(
+    '/ai/cleanup',
     asyncWrapper(async (req, res) => {
         const { text, master } = req.body
         const { pb } = req
@@ -228,7 +351,7 @@ router.post(
 )
 
 router.post(
-    '/summarize',
+    '/ai/summarize',
     asyncWrapper(async (req, res) => {
         const { text, master } = req.body
         const { pb } = req
@@ -280,7 +403,7 @@ router.post(
 )
 
 router.post(
-    '/mood/',
+    '/ai/mood/',
     asyncWrapper(async (req, res) => {
         const { text, master } = req.body
         const { pb } = req

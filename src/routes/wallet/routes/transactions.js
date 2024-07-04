@@ -42,8 +42,14 @@ router.get(
                 sort: '-date,-created'
             })
 
-        const inThisMonth = transactions.filter(transaction =>
-            moment(transaction.date).isBetween(start, end)
+        const inThisMonth = transactions.filter(
+            transaction =>
+                moment(
+                    moment(transaction.date).format('YYYY-MM-DD')
+                ).isSameOrAfter(start) &&
+                moment(
+                    moment(transaction.date).format('YYYY-MM-DD')
+                ).isSameOrBefore(end)
         )
 
         const totalIncome = transactions.reduce((acc, cur) => {

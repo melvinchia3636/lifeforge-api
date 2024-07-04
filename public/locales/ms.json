@@ -67,7 +67,8 @@
       "ledgers": "Buku Besar",
       "technology": "Teknologi",
       "changiAirport": "Lapangan Terbang Changi",
-      "aviation": "Penerbangan"
+      "aviation": "Penerbangan",
+      "dateRange": "Julat Tarikh"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -513,7 +514,10 @@
     "columnIcon": "Ikon Lajur",
     "columnColor": "Warna Lajur",
     "moodOfTheDay": "Mood untuk hari ini",
-    "emoji": "Emoji"
+    "emoji": "Emoji",
+    "journalTitle": "Tajuk Jurnal",
+    "startDate": "Tarikh Mula",
+    "endDate": "Tarikh Akhir"
   },
   "table": {
     "date": "Tarikh",
@@ -609,7 +613,8 @@
       "thumbnail": "mengemaskini imej kecil bagi",
       "generate": "menjana",
       "summarized": "meringkaskan",
-      "cleanedup": "membersihkan"
+      "cleanedup": "membersihkan",
+      "unlock": "Buka Kunci"
     },
     "redirected": "Dilencongkan"
   },
