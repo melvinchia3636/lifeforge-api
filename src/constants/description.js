@@ -272,7 +272,23 @@ const DESCRIPTION = {
     'POST /projects-m/kanban/column/{projectId}':
         'Create a new kanban column for a specific project',
     'PATCH /projects-m/kanban/column/{id}': 'Update a kanban column by ID',
-    'DELETE /projects-m/kanban/column/{id}': 'Delete a kanban column by ID'
+    'DELETE /projects-m/kanban/column/{id}': 'Delete a kanban column by ID',
+    'GET /airports/airport/{airportID}': 'Get airport details by ID',
+    'GET /airports/airport/{airportID}/flights/{type}':
+        'Get flights for a specific airport by ID and type',
+    'GET /airports/airport/{airportID}/METAR':
+        'Get METAR data for a specific airport by ID',
+    'GET /airports/airport/{airportID}/NOTAM':
+        'Get NOTAM data for a specific airport by ID',
+    'GET /airports/airport/{airportID}/radios':
+        'Get radio frequencies for a specific airport by ID',
+    'GET /airports/airports/{id}': 'Get airport details by ID',
+    'GET /airports/continents': 'Get a list of continents',
+    'GET /airports/countries/{id}': 'Get country details by ID',
+    'GET /airports/NOTAM/{NOTAMID}': 'Get NOTAM details by ID',
+    'GET /airports/NOTAM/{NOTAMID}/summarize': 'Summarize NOTAM details by ID',
+    'GET /airports/regions/{id}': 'Get region details by ID',
+    'GET /airports/search': 'Search for airports'
 }
 
 export default DESCRIPTION
