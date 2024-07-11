@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt'
 import Groq from 'groq-sdk'
 import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
 import fs from 'fs'
+import moment from 'moment/moment.js'
 
 const router = express.Router()
 
@@ -220,7 +221,7 @@ router.put(
         }
 
         await pb.collection('journal_entry').update(id, {
-            date,
+            date: moment(date).format('YYYY-MM-DD'),
             title: encrypt(Buffer.from(title), master).toString('base64'),
             raw: encrypt(Buffer.from(raw), master).toString('base64'),
             content: encrypt(Buffer.from(cleanedUp), master).toString('base64'),
