@@ -368,7 +368,9 @@
     "confirm": "确认",
     "viewRaw": "查看原始文字",
     "regenerate": "重新生成",
-    "uploadPhotos": "上传照片"
+    "uploadPhotos": "上传照片",
+    "addToAlbum": "添加到相册",
+    "setAsAlbumCover": "设为专辑封面"
   },
   "modals": {
     "header": {

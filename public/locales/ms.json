@@ -367,7 +367,9 @@
     "confirm": "Sahkan",
     "viewRaw": "Papar Teks Mentah",
     "regenerate": "Jana semula",
-    "uploadPhotos": "Muat Naik Foto"
+    "uploadPhotos": "Muat Naik Foto",
+    "addToAlbum": "Tambah ke Album",
+    "setAsAlbumCover": "Tetapkan sebagai Sampul Album"
   },
   "modals": {
     "header": {

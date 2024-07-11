@@ -523,8 +523,14 @@ router.post(
                 }
 
                 const size = await sizeOf(filePath)
-                data.width = size.width
-                data.height = size.height
+
+                if (dize.orientation === 8) {
+                    data.width = size.height
+                    data.height = size.width
+                } else {
+                    data.width = size.width
+                    data.height = size.height
+                }
             } else {
                 completed += 1
                 progress = completed / Object.keys(distinctFiles).length

@@ -367,7 +367,9 @@
     "confirm": "Confirm",
     "viewRaw": "View Raw Text",
     "regenerate": "Regenerate",
-    "uploadPhotos": "Upload Photos"
+    "uploadPhotos": "Upload Photos",
+    "addToAlbum": "Add to Album",
+    "setAsAlbumCover": "Set as Album Cover"
   },
   "modals": {
     "header": {
