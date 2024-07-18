@@ -17,9 +17,13 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const page = req.query.page || 1
+        const search = decodeURIComponent(req.query.query || '')
+
         const entries = await pb
             .collection('guitar_tabs_entry')
-            .getList(page, 20)
+            .getList(page, 20, {
+                filter: `name~"${search}"`
+            })
 
         success(res, entries)
     })
