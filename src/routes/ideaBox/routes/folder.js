@@ -12,7 +12,7 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const folder = await pb.collection('idea_box_folder').getOne(id)
+        const folder = await pb.collection('idea_box_folders').getOne(id)
         success(res, folder)
     })
 )
@@ -23,7 +23,7 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const folders = await pb.collection('idea_box_folder').getFullList({
+        const folders = await pb.collection('idea_box_folders').getFullList({
             filter: `container = "${id}"`,
             sort: 'name'
         })
@@ -44,7 +44,7 @@ router.post(
 
         const { pb } = req
         const { name, container, icon, color } = req.body
-        const folder = await pb.collection('idea_box_folder').create({
+        const folder = await pb.collection('idea_box_folders').create({
             name,
             container,
             icon,
@@ -69,7 +69,7 @@ router.patch(
         const { id } = req.params
         const { name, icon, color } = req.body
 
-        await pb.collection('idea_box_folder').update(id, {
+        await pb.collection('idea_box_folders').update(id, {
             name,
             icon,
             color
@@ -85,7 +85,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        await pb.collection('idea_box_folder').delete(id)
+        await pb.collection('idea_box_folders').delete(id)
         success(res)
     })
 )
@@ -100,7 +100,7 @@ router.post(
         const { folderId } = req.params
         const { ideaId } = req.body
 
-        await pb.collection('idea_box_entry').update(ideaId, {
+        await pb.collection('idea_box_entries').update(ideaId, {
             folder: folderId
         })
 
@@ -125,7 +125,7 @@ router.delete(
             return
         }
 
-        await pb.collection('idea_box_entry').update(ideaId, {
+        await pb.collection('idea_box_entries').update(ideaId, {
             folder: ''
         })
 

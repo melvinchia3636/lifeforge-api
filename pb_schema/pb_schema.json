@@ -283,7 +283,7 @@
   },
   {
     "id": "yqajgwlhsd8so4p",
-    "name": "achievements_entry",
+    "name": "achievements_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -344,7 +344,7 @@
   },
   {
     "id": "lgqrpjmgz6rmsrg",
-    "name": "calendar_category",
+    "name": "calendar_categories",
     "type": "base",
     "system": false,
     "schema": [
@@ -415,7 +415,7 @@
   },
   {
     "id": "aq4whvpwcarmpux",
-    "name": "calendar_event",
+    "name": "calendar_events",
     "type": "base",
     "system": false,
     "schema": [
@@ -486,7 +486,7 @@
   },
   {
     "id": "vwtr2h7273hls5a",
-    "name": "change_log_entry",
+    "name": "change_log_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -542,7 +542,7 @@
   },
   {
     "id": "eqmt5t9mkrgxf12",
-    "name": "code_time_daily_entry",
+    "name": "code_time_daily_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -866,7 +866,7 @@
   },
   {
     "id": "dbknbp9a7ayklw6",
-    "name": "flashcards_tag",
+    "name": "flashcards_tags",
     "type": "base",
     "system": false,
     "schema": [
@@ -923,7 +923,7 @@
   },
   {
     "id": "9agm22e3g44cdk8",
-    "name": "guitar_tabs_entry",
+    "name": "guitar_tabs_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1000,7 +1000,7 @@
   },
   {
     "id": "10yi8esudwbgz4n",
-    "name": "idea_box_container",
+    "name": "idea_box_containers",
     "type": "base",
     "system": false,
     "schema": [
@@ -1090,7 +1090,7 @@
       }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX `idx_o6dotbA` ON `idea_box_container` (`name`)"
+      "CREATE UNIQUE INDEX `idx_o6dotbA` ON `idea_box_containers` (`name`)"
     ],
     "listRule": "@request.auth.email = \"<YOUR_EMAIL>\"",
     "viewRule": "@request.auth.email = \"<YOUR_EMAIL>\"",
@@ -1101,7 +1101,7 @@
   },
   {
     "id": "g5fdcy099cdntzt",
-    "name": "idea_box_entry",
+    "name": "idea_box_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1234,7 +1234,7 @@
   },
   {
     "id": "5hcu9coxoz9yauz",
-    "name": "idea_box_folder",
+    "name": "idea_box_folders",
     "type": "base",
     "system": false,
     "schema": [
@@ -1307,7 +1307,7 @@
   },
   {
     "id": "8pcs6fnobibl6pc",
-    "name": "journal_entry",
+    "name": "journal_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1350,7 +1350,7 @@
   },
   {
     "id": "ud0dpvvhcjj4jiw",
-    "name": "music_entry",
+    "name": "music_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1447,7 +1447,7 @@
   },
   {
     "id": "9t8jcvu4j93dldk",
-    "name": "notes_entry",
+    "name": "notes_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1656,7 +1656,7 @@
   },
   {
     "id": "tgblyh0po4v8d1o",
-    "name": "passwords_entry",
+    "name": "passwords_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1850,7 +1850,7 @@
   },
   {
     "id": "4ps14uxa5cksmc7",
-    "name": "photos_album_tag",
+    "name": "photos_album_tags",
     "type": "base",
     "system": false,
     "schema": [
@@ -1879,7 +1879,7 @@
   },
   {
     "id": "27g5tx0ityin7o2",
-    "name": "photos_entry",
+    "name": "photos_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -1958,7 +1958,7 @@
   },
   {
     "id": "b99c6sblgyywf9d",
-    "name": "photos_entry_dimensions",
+    "name": "photos_dimensions",
     "type": "base",
     "system": false,
     "schema": [
@@ -2051,7 +2051,7 @@
       }
     ],
     "indexes": [
-      "CREATE INDEX `idx_iyyr5aR` ON `photos_entry_dimensions` (`shot_time`)"
+      "CREATE INDEX `idx_iyyr5aR` ON `photos_dimensions` (`shot_time`)"
     ],
     "listRule": "@request.auth.email = \"<YOUR_EMAIL>\"",
     "viewRule": "@request.auth.email = \"<YOUR_EMAIL>\"",
@@ -2062,7 +2062,7 @@
   },
   {
     "id": "pbowzc20oje19hi",
-    "name": "projects_k_entry",
+    "name": "projects_k_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -2434,7 +2434,7 @@
   },
   {
     "id": "w35txwos02cf2nm",
-    "name": "todo_entry",
+    "name": "todo_entries",
     "type": "base",
     "system": false,
     "schema": [
@@ -2578,7 +2578,7 @@
   },
   {
     "id": "327ciwg4kdb3eih",
-    "name": "todo_list",
+    "name": "todo_lists",
     "type": "base",
     "system": false,
     "schema": [
@@ -2692,7 +2692,7 @@
   },
   {
     "id": "x117ii0br9fqehr",
-    "name": "todo_tag",
+    "name": "todo_tags",
     "type": "base",
     "system": false,
     "schema": [
@@ -2792,7 +2792,7 @@
   },
   {
     "id": "vr4lv9hatzgmgfz",
-    "name": "wallet_category",
+    "name": "wallet_categories",
     "type": "base",
     "system": false,
     "schema": [

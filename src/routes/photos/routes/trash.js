@@ -10,7 +10,7 @@ router.get(
         const { pb } = req
 
         let photos = await pb
-            .collection('photos_entry_dimensions')
+            .collection('photos_dimensions')
             .getFullList({
                 filter: 'is_deleted=true',
                 expand: 'photo',
@@ -42,15 +42,15 @@ router.delete(
         const { pb } = req
 
         const photos = await pb
-            .collection('photos_entry_dimensions')
+            .collection('photos_dimensions')
             .getFullList({
                 filter: 'is_deleted=true'
             })
 
         await Promise.all(
             photos.map(async photo => {
-                await pb.collection('photos_entry_dimensions').delete(photo.id)
-                await pb.collection('photos_entry').delete(photo.photo)
+                await pb.collection('photos_dimensions').delete(photo.id)
+                await pb.collection('photos_entries').delete(photo.photo)
             })
         )
 

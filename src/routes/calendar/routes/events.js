@@ -11,7 +11,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const events = await pb.collection('calendar_event').getFullList()
+        const events = await pb.collection('calendar_events').getFullList()
 
         success(res, events)
     })
@@ -30,7 +30,7 @@ router.post(
         const { pb } = req
         const { title, start, end, category } = req.body
 
-        const events = await pb.collection('calendar_event').create({
+        const events = await pb.collection('calendar_events').create({
             title,
             start,
             end,
@@ -38,7 +38,7 @@ router.post(
         })
 
         if (category) {
-            await pb.collection('calendar_category').update(category, {
+            await pb.collection('calendar_categories').update(category, {
                 'amount+': 1
             })
         }
@@ -54,8 +54,8 @@ router.patch(
         const { id } = req.params
         const { title, start, end, category } = req.body
 
-        const oldEvent = await pb.collection('calendar_event').getOne(id)
-        const events = await pb.collection('calendar_event').update(id, {
+        const oldEvent = await pb.collection('calendar_events').getOne(id)
+        const events = await pb.collection('calendar_events').update(id, {
             title,
             start,
             end,
@@ -65,14 +65,14 @@ router.patch(
         if (oldEvent.category !== category) {
             if (oldEvent.category) {
                 await pb
-                    .collection('calendar_category')
+                    .collection('calendar_categories')
                     .update(oldEvent.category, {
                         'amount-': 1
                     })
             }
 
             if (category) {
-                await pb.collection('calendar_category').update(category, {
+                await pb.collection('calendar_categories').update(category, {
                     'amount+': 1
                 })
             }
@@ -88,12 +88,12 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const event = await pb.collection('calendar_event').getOne(id)
+        const event = await pb.collection('calendar_events').getOne(id)
 
-        await pb.collection('calendar_event').delete(id)
+        await pb.collection('calendar_events').delete(id)
 
         if (event.category) {
-            await pb.collection('calendar_category').update(event.category, {
+            await pb.collection('calendar_categories').update(event.category, {
                 'amount-': 1
             })
         }

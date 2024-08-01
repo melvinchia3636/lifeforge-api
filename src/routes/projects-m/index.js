@@ -1,14 +1,14 @@
 import express from 'express'
-import entryRoutes from './routes/entry.js'
+import entriesRoutes from './routes/entries.js'
 import kanbanRoutes from './routes/kanban/index.js'
-import categoryRoutes from './routes/category.js'
-import statusRoutes from './routes/status.js'
-import visibilityRoutes from './routes/visibility.js'
-import technologyRoutes from './routes/technology.js'
+import categoryRoutes from './routes/categories.js'
+import statusRoutes from './routes/statuses.js'
+import visibilityRoutes from './routes/visibilities.js'
+import technologyRoutes from './routes/technologies.js'
 
 const router = express.Router()
 
-router.use('/entry', entryRoutes)
+router.use('/entries', entriesRoutes)
 router.use('/kanban', kanbanRoutes)
 router.use('/category', categoryRoutes)
 router.use('/status', statusRoutes)

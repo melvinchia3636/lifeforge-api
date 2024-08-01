@@ -11,7 +11,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const categories = await pb
-            .collection('calendar_category')
+            .collection('calendar_categories')
             .getFullList()
         success(res, categories)
     })
@@ -30,7 +30,7 @@ router.post(
         const { pb } = req
         const { name, icon, color } = req.body
 
-        const category = await pb.collection('calendar_category').create({
+        const category = await pb.collection('calendar_categories').create({
             name,
             icon,
             color
@@ -53,7 +53,7 @@ router.patch(
         const { id } = req.params
         const { name, icon, color } = req.body
 
-        const category = await pb.collection('calendar_category').update(id, {
+        const category = await pb.collection('calendar_categories').update(id, {
             name,
             icon,
             color
@@ -69,7 +69,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        await pb.collection('calendar_category').delete(id)
+        await pb.collection('calendar_categories').delete(id)
         success(res)
     })
 )

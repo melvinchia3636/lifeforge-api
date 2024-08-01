@@ -1,10 +1,10 @@
 import express from 'express'
 import youtube from './routes/youtube.js'
-import entry from './routes/entry.js'
+import entries from './routes/entries.js'
 
 const router = express.Router()
 
-router.use('/entry', entry)
+router.use('/entries', entries)
 router.use('/youtube', youtube)
 
 export default router

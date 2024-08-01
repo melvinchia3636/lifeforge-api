@@ -303,7 +303,7 @@
     "addRecord": "Tambah Rekod",
     "newDeck": "Dek Baru",
     "pickRandomCard": "Pilih Kad Rawak",
-    "newEntry": "Entri Baru",
+    "newentries": "Entri Baru",
     "save": "Simpan",
     "edit": "Edit",
     "addMusic": "Tambah Muzik",
@@ -421,8 +421,9 @@
       "editColumn": "Edit Lajur",
       "notamDetails": "Maklumat NOTAM",
       "viewJournalEntry": "Lihat Journal Entri",
-      "modifyJournalEntry": "Sunting Entri Journal",
-      "createJournalEntry": "Buat Entri Jurnal"
+      "modifyJournalentries": "Sunting Entri Journal",
+      "createJournalentries": "Buat Entri Jurnal",
+      "modifyGuitarTab": "Sunting Tab"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",

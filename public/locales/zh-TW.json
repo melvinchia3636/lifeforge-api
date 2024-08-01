@@ -304,7 +304,7 @@
     "addRecord": "添加記錄",
     "newDeck": "新建卡組",
     "pickRandomCard": "隨機選擇卡片",
-    "newEntry": "新建項目",
+    "newentries": "新建項目",
     "save": "保存",
     "edit": "編輯",
     "addMusic": "添加音樂",
@@ -422,8 +422,9 @@
       "editColumn": "編輯欄",
       "notamDetails": "NOTAM 詳細資訊",
       "viewJournalEntry": "查看日誌項目",
-      "modifyJournalEntry": "修改日誌項目",
-      "createJournalEntry": "建立日記條目"
+      "modifyJournalentries": "修改日誌項目",
+      "createJournalentries": "建立日記條目",
+      "modifyGuitarTab": "修改吉他譜"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -439,7 +440,7 @@
     "folderName": "文件夾名稱",
     "ideaTitle": "創意標題",
     "imageLink": "圖片鏈接",
-    "musicName": "音樂名稱",
+    "musicName": "歌曲名稱",
     "author": "作者",
     "subjectName": "科目名稱",
     "subjectDescription": "科目描述",

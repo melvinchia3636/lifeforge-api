@@ -10,11 +10,11 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const tags = await pb.collection('photos_album_tag').getFullList()
+        const tags = await pb.collection('photos_album_tags').getFullList()
 
         for (const tag of tags) {
             const { totalItems } = await pb
-                .collection('photos_album')
+                .collection('photos_albums')
                 .getList(1, 1, {
                     filter: `tags ~ "${tag.id}"`
                 })
@@ -30,7 +30,7 @@ router.patch(
     '/update-album/:albumId',
     body('tags').isArray(),
     asyncWrapper(async (req, res) => {
-        const result = validationResult()
+        const result = validationResult(req)
         if (!result.isEmpty()) {
             clientError(res, result.array())
             return
@@ -40,7 +40,7 @@ router.patch(
         const { albumId } = req.params
         const { tags } = req.body
 
-        await pb.collection('photos_album').update(albumId, {
+        await pb.collection('photos_albums').update(albumId, {
             tags
         })
 

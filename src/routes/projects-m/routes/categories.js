@@ -9,11 +9,11 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const technologies = await pb
-            .collection('projects_m_technology')
+        const categorys = await pb
+            .collection('projects_m_categories')
             .getFullList()
 
-        success(res, technologies)
+        success(res, categorys)
     })
 )
 
@@ -28,12 +28,12 @@ router.post(
             return
         }
 
-        const technology = await pb.collection('projects_m_technology').create({
+        const category = await pb.collection('projects_m_categories').create({
             name,
             icon
         })
 
-        success(res, technology)
+        success(res, category)
     })
 )
 
@@ -49,14 +49,12 @@ router.patch(
             return
         }
 
-        const technology = await pb
-            .collection('projects_m_technology')
-            .update(id, {
-                name,
-                icon
-            })
+        const category = await pb.collection('projects_m_categories').update(id, {
+            name,
+            icon
+        })
 
-        success(res, technology)
+        success(res, category)
     })
 )
 
@@ -66,11 +64,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const technology = await pb
-            .collection('projects_m_technology')
-            .delete(id)
+        const category = await pb.collection('projects_m_categories').delete(id)
 
-        success(res, technology)
+        success(res, category)
     })
 )
 

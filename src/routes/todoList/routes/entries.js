@@ -24,10 +24,10 @@ router.get(
                 .startOf('day')
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}" && due_date <= "${moment()
-                .endOf('day')
-                .utc()
-                .add(1, 'second')
-                .format('YYYY-MM-DD HH:mm:ss')}"`,
+                    .endOf('day')
+                    .utc()
+                    .add(1, 'second')
+                    .format('YYYY-MM-DD HH:mm:ss')}"`,
             scheduled: `done = false && due_date != "" && due_date >= "${moment()
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}"`,
@@ -43,21 +43,21 @@ router.get(
         if (tag) finalFilter += ` && tags ~ "${tag}"`
         if (list) finalFilter += ` && list = "${list}"`
 
-        const entries = await pb.collection('todo_entry').getFullList({
+        const entries = await pb.collection('todo_entries').getFullList({
             filter: finalFilter,
             expand: 'subtasks'
         })
 
-        entries.forEach(entry => {
-            if (entry.subtasks.length === 0) return
+        entries.forEach(entries => {
+            if (entries.subtasks.length === 0) return
 
-            entry.subtasks = entry.expand.subtasks.map(subtask => ({
+            entries.subtasks = entries.expand.subtasks.map(subtask => ({
                 title: subtask.title,
                 done: subtask.done,
                 id: subtask.id
             }))
 
-            delete entry.expand
+            delete entries.expand
         })
 
         success(res, entries)
@@ -73,10 +73,10 @@ router.get(
                 .startOf('day')
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}" && due_date <= "${moment()
-                .endOf('day')
-                .utc()
-                .add(1, 'second')
-                .format('YYYY-MM-DD HH:mm:ss')}"`,
+                    .endOf('day')
+                    .utc()
+                    .add(1, 'second')
+                    .format('YYYY-MM-DD HH:mm:ss')}"`,
             scheduled: `done = false && due_date != "" && due_date >= "${moment()
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}"`,
@@ -92,7 +92,7 @@ router.get(
 
         for (const type of Object.keys(filters)) {
             const { totalItems } = await pb
-                .collection('todo_entry')
+                .collection('todo_entries')
                 .getList(1, 1, {
                     filter: filters[type]
                 })
@@ -133,13 +133,13 @@ router.post(
 
         createSubtask()
 
-        const entry = await pb.collection('todo_entry').create(data)
-        if (entry.list) {
-            await pb.collection('todo_list').update(entry.list, {
+        const entries = await pb.collection('todo_entries').create(data)
+        if (entries.list) {
+            await pb.collection('todo_lists').update(entries.list, {
                 'amount+': 1
             })
         }
-        success(res, entry)
+        success(res, entries)
     })
 )
 
@@ -149,7 +149,7 @@ router.patch(
         const { pb } = req
         const { id } = req.params
 
-        const originalEntry = await pb.collection('todo_entry').getOne(id)
+        const originalentries = await pb.collection('todo_entries').getOne(id)
 
         const { subtasks } = req.body
 
@@ -170,45 +170,45 @@ router.patch(
             subtasks[subtaskIndex] = newSubtask.id || subtask.id
         }
 
-        const entry = await pb.collection('todo_entry').update(id, req.body)
+        const entries = await pb.collection('todo_entries').update(id, req.body)
 
-        if (originalEntry.list !== entry.list) {
-            if (originalEntry.list) {
-                await pb.collection('todo_list').update(originalEntry.list, {
+        if (originalentries.list !== entries.list) {
+            if (originalentries.list) {
+                await pb.collection('todo_lists').update(originalentries.list, {
                     'amount-': 1
                 })
             }
 
-            if (entry.list) {
-                await pb.collection('todo_list').update(entry.list, {
+            if (entries.list) {
+                await pb.collection('todo_lists').update(entries.list, {
                     'amount+': 1
                 })
             }
         }
 
-        for (const tag of originalEntry.tags) {
-            if (entry.tags.include(tag)) continue
+        for (const tag of originalentries.tags) {
+            if (entries.tags.include(tag)) continue
 
-            await pb.collection('todo_tag').update(tag, {
+            await pb.collection('todo_tags').update(tag, {
                 'amount-': 1
             })
         }
 
-        for (const tag of entry.tags) {
-            if (originalEntry.tags.includes(tag)) continue
+        for (const tag of entries.tags) {
+            if (originalentries.tags.includes(tag)) continue
 
-            await pb.collection('todo_tag').update(tag, {
+            await pb.collection('todo_tags').update(tag, {
                 'amount+': 1
             })
         }
 
-        for (const subtask of originalEntry.subtasks) {
-            if (entry.subtasks.includes(subtask)) continue
+        for (const subtask of originalentries.subtasks) {
+            if (entries.subtasks.includes(subtask)) continue
 
             await pb.collection('todo_subtask').delete(subtask)
         }
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
@@ -218,22 +218,22 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('todo_entry').getOne(id)
+        const entries = await pb.collection('todo_entries').getOne(id)
 
-        await pb.collection('todo_entry').delete(id)
-        if (entry.list) {
-            await pb.collection('todo_list').update(entry.list, {
+        await pb.collection('todo_entries').delete(id)
+        if (entries.list) {
+            await pb.collection('todo_lists').update(entries.list, {
                 'amount-': 1
             })
         }
 
-        for (const tag of entry.tags) {
-            await pb.collection('todo_tag').update(tag, {
+        for (const tag of entries.tags) {
+            await pb.collection('todo_tags').update(tag, {
                 'amount-': 1
             })
         }
 
-        for (const subtask of entry.subtasks) {
+        for (const subtask of entries.subtasks) {
             await pb.collection('todo_subtask').delete(subtask)
         }
 
@@ -247,19 +247,19 @@ router.post(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('todo_entry').getOne(id)
+        const entries = await pb.collection('todo_entries').getOne(id)
 
-        if (!entry.done) {
-            for (const subtask of entry.subtasks) {
+        if (!entries.done) {
+            for (const subtask of entries.subtasks) {
                 await pb.collection('todo_subtask').update(subtask, {
                     done: true
                 })
             }
         }
 
-        await pb.collection('todo_entry').update(id, {
-            done: !entry.done,
-            completed_at: entry.done
+        await pb.collection('todo_entries').update(id, {
+            done: !entries.done,
+            completed_at: entries.done
                 ? null
                 : moment().utc().format('YYYY-MM-DD HH:mm:ss')
         })

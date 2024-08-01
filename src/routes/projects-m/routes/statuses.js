@@ -9,11 +9,9 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const categorys = await pb
-            .collection('projects_m_category')
-            .getFullList()
+        const statuses = await pb.collection('projects_m_statuses').getFullList()
 
-        success(res, categorys)
+        success(res, statuses)
     })
 )
 
@@ -21,19 +19,20 @@ router.post(
     '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const { name, icon } = req.body
+        const { name, icon, color } = req.body
 
-        if (!name || !icon) {
+        if (!name || !icon || !color) {
             clientError(res, 'Missing required fields')
             return
         }
 
-        const category = await pb.collection('projects_m_category').create({
+        const status = await pb.collection('projects_m_statuses').create({
             name,
-            icon
+            icon,
+            color
         })
 
-        success(res, category)
+        success(res, status)
     })
 )
 
@@ -42,19 +41,20 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-        const { name, icon } = req.body
+        const { name, icon, color } = req.body
 
         if (!id) {
             clientError(res, 'id is required')
             return
         }
 
-        const category = await pb.collection('projects_m_category').update(id, {
+        const status = await pb.collection('projects_m_statuses').update(id, {
             name,
-            icon
+            icon,
+            color
         })
 
-        success(res, category)
+        success(res, status)
     })
 )
 
@@ -64,9 +64,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const category = await pb.collection('projects_m_category').delete(id)
+        const status = await pb.collection('projects_m_statuses').delete(id)
 
-        success(res, category)
+        success(res, status)
     })
 )
 

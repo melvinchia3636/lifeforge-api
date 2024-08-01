@@ -22,11 +22,11 @@ router.put(
             })
         }
 
-        await pb.collection('projects_k_entry').update(req.params.projectId, {
+        await pb.collection('projects_k_entries').update(req.params.projectId, {
             files: null
         })
 
-        await pb.collection('projects_k_entry').update(req.params.projectId, {
+        await pb.collection('projects_k_entries').update(req.params.projectId, {
             files: newFiles.map(file => {
                 const buffer = fs.readFileSync(
                     `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
@@ -51,7 +51,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.projectId)
         const { files, collectionId, id } = project
 
@@ -97,7 +97,7 @@ router.put(
         const { file } = req.body
 
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.projectId)
 
         const type = mime.lookup(file)
@@ -112,7 +112,7 @@ router.put(
         const buffer = fs.readFileSync(
             `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${project.collectionId}/${project.id}/${file}`
         )
-        await pb.collection('projects_k_entry').update(req.params.projectId, {
+        await pb.collection('projects_k_entries').update(req.params.projectId, {
             thumbnail: new File([buffer], file, { type }),
             thumb_original_filename: file
         })

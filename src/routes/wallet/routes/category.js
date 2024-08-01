@@ -9,7 +9,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const category = await pb.collection('wallet_category').getFullList()
+        const category = await pb.collection('wallet_categories').getFullList()
 
         success(res, category)
     })
@@ -26,7 +26,7 @@ router.post(
             return
         }
 
-        const category = await pb.collection('wallet_category').create({
+        const category = await pb.collection('wallet_categories').create({
             name,
             icon,
             color,
@@ -49,7 +49,7 @@ router.patch(
             return
         }
 
-        const category = await pb.collection('wallet_category').update(id, {
+        const category = await pb.collection('wallet_categories').update(id, {
             name,
             icon,
             color
@@ -65,7 +65,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const category = await pb.collection('wallet_category').delete(id)
+        const category = await pb.collection('wallet_categories').delete(id)
 
         success(res, category)
     })

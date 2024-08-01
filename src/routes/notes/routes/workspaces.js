@@ -10,20 +10,20 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const category = await pb
-            .collection('notes_workspace')
+            .collection('notes_workspaces')
             .getOne(req.params.id)
 
         success(res, category)
     })
 )
 
-router.get('/valid/:id', validate('notes_workspace'))
+router.get('/valid/:id', validate('notes_workspaces'))
 
 router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const categories = await pb.collection('notes_workspace').getFullList()
+        const categories = await pb.collection('notes_workspaces').getFullList()
 
         success(res, categories)
     })

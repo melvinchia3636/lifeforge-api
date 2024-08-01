@@ -47,7 +47,8 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "dev": "forever start -w src/index.js",
+    "dev": "nodemon src/index.js",
+    "start": "forever start -w src/index.js",
     "vercel-build": "echo sus"
   },
   "type": "module",

@@ -8,7 +8,7 @@ router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const entries = await pb.collection('flashcards_tag').getFullList()
+        const entries = await pb.collection('flashcards_tags').getFullList()
 
         success(res, entries)
     })

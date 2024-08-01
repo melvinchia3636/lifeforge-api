@@ -21,7 +21,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         let project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.id, {
                 expand: 'progress.steps'
             })
@@ -52,7 +52,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.id, {
                 expand: 'progress.steps'
             })
@@ -71,7 +71,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.id, {
                 expand: 'progress.steps'
             })

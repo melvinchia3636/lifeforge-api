@@ -16,11 +16,11 @@ router.post(
             return
         }
 
-        const entry = await pb.collection('projects_m_kanban_entry').create({
+        const entries = await pb.collection('projects_m_kanban_entries').create({
             column: columnId
         })
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
@@ -32,7 +32,7 @@ router.patch(
         const { title } = req.body
 
         const column = await pb
-            .collection('projects_m_kanban_entry')
+            .collection('projects_m_kanban_entries')
             .update(id, {
                 title
             })
@@ -47,7 +47,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const column = await pb.collection('projects_m_kanban_entry').delete(id)
+        const column = await pb.collection('projects_m_kanban_entries').delete(id)
 
         success(res, column)
     })

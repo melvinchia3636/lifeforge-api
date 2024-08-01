@@ -52,11 +52,11 @@ router.get(
 
             if (isInAlbum === 'true') {
                 const dim = await pb
-                    .collection('photos_entry_dimensions')
+                    .collection('photos_dimensions')
                     .getOne(id)
-                image = await pb.collection('photos_entry').getOne(dim.photo)
+                image = await pb.collection('photos_entries').getOne(dim.photo)
                 const album = await pb
-                    .collection('photos_album')
+                    .collection('photos_albums')
                     .getOne(image.album)
 
                 if (!album.is_public) {
@@ -79,11 +79,11 @@ router.get(
 
         if (isInAlbum === 'true') {
             const dim = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getOne(id)
-            image = await pb.collection('photos_entry').getOne(dim.photo)
+            image = await pb.collection('photos_entries').getOne(dim.photo)
         } else {
-            image = await pb.collection('photos_entry').getOne(id)
+            image = await pb.collection('photos_entries').getOne(id)
         }
 
         success(res, image.name)
@@ -107,11 +107,11 @@ router.get(
 
             if (isInAlbum === 'true') {
                 const dim = await pb
-                    .collection('photos_entry_dimensions')
+                    .collection('photos_dimensions')
                     .getOne(id)
-                image = await pb.collection('photos_entry').getOne(dim.photo)
+                image = await pb.collection('photos_entries').getOne(dim.photo)
                 const album = await pb
-                    .collection('photos_album')
+                    .collection('photos_albums')
                     .getOne(image.album)
 
                 if (!album.is_public) {
@@ -132,19 +132,19 @@ router.get(
 
         if (isInAlbum === 'true') {
             const dim = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getOne(id)
-            image = await pb.collection('photos_entry').getOne(dim.photo)
+            image = await pb.collection('photos_entries').getOne(dim.photo)
         } else {
-            image = await pb.collection('photos_entry').getOne(id)
+            image = await pb.collection('photos_entries').getOne(id)
         }
 
         const url = pb.files
             .getUrl(
                 image,
                 image[
-                    raw === 'true' ? 'raw' : 'image'
-                    //TODO
+                raw === 'true' ? 'raw' : 'image'
+                //TODO
                 ]
             )
             .replace(
@@ -174,11 +174,11 @@ router.post(
             let image
             if (isInAlbum === 'true') {
                 const dim = await pb
-                    .collection('photos_entry_dimensions')
+                    .collection('photos_dimensions')
                     .getOne(photo)
-                image = await pb.collection('photos_entry').getOne(dim.photo)
+                image = await pb.collection('photos_entries').getOne(dim.photo)
             } else {
-                image = await pb.collection('photos_entry').getOne(photo)
+                image = await pb.collection('photos_entries').getOne(photo)
             }
 
             const filePath = `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${image.collectionId}/${image.id}/${image.image}`
@@ -207,14 +207,14 @@ router.get(
             allPhotosDimensions = 'pending'
             const filter = `is_deleted = false && is_locked = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `
             const response = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getList(1, 1, { filter })
             const { collectionId } = await pb
-                .collection('photos_entry')
+                .collection('photos_entries')
                 .getFirstListItem('name != ""')
             const { totalItems } = response
             const photos = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getFullList({
                     fields: 'photo, width, height, shot_time',
                     filter
@@ -330,16 +330,16 @@ router.get(
             .startOf('day')
             .utc()
             .format('YYYY - MM - DD HH: mm:ss')}' && shot_time <= '${moment(
-            date,
-            'YYYY-MM-DD'
-        )
-            .endOf('day')
-            .utc()
-            .format(
-                'YYYY-MM-DD HH:mm:ss'
-            )} ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`
+                date,
+                'YYYY-MM-DD'
+            )
+                .endOf('day')
+                .utc()
+                .format(
+                    'YYYY-MM-DD HH:mm:ss'
+                )} ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`
         let photos = await pb
-            .collection('photos_entry_dimensions')
+            .collection('photos_dimensions')
             .getFullList({
                 filter,
                 expand: 'photo',
@@ -373,7 +373,7 @@ router.get(
                 process.env.PB_PASSWORD
             )
 
-            const album = await pb.collection('photos_album').getOne(albumId)
+            const album = await pb.collection('photos_albums').getOne(albumId)
 
             if (!album.is_public) {
                 res.status(401).json({
@@ -385,7 +385,7 @@ router.get(
         }
 
         let photos = await pb
-            .collection('photos_entry_dimensions')
+            .collection('photos_dimensions')
             .getFullList({
                 filter: `photo.album = "${albumId}" && is_deleted = false && is_locked = false`,
                 expand: 'photo',
@@ -456,6 +456,8 @@ router.post(
             }
         }
 
+        console.log(distinctFiles)
+
         progress = 0
         let completed = 0
 
@@ -524,7 +526,7 @@ router.post(
 
                 const size = await sizeOf(filePath)
 
-                if (dize.orientation === 8) {
+                if (size.orientation === 8) {
                     data.width = size.height
                     data.height = size.width
                 } else {
@@ -546,7 +548,7 @@ router.post(
                 })[0]
             }
 
-            const newEntry = await pb.collection('photos_entry').create(
+            const newentries = await pb.collection('photos_entries').create(
                 {
                     image: data.image,
                     ...(data.raw ? { raw: data.raw } : {}),
@@ -555,8 +557,8 @@ router.post(
                 { $autoCancel: false }
             )
 
-            await pb.collection('photos_entry_dimensions').create({
-                photo: newEntry.id,
+            await pb.collection('photos_dimensions').create({
+                photo: newentries.id,
                 width: data.width,
                 height: data.height,
                 shot_time: data.shot_time,
@@ -564,8 +566,8 @@ router.post(
             })
 
             const thumbnailImageUrl = pb.files.getUrl(
-                newEntry,
-                newEntry.image,
+                newentries,
+                newentries.image,
                 {
                     thumb: '0x300'
                 }
@@ -607,28 +609,28 @@ router.delete(
             let dim
             if (isInAlbum === 'true') {
                 dim = await pb
-                    .collection('photos_entry_dimensions')
+                    .collection('photos_dimensions')
                     .getOne(photo)
             } else {
                 dim = await pb
-                    .collection('photos_entry_dimensions')
+                    .collection('photos_dimensions')
                     .getFirstListItem(`photo = "${photo}"`)
             }
 
             if (dim.is_in_album) {
                 const { album } = await pb
-                    .collection('photos_entry')
+                    .collection('photos_entries')
                     .getOne(dim.photo)
-                await pb.collection('photos_album').update(album, {
+                await pb.collection('photos_albums').update(album, {
                     'amount-': 1
                 })
 
-                await pb.collection('photos_entry').update(dim.photo, {
+                await pb.collection('photos_entries').update(dim.photo, {
                     album: ''
                 })
             }
 
-            await pb.collection('photos_entry_dimensions').update(dim.id, {
+            await pb.collection('photos_dimensions').update(dim.id, {
                 is_deleted: true,
                 is_in_album: false
             })

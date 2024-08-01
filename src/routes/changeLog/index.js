@@ -10,7 +10,7 @@ router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const pb = new Pocketbase('http://192.168.0.117:8090')
-        const entries = await pb.collection('change_log_entry').getFullList()
+        const entries = await pb.collection('change_log_entries').getFullList()
 
         const final = []
 

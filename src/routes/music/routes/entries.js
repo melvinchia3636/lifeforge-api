@@ -14,7 +14,7 @@ router.get(
     '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const entries = await pb.collection('music_entry').getFullList({
+        const entries = await pb.collection('music_entries').getFullList({
             sort: 'name'
         })
 
@@ -70,7 +70,7 @@ router.post(
                 const artist = metadata.common.artist || 'Unknown'
                 const duration = metadata.format.duration || 0
 
-                await pb.collection('music_entry').create({
+                await pb.collection('music_entries').create({
                     name:
                         metadata.common.title ||
                         file.split('.').slice(0, -1).join('.'),
@@ -101,7 +101,7 @@ router.patch(
         const { id } = req.params
         const { name, author } = req.body
 
-        await pb.collection('music_entry').update(id, {
+        await pb.collection('music_entries').update(id, {
             name,
             author
         })
@@ -116,7 +116,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        await pb.collection('music_entry').delete(id)
+        await pb.collection('music_entries').delete(id)
 
         success(res, { id })
     })
@@ -128,12 +128,12 @@ router.post(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('music_entry').getOne(id)
-        await pb.collection('music_entry').update(id, {
-            is_favourite: !entry.is_favourite
+        const entries = await pb.collection('music_entries').getOne(id)
+        await pb.collection('music_entries').update(id, {
+            is_favourite: !entries.is_favourite
         })
 
-        success(res, { is_favourite: !entry.favourite })
+        success(res, { is_favourite: !entries.favourite })
     })
 )
 

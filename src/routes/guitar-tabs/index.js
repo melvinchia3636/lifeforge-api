@@ -20,9 +20,10 @@ router.get(
         const search = decodeURIComponent(req.query.query || '')
 
         const entries = await pb
-            .collection('guitar_tabs_entry')
+            .collection('guitar_tabs_entries')
             .getList(page, 20, {
-                filter: `name~"${search}"`
+                filter: `name~"${search}" || author~"${search}"`,
+                sort: 'name'
             })
 
         success(res, entries)
@@ -74,7 +75,7 @@ router.post(
                             `uploads/${name}.jpg`
                         )
 
-                        await pb.collection('guitar_tabs_entry').create(
+                        await pb.collection('guitar_tabs_entries').create(
                             {
                                 name,
                                 thumbnail: new File(
@@ -117,6 +118,24 @@ router.get(
     '/process-status',
     asyncWrapper(async (req, res) => {
         success(res, { status: processing, left, total })
+    })
+)
+
+router.put(
+    '/update/:id',
+    asyncWrapper(async (req, res) => {
+        const { pb } = req
+        const { id } = req.params
+        const { name, author } = req.body
+
+        const updatedentries = await pb
+            .collection('guitar_tabs_entries')
+            .update(id, {
+                name,
+                author
+            })
+
+        success(res, updatedentries)
     })
 )
 

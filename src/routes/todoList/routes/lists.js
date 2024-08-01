@@ -10,44 +10,54 @@ router.get(
     '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const tags = await pb.collection('todo_tag').getFullList()
-
-        success(res, tags)
+        const categories = await pb.collection('todo_lists').getFullList()
+        success(res, categories)
     })
 )
 
 router.post(
     '/',
-    body('name').exists().notEmpty(),
+    [
+        body('name').exists().notEmpty(),
+        body('icon').exists().notEmpty(),
+        body('color').exists().isHexColor()
+    ],
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
 
         const { pb } = req
-        const { name } = req.body
+        const { name, icon, color } = req.body
 
-        const tag = await pb.collection('todo_tag').create({
-            name
+        const category = await pb.collection('todo_lists').create({
+            name,
+            icon,
+            color
         })
-
-        success(res, tag)
+        success(res, category)
     })
 )
 
 router.patch(
     '/:id',
-    body('name').exists().notEmpty(),
+    [
+        body('name').exists().notEmpty(),
+        body('icon').exists().notEmpty(),
+        body('color').exists().isHexColor()
+    ],
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
 
         const { pb } = req
         const { id } = req.params
-        const { name } = req.body
+        const { name, icon, color } = req.body
 
-        const tag = await pb.collection('todo_tag').update(id, {
-            name
+        const category = await pb.collection('todo_lists').update(id, {
+            name,
+            icon,
+            color
         })
 
-        success(res, tag)
+        success(res, category)
     })
 )
 
@@ -57,7 +67,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        await pb.collection('todo_tag').delete(id)
+        await pb.collection('todo_lists').delete(id)
         success(res)
     })
 )

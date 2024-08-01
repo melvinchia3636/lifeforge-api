@@ -1,13 +1,13 @@
 import express from 'express'
-import entry from './routes/entry.js'
-import progress from './routes/progress.js'
+import entries from './routes/entries.js'
+import progress from './routes/progresses.js'
 import files from './routes/files.js'
 import { success } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 
 const router = express.Router()
 
-router.use('/entry', entry)
+router.use('/entries', entries)
 router.use('/progress', progress)
 router.use('/files', files)
 

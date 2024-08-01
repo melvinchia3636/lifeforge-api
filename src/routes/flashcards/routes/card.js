@@ -10,7 +10,7 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const entries = await pb.collection('flashcards_card').getFullList({
+        const entries = await pb.collection('flashcards_cards').getFullList({
             filter: `deck='${id}'`
         })
 
@@ -25,19 +25,19 @@ router.put(
         const { deck, cards, toBeDeletedId } = req.body
 
         for (const card of toBeDeletedId) {
-            await pb.collection('flashcards_card').delete(card)
+            await pb.collection('flashcards_cards').delete(card)
         }
 
         for (const card of cards) {
             switch (card.type) {
                 case 'update':
                     if (card.id) {
-                        await pb.collection('flashcards_card').update(card.id, {
+                        await pb.collection('flashcards_cards').update(card.id, {
                             question: card.question,
                             answer: card.answer
                         })
                     } else {
-                        await pb.collection('flashcards_card').create({
+                        await pb.collection('flashcards_cards').create({
                             deck,
                             question: card.question,
                             answer: card.answer
@@ -45,7 +45,7 @@ router.put(
                     }
                     break
                 case 'create':
-                    await pb.collection('flashcards_card').create({
+                    await pb.collection('flashcards_cards').create({
                         deck,
                         question: card.question,
                         answer: card.answer
@@ -57,12 +57,12 @@ router.put(
         }
 
         const { totalItems } = await pb
-            .collection('flashcards_card')
+            .collection('flashcards_cards')
             .getList(1, 1, {
                 filter: `deck='${deck}'`
             })
 
-        await pb.collection('flashcards_deck').update(deck, {
+        await pb.collection('flashcards_decks').update(deck, {
             card_amount: totalItems
         })
 

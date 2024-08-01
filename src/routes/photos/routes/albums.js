@@ -19,7 +19,7 @@ router.get(
                 process.env.PB_PASSWORD
             )
 
-            const album = await pb.collection('photos_album').getOne(id)
+            const album = await pb.collection('photos_albums').getOne(id)
 
             if (!album.is_public) {
                 res.status(401).json({
@@ -30,7 +30,7 @@ router.get(
             }
         }
 
-        const album = await pb.collection('photos_album').getOne(id, {
+        const album = await pb.collection('photos_albums').getOne(id, {
             expand: 'cover'
         })
 
@@ -44,14 +44,14 @@ router.get(
     })
 )
 
-router.get('/valid/:id', validate('photos_album'))
+router.get('/valid/:id', validate('photos_albums'))
 
 router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const albums = await pb.collection('photos_album').getFullList({
+        const albums = await pb.collection('photos_albums').getFullList({
             expand: 'cover',
             sort: '-created'
         })
@@ -79,7 +79,7 @@ router.get(
 
         const { id } = req.params
 
-        const album = await pb.collection('photos_album').getOne(id)
+        const album = await pb.collection('photos_albums').getOne(id)
 
         success(res, album.is_public)
     })
@@ -94,7 +94,7 @@ router.post(
         const { pb } = req
         const { name } = req.body
 
-        const album = await pb.collection('photos_album').create({ name })
+        const album = await pb.collection('photos_albums').create({ name })
 
         success(res, album)
     })
@@ -112,24 +112,24 @@ router.patch(
 
         for (const photoId of photos) {
             await pb
-                .collection('photos_entry')
+                .collection('photos_entries')
                 .update(photoId, { album: albumId })
             const { id } = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getFirstListItem(`photo = "${photoId}"`)
-            await pb.collection('photos_entry_dimensions').update(id, {
+            await pb.collection('photos_dimensions').update(id, {
                 is_in_album: true
             })
         }
 
         const { totalItems } = await pb
-            .collection('photos_entry')
+            .collection('photos_entries')
             .getList(1, 1, {
                 filter: `album = "${albumId}"`
             })
 
         await pb
-            .collection('photos_album')
+            .collection('photos_albums')
             .update(albumId, { amount: totalItems })
 
         success(res)
@@ -146,32 +146,32 @@ router.delete(
         const { albumId } = req.params
         const { photos } = req.body
 
-        const { cover } = await pb.collection('photos_album').getOne(albumId)
+        const { cover } = await pb.collection('photos_albums').getOne(albumId)
 
         for (const photoId of photos) {
             const { id, photo } = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getOne(photoId)
-            await pb.collection('photos_entry').update(photo, { album: '' })
-            await pb.collection('photos_entry_dimensions').update(id, {
+            await pb.collection('photos_entries').update(photo, { album: '' })
+            await pb.collection('photos_dimensions').update(id, {
                 is_in_album: false
             })
 
             if (cover === photo) {
                 await pb
-                    .collection('photos_album')
+                    .collection('photos_albums')
                     .update(albumId, { cover: '' })
             }
         }
 
         const { totalItems } = await pb
-            .collection('photos_entry')
+            .collection('photos_entries')
             .getList(1, 1, {
                 filter: `album = "${albumId}"`
             })
 
         await pb
-            .collection('photos_album')
+            .collection('photos_albums')
             .update(albumId, { amount: totalItems })
 
         success(res)
@@ -184,7 +184,7 @@ router.delete(
         const { pb } = req
         const { albumId } = req.params
 
-        await pb.collection('photos_album').delete(albumId)
+        await pb.collection('photos_albums').delete(albumId)
 
         success(res)
     })
@@ -205,7 +205,7 @@ router.patch(
             return
         }
 
-        await pb.collection('photos_album').update(albumId, { name })
+        await pb.collection('photos_albums').update(albumId, { name })
 
         success(res)
     })
@@ -224,14 +224,14 @@ router.post(
         let image
         if (isInAlbum === 'true') {
             const dim = await pb
-                .collection('photos_entry_dimensions')
+                .collection('photos_dimensions')
                 .getOne(imageId)
-            image = await pb.collection('photos_entry').getOne(dim.photo)
+            image = await pb.collection('photos_entries').getOne(dim.photo)
         } else {
-            image = await pb.collection('photos_entry').getOne(imageId)
+            image = await pb.collection('photos_entries').getOne(imageId)
         }
 
-        await pb.collection('photos_album').update(albumId, { cover: image.id })
+        await pb.collection('photos_albums').update(albumId, { cover: image.id })
 
         success(res)
     })
@@ -248,7 +248,7 @@ router.post(
         const { publicity } = req.body
 
         await pb
-            .collection('photos_album')
+            .collection('photos_albums')
             .update(albumId, { is_public: publicity })
 
         success(res)

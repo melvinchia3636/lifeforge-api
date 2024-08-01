@@ -11,7 +11,7 @@ router.get(
 
         const assets = await pb.collection('wallet_assets').getFullList()
         const transactions = await pb
-            .collection('wallet_transaction')
+            .collection('wallet_transactions')
             .getFullList()
 
         assets.forEach(asset => {

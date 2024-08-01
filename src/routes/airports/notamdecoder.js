@@ -476,7 +476,7 @@ const subjects = [
         subjects: [
             { entity: 'OA', subject: 'Aeronautical information service' },
             { entity: 'OB', subject: 'Obstacle (specify details)' },
-            { entity: 'OE', subject: 'Aircraft entry requirements' },
+            { entity: 'OE', subject: 'Aircraft entries requirements' },
             { entity: 'OL', subject: 'Obstacle lights on ... (specify)' },
             { entity: 'OR', subject: 'Rescue coordination centre' }
         ]
@@ -876,7 +876,7 @@ function getISODateString(str, format) {
         return new Date(
             Date.UTC(
                 +String(new Date().getFullYear()).substring(0, 2) +
-                    str.substring(0, 2),
+                str.substring(0, 2),
                 +str.substring(2, 4),
                 +str.substring(4, 6),
                 +str.substring(6, 8),
@@ -1122,13 +1122,13 @@ function getTraffic(traffic) {
 // converts raw notam to simple object
 function convertMessage(msg) {
     let mappings = []
-    ;['Q', 'A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(code => {
-        if (msg.indexOf('\n' + code + ')') > -1) {
-            mappings.push({ code: code, index: msg.indexOf('\n' + code + ')') })
-        } else if (msg.indexOf(' ' + code + ')') > -1) {
-            mappings.push({ code: code, index: msg.indexOf(' ' + code + ')') })
-        }
-    })
+        ;['Q', 'A', 'B', 'C', 'D', 'E', 'F', 'G'].forEach(code => {
+            if (msg.indexOf('\n' + code + ')') > -1) {
+                mappings.push({ code: code, index: msg.indexOf('\n' + code + ')') })
+            } else if (msg.indexOf(' ' + code + ')') > -1) {
+                mappings.push({ code: code, index: msg.indexOf(' ' + code + ')') })
+            }
+        })
     if (mappings.length == 0) return
 
     var res = {

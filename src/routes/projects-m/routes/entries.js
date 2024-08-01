@@ -10,7 +10,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const entries = await pb.collection('projects_m_entry').getFullList()
+        const entries = await pb.collection('projects_m_entries').getFullList()
 
         success(res, entries)
     })
@@ -22,13 +22,13 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('projects_m_entry').getOne(id)
+        const entries = await pb.collection('projects_m_entries').getOne(id)
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
-router.get('/valid/:id', validate('projects_m_entry'))
+router.get('/valid/:id', validate('projects_m_entries'))
 
 router.post(
     '/',
@@ -49,7 +49,7 @@ router.post(
             return
         }
 
-        const entry = await pb.collection('projects_m_entry').create({
+        const entries = await pb.collection('projects_m_entries').create({
             name,
             icon,
             color,
@@ -59,7 +59,7 @@ router.post(
             technologies
         })
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
@@ -78,7 +78,7 @@ router.patch(
             technologies
         } = req.body
 
-        const entry = await pb.collection('projects_m_entry').update(id, {
+        const entries = await pb.collection('projects_m_entries').update(id, {
             name,
             icon,
             color,
@@ -88,7 +88,7 @@ router.patch(
             technologies
         })
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
@@ -98,9 +98,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('projects_m_entry').delete(id)
+        const entries = await pb.collection('projects_m_entries').delete(id)
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 

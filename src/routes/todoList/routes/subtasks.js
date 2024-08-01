@@ -19,11 +19,11 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('todo_entry').getOne(id, {
+        const entries = await pb.collection('todo_entries').getOne(id, {
             expand: 'subtasks'
         })
 
-        success(res, entry.expand ? entry.expand.subtasks : [])
+        success(res, entries.expand ? entries.expand.subtasks : [])
     })
 )
 
@@ -51,9 +51,8 @@ router.post(
             model: 'gemini-1.5-flash'
         })
 
-        const prompt = `Generate a detailed list of subtasks for completing the following task: "${summary.trim()}".${notes.trim() ? `Also, take into consideration that there is notes to the task being "${notes.trim()}".` : ''} The list should be organized in a logical sequence. The level of breakdown should be ${
-            BREAKDOWN_LEVELS[level]
-        }. The amount and the level of details of subtasks generated should correspond to the breakdown level. Ensure the output is in the form of a single-level flat JavaScript array, with each element containing only the task content, written in the same language as the given task, and without any additional details, comments, explanations, or nested subtasks or details of the subtask. Make sure not to wrap the output array in any code environment, and the output array should be plain text that can be parsed by javascript JSON.parse() function.`
+        const prompt = `Generate a detailed list of subtasks for completing the following task: "${summary.trim()}".${notes.trim() ? `Also, take into consideration that there is notes to the task being "${notes.trim()}".` : ''} The list should be organized in a logical sequence. The level of breakdown should be ${BREAKDOWN_LEVELS[level]
+            }. The amount and the level of details of subtasks generated should correspond to the breakdown level. Ensure the output is in the form of a single-level flat JavaScript array, with each element containing only the task content, written in the same language as the given task, and without any additional details, comments, explanations, or nested subtasks or details of the subtask. Make sure not to wrap the output array in any code environment, and the output array should be plain text that can be parsed by javascript JSON.parse() function.`
 
         const result = await model.generateContent(prompt)
         const response = await result.response
@@ -69,10 +68,10 @@ router.patch(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('todo_subtask').getOne(id)
+        const entries = await pb.collection('todo_subtask').getOne(id)
 
         await pb.collection('todo_subtask').update(id, {
-            done: !entry.done
+            done: !entries.done
         })
 
         success(res)

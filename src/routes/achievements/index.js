@@ -1,8 +1,8 @@
 import express from 'express'
-import entryRoutes from './routes/entry.js'
+import entriesRoutes from './routes/entries.js'
 
 const router = express.Router()
 
-router.use('/entry', entryRoutes)
+router.use('/entries', entriesRoutes)
 
 export default router

@@ -9,9 +9,11 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const statuses = await pb.collection('projects_m_status').getFullList()
+        const technologies = await pb
+            .collection('projects_m_technologies')
+            .getFullList()
 
-        success(res, statuses)
+        success(res, technologies)
     })
 )
 
@@ -19,20 +21,19 @@ router.post(
     '/',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const { name, icon, color } = req.body
+        const { name, icon } = req.body
 
-        if (!name || !icon || !color) {
+        if (!name || !icon) {
             clientError(res, 'Missing required fields')
             return
         }
 
-        const status = await pb.collection('projects_m_status').create({
+        const technology = await pb.collection('projects_m_technologies').create({
             name,
-            icon,
-            color
+            icon
         })
 
-        success(res, status)
+        success(res, technology)
     })
 )
 
@@ -41,20 +42,21 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { id } = req.params
-        const { name, icon, color } = req.body
+        const { name, icon } = req.body
 
         if (!id) {
             clientError(res, 'id is required')
             return
         }
 
-        const status = await pb.collection('projects_m_status').update(id, {
-            name,
-            icon,
-            color
-        })
+        const technology = await pb
+            .collection('projects_m_technologies')
+            .update(id, {
+                name,
+                icon
+            })
 
-        success(res, status)
+        success(res, technology)
     })
 )
 
@@ -64,9 +66,11 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const status = await pb.collection('projects_m_status').delete(id)
+        const technology = await pb
+            .collection('projects_m_technologies')
+            .delete(id)
 
-        success(res, status)
+        success(res, technology)
     })
 )
 

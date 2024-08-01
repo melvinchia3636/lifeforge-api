@@ -12,7 +12,7 @@ router.get(
     '/get/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const note = await pb.collection('notes_entry').getOne(req.params.id)
+        const note = await pb.collection('notes_entries').getOne(req.params.id)
 
         success(res, note)
     })
@@ -22,7 +22,7 @@ router.get(
     '/list/:subject/*',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const notes = await pb.collection('notes_entry').getFullList({
+        const notes = await pb.collection('notes_entries').getFullList({
             filter: `subject = "${req.params.subject}" && parent = "${req.params[0].split('/').pop()}"`
         })
 
@@ -35,12 +35,12 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const { totalItems: totalWorkspaceItems } = await pb
-            .collection('notes_workspace')
+            .collection('notes_workspaces')
             .getList(1, 1, {
                 filter: `id = "${req.params.workspace}"`
             })
         const { totalItems: totalSubjectItems } = await pb
-            .collection('notes_subject')
+            .collection('notes_subjects')
             .getList(1, 1, {
                 filter: `id = "${req.params.subject}"`
             })
@@ -53,13 +53,13 @@ router.get(
         const paths = req.params[0].split('/').filter(p => p !== '')
 
         for (const path of paths) {
-            const { totalItems: totalEntryItems } = await pb
-                .collection('notes_entry')
+            const { totalItems: totalentriesItems } = await pb
+                .collection('notes_entries')
                 .getList(1, 1, {
                     filter: `id = "${path}"`
                 })
 
-            if (!totalEntryItems) {
+            if (!totalentriesItems) {
                 success(res, false)
                 return
             }
@@ -75,10 +75,10 @@ router.get(
         const { pb } = req
 
         const workspace = await pb
-            .collection('notes_workspace')
+            .collection('notes_workspaces')
             .getOne(req.params.workspace)
         const subject = await pb
-            .collection('notes_subject')
+            .collection('notes_subjects')
             .getOne(req.params.subject)
         const paths = req.params[0].split('/').filter(p => p !== '')
 
@@ -94,7 +94,7 @@ router.get(
         ]
 
         for (const path of paths) {
-            const note = await pb.collection('notes_entry').getOne(path)
+            const note = await pb.collection('notes_entries').getOne(path)
             result.push({
                 id: path,
                 name: note.name
@@ -114,7 +114,7 @@ router.post(
         const { pb } = req
 
         const { name } = req.body
-        const existing = await pb.collection('notes_entry').getFullList({
+        const existing = await pb.collection('notes_entries').getFullList({
             filter: `name = "${name}" && parent = "${req.body.parent}" && subject = "${req.body.subject}"`
         })
 
@@ -126,7 +126,7 @@ router.post(
             return
         }
 
-        const note = await pb.collection('notes_entry').create(req.body)
+        const note = await pb.collection('notes_entries').create(req.body)
 
         success(res, note)
     })
@@ -151,7 +151,7 @@ router.post(
             if (file.originalname.endsWith('.DS_Store')) {
                 try {
                     fs.unlinkSync(file.path)
-                } catch (error) {}
+                } catch (error) { }
                 continue
             }
 
@@ -162,7 +162,7 @@ router.post(
 
             for (let i = 0; i < path.length; i += 1) {
                 const existing = await pb
-                    .collection('notes_entry')
+                    .collection('notes_entries')
                     .getFullList({
                         filter: `name = "${path[i]}" && parent = "${parent}" && subject = "${req.params.subject}"`
                     })
@@ -170,7 +170,7 @@ router.post(
                 if (existing.length > 0) {
                     parent = existing[0].id
                 } else {
-                    const note = await pb.collection('notes_entry').create(
+                    const note = await pb.collection('notes_entries').create(
                         {
                             name: path[i],
                             type: 'folder',
@@ -184,7 +184,7 @@ router.post(
                 }
             }
 
-            const existing = await pb.collection('notes_entry').getFullList({
+            const existing = await pb.collection('notes_entries').getFullList({
                 filter: `name = "${name}" && parent = "${parent}" && subject = "${req.params.subject}"`
             })
 
@@ -195,7 +195,7 @@ router.post(
             if (fs.existsSync(file.path)) {
                 const fileBuffer = fs.readFileSync(file.path)
 
-                await pb.collection('notes_entry').create(
+                await pb.collection('notes_entries').create(
                     {
                         name,
                         type: 'file',
@@ -210,7 +210,7 @@ router.post(
 
                 try {
                     fs.unlinkSync(file.path)
-                } catch (error) {}
+                } catch (error) { }
             }
         }
 
@@ -223,7 +223,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const note = await pb
-            .collection('notes_entry')
+            .collection('notes_entries')
             .update(req.params.id, req.body)
 
         success(res, note)
@@ -234,7 +234,7 @@ router.delete(
     '/delete/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        await pb.collection('notes_entry').delete(req.params.id)
+        await pb.collection('notes_entries').delete(req.params.id)
 
         success(res, null)
     })

@@ -479,7 +479,6 @@ router.get(
 
             success(res, result)
         } catch (err) {
-            console.log(err)
             success(res, 'none')
         }
     })
@@ -562,6 +561,38 @@ router.get(
             })
 
         success(res, radios)
+    })
+)
+
+router.get(
+    '/airport/:airportID/runways',
+    asyncWrapper(async (req, res) => {
+        const { airportID } = req.params
+
+        const response = await fetch(
+            `https://www.airport-data.com/world-airports/${airportID}`
+        ).then(res => res.text())
+
+        const dom = new JSDOM.JSDOM(response)
+
+        const runwayNames = Array.from(
+            dom.window.document.querySelectorAll('section#runway h3')
+        ).map(e => e.textContent)
+
+        const runwaysInfo = Array.from(
+            dom.window.document.querySelectorAll('section#runway table')
+        ).map(table =>
+            table.outerHTML
+                .replace(/class=".*?"/g, '')
+                .replace(/width=".*?"/g, '')
+        )
+
+        const runways = runwayNames.map((name, i) => ({
+            name,
+            info: runwaysInfo[i]
+        }))
+
+        success(res, runways)
     })
 )
 

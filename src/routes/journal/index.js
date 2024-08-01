@@ -1,6 +1,6 @@
 import express from 'express'
 import auth from './routes/auth.js'
-import entry from './routes/entry.js'
+import entries from './routes/entries.js'
 import { v4 } from 'uuid'
 
 const router = express.Router()
@@ -11,7 +11,7 @@ setTimeout(() => {
     challenge = v4()
 }, 1000 * 60)
 
-router.use('/entry', entry)
+router.use('/entries', entries)
 router.use('/auth', auth)
 
 export default router

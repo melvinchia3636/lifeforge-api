@@ -17,7 +17,7 @@ router.get(
         const { containerId } = req.params
         const { archived } = req.query
 
-        const ideas = await pb.collection('idea_box_entry').getFullList({
+        const ideas = await pb.collection('idea_box_entries').getFullList({
             filter: `container = "${containerId}" && archived = ${archived || 'false'} && folder=""`,
             sort: '-pinned,-created'
         })
@@ -35,7 +35,7 @@ router.get(
         const { folderId } = req.params
         const { archived } = req.query
 
-        const ideas = await pb.collection('idea_box_entry').getFullList({
+        const ideas = await pb.collection('idea_box_entries').getFullList({
             filter: `folder = "${folderId}" && archived = ${archived || 'false'}`,
             sort: '-pinned,-created'
         })
@@ -117,8 +117,8 @@ router.post(
 
         if (folder) data.folder = folder
 
-        const idea = await pb.collection('idea_box_entry').create(data)
-        await pb.collection('idea_box_container').update(containerId, {
+        const idea = await pb.collection('idea_box_entries').create(data)
+        await pb.collection('idea_box_containers').update(containerId, {
             [`${type}_count+`]: 1
         })
 
@@ -132,9 +132,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const idea = await pb.collection('idea_box_entry').getOne(id)
-        await pb.collection('idea_box_entry').delete(id)
-        await pb.collection('idea_box_container').update(idea.container, {
+        const idea = await pb.collection('idea_box_entries').getOne(id)
+        await pb.collection('idea_box_entries').delete(id)
+        await pb.collection('idea_box_containers').update(idea.container, {
             [`${idea.type}_count-`]: 1
         })
 
@@ -170,7 +170,7 @@ router.patch(
                 return
         }
 
-        await pb.collection('idea_box_entry').update(id, data)
+        await pb.collection('idea_box_entries').update(id, data)
 
         success(res)
     })
@@ -182,8 +182,8 @@ router.post(
         const { pb } = req
         const { id } = req.params
 
-        const idea = await pb.collection('idea_box_entry').getOne(id)
-        await pb.collection('idea_box_entry').update(id, {
+        const idea = await pb.collection('idea_box_entries').getOne(id)
+        await pb.collection('idea_box_entries').update(id, {
             pinned: !idea.pinned
         })
 
@@ -197,8 +197,8 @@ router.post(
         const { pb } = req
         const { id } = req.params
 
-        const idea = await pb.collection('idea_box_entry').getOne(id)
-        await pb.collection('idea_box_entry').update(id, {
+        const idea = await pb.collection('idea_box_entries').getOne(id)
+        await pb.collection('idea_box_entries').update(id, {
             archived: !idea.archived,
             pinned: false
         })

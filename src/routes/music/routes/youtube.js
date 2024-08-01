@@ -101,7 +101,7 @@ router.post(
                     `${process.cwd()}/uploads/${mp3File}`
                 )
 
-                await pb.collection('music_entry').create({
+                await pb.collection('music_entries').create({
                     name: metadata.title,
                     author: metadata.uploader,
                     duration: metadata.duration,

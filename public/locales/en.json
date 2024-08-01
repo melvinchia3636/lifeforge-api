@@ -303,7 +303,7 @@
     "addRecord": "Add Record",
     "newDeck": "New Deck",
     "pickRandomCard": "Pick Random Card",
-    "newEntry": "New Entry",
+    "newentries": "New entries",
     "save": "Save",
     "edit": "Edit",
     "addMusic": "Add Music",
@@ -420,9 +420,10 @@
       "addColumn": "Add Column",
       "editColumn": "Edit Column",
       "notamDetails": "NOTAM Details",
-      "viewJournalEntry": "View Journal Entry",
-      "modifyJournalEntry": "Modify Journal Entry",
-      "createJournalEntry": "Create Journal Entry"
+      "viewJournalEntry": "View Journal entries",
+      "modifyJournalentries": "Modify Journal entries",
+      "createJournalentries": "Create Journal entries",
+      "modifyGuitarTab": "Edit Tab"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",

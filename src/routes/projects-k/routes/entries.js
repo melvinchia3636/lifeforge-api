@@ -10,19 +10,19 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .getOne(req.params.id)
         success(res, project)
     })
 )
 
-router.get('/valid/:id', validate('projects_k_entry'))
+router.get('/valid/:id', validate('projects_k_entries'))
 
 router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const projects = await pb.collection('projects_k_entry').getFullList({
+        const projects = await pb.collection('projects_k_entries').getFullList({
             expand: 'progress,payment_status'
         })
 
@@ -76,11 +76,11 @@ router.post(
         const paymentStatusRecord =
             visibility === 'commercial'
                 ? await pb.collection('projects_k_payment_status').create({
-                      total_amt: totalPayable,
-                      deposit_amt: deposit,
-                      deposit_paid: false,
-                      fully_paid: false
-                  })
+                    total_amt: totalPayable,
+                    deposit_amt: deposit,
+                    deposit_paid: false,
+                    fully_paid: false
+                })
                 : undefined
 
         const progressRecord = await pb
@@ -90,7 +90,7 @@ router.post(
                 completed: 0
             })
 
-        const project = await pb.collection('projects_k_entry').create({
+        const project = await pb.collection('projects_k_entries').create({
             name,
             customer_name:
                 visibility === 'commercial' ? customerName : undefined,
@@ -120,7 +120,7 @@ router.patch(
         }
 
         const project = await pb
-            .collection('projects_k_entry')
+            .collection('projects_k_entries')
             .update(req.params.id, {
                 status
             })

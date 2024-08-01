@@ -10,7 +10,7 @@ router.get(
         const { pb } = req
 
         const visibilities = await pb
-            .collection('projects_m_visibility')
+            .collection('projects_m_visibilities')
             .getFullList()
 
         success(res, visibilities)
@@ -28,7 +28,7 @@ router.post(
             return
         }
 
-        const visibility = await pb.collection('projects_m_visibility').create({
+        const visibility = await pb.collection('projects_m_visibilities').create({
             name,
             icon
         })
@@ -50,7 +50,7 @@ router.patch(
         }
 
         const visibility = await pb
-            .collection('projects_m_visibility')
+            .collection('projects_m_visibilities')
             .update(id, {
                 name,
                 icon
@@ -67,7 +67,7 @@ router.delete(
         const { id } = req.params
 
         const visibility = await pb
-            .collection('projects_m_visibility')
+            .collection('projects_m_visibilities')
             .delete(id)
 
         success(res, visibility)

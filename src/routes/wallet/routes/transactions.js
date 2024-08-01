@@ -13,7 +13,7 @@ router.get(
         const { pb } = req
 
         const transactions = await pb
-            .collection('wallet_transaction')
+            .collection('wallet_transactions')
             .getFullList({
                 sort: '-date,-created'
             })
@@ -36,7 +36,7 @@ router.get(
             .format('YYYY-MM-DD')
 
         const transactions = await pb
-            .collection('wallet_transaction')
+            .collection('wallet_transactions')
             .getFullList({
                 filter: "type = 'income' || type = 'expenses'",
                 sort: '-date,-created'
@@ -131,7 +131,7 @@ router.post(
         const name = path.pop()
 
         if (type === 'income' || type === 'expenses') {
-            await pb.collection('wallet_transaction').create({
+            await pb.collection('wallet_transactions').create({
                 particulars,
                 date,
                 amount,
@@ -142,11 +142,11 @@ router.post(
                 side,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                          const fileBuffer = fs.readFileSync(file.path)
-                          return new File([fileBuffer], name, {
-                              type: file.mimetype
-                          })
-                      })()
+                        const fileBuffer = fs.readFileSync(file.path)
+                        return new File([fileBuffer], name, {
+                            type: file.mimetype
+                        })
+                    })()
                     : ''
             })
         }
@@ -160,7 +160,7 @@ router.post(
                 return
             }
 
-            await pb.collection('wallet_transaction').create({
+            await pb.collection('wallet_transactions').create({
                 type: 'transfer',
                 particulars: `Transfer from ${_from.name}`,
                 date,
@@ -169,15 +169,15 @@ router.post(
                 asset: toAsset,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                          const fileBuffer = fs.readFileSync(file.path)
-                          return new File([fileBuffer], name, {
-                              type: file.mimetype
-                          })
-                      })()
+                        const fileBuffer = fs.readFileSync(file.path)
+                        return new File([fileBuffer], name, {
+                            type: file.mimetype
+                        })
+                    })()
                     : ''
             })
 
-            await pb.collection('wallet_transaction').create({
+            await pb.collection('wallet_transactions').create({
                 type: 'transfer',
                 particulars: `Transfer to ${_to.name}`,
                 date,
@@ -186,11 +186,11 @@ router.post(
                 asset: fromAsset,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                          const fileBuffer = fs.readFileSync(file.path)
-                          return new File([fileBuffer], name, {
-                              type: file.mimetype
-                          })
-                      })()
+                        const fileBuffer = fs.readFileSync(file.path)
+                        return new File([fileBuffer], name, {
+                            type: file.mimetype
+                        })
+                    })()
                     : ''
             })
         }
@@ -233,11 +233,11 @@ router.patch(
         const path = file.originalname.split('/')
         const name = path.pop()
 
-        const transaction = await pb.collection('wallet_transaction').getOne(id)
+        const transaction = await pb.collection('wallet_transactions').getOne(id)
 
         amount = +amount
 
-        await pb.collection('wallet_transaction').update(id, {
+        await pb.collection('wallet_transactions').update(id, {
             particulars,
             date,
             amount,
@@ -274,9 +274,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const transaction = await pb.collection('wallet_transaction').getOne(id)
+        const transaction = await pb.collection('wallet_transactions').getOne(id)
 
-        await pb.collection('wallet_transaction').delete(id)
+        await pb.collection('wallet_transactions').delete(id)
 
         success(res, transaction)
     })

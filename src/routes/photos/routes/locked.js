@@ -12,7 +12,7 @@ router.get(
         const { pb } = req
 
         let photos = await pb
-            .collection('photos_entry_dimensions')
+            .collection('photos_dimensions')
             .getFullList({
                 filter: 'is_locked = true',
                 expand: 'photo',
@@ -51,15 +51,15 @@ router.get(
 //             let dim
 
 //             if (isInAlbum === 'true') {
-//                 dim = await pb.collection('photos_entry_dimensions').getOne(id)
+//                 dim = await pb.collection('photos_dimensions').getOne(id)
 //             } else {
 //                 dim = await pb
-//                     .collection('photos_entry_dimensions')
+//                     .collection('photos_dimensions')
 //                     .getFirstListItem(`photo = "${id}"`)
 //             }
 
 //             if (dim) {
-//                 await pb.collection('photos_entry_dimensions').update(dim.id, {
+//                 await pb.collection('photos_dimensions').update(dim.id, {
 //                     is_favourite: true
 //                 })
 //             } else {

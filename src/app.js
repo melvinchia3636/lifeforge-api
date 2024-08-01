@@ -123,7 +123,7 @@ router.get('/', async (req, res) => {
                         method,
                         description:
                             DESCRIPTIONS[
-                                `${method} ${route.path.replace(/:(\w+)/g, '{$1}')}`
+                            `${method} ${route.path.replace(/:(\w+)/g, '{$1}')}`
                             ]
                     }))
                 )
@@ -160,9 +160,9 @@ router.get('/', async (req, res) => {
 })
 
 router.get(
-    '/media/:collectionId/:entryId/:photoId',
+    '/media/:collectionId/:entriesId/:photoId',
     asyncWrapper(async (req, res) => {
-        const { collectionId, entryId, photoId } = req.params
+        const { collectionId, entriesId, photoId } = req.params
         const searchParams = new URLSearchParams()
 
         if (req.query.thumb) {
@@ -174,7 +174,7 @@ router.get(
         }
 
         request(
-            `${process.env.PB_HOST}/api/files/${collectionId}/${entryId}/${photoId}?${searchParams.toString()}`
+            `${process.env.PB_HOST}/api/files/${collectionId}/${entriesId}/${photoId}?${searchParams.toString()}`
         ).pipe(res)
     })
 )

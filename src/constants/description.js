@@ -1,10 +1,10 @@
 const DESCRIPTION = {
     'GET /': 'Root endpoint of the API',
-    'GET /media/{collectionId}/{entryId}/{photoId}':
-        'Retrieve a specific media photo by collection, entry, and photo IDs',
+    'GET /media/{collectionId}/{entriesId}/{photoId}':
+        'Retrieve a specific media photo by collection, entries, and photo IDs',
     'GET /locales/{language}':
         'Retrieve localization data for a specified language',
-    'POST /locales/add-entry': 'Add a new entry to the localization data',
+    'POST /locales/add-entries': 'Add a new entries to the localization data',
     'POST /locales/ai-generate': 'AI-generated localization entries',
     'PATCH /locales/rename-key': 'Rename a key in the localization data',
     'PUT /locales/update/{language}':
@@ -20,13 +20,13 @@ const DESCRIPTION = {
     'PATCH /user/settings': 'Update user settings',
     'PUT /user/settings/avatar': 'Update user avatar',
     'DELETE /user/settings/avatar': 'Delete user avatar',
-    'GET /projects-k/entry/get/{id}': 'Get a specific project entry by ID',
-    'GET /projects-k/entry/valid/{id}':
-        'Validate a specific project entry by ID',
-    'GET /projects-k/entry/list': 'List all project entries',
-    'POST /projects-k/entry/create': 'Create a new project entry',
-    'PATCH /projects-k/entry/update-status/{id}':
-        'Update the status of a project entry by ID',
+    'GET /projects-k/entries/get/{id}': 'Get a specific project entries by ID',
+    'GET /projects-k/entries/valid/{id}':
+        'Validate a specific project entries by ID',
+    'GET /projects-k/entries/list': 'List all project entries',
+    'POST /projects-k/entries/create': 'Create a new project entries',
+    'PATCH /projects-k/entries/update-status/{id}':
+        'Update the status of a project entries by ID',
     'GET /projects-k/files/download/{projectId}':
         'Download files of a specific project',
     'PUT /projects-k/files/replace/{projectId}':
@@ -43,14 +43,14 @@ const DESCRIPTION = {
         'Mark a project step as complete',
     'PATCH /projects-k/progress/uncomplete-step/{id}':
         'Mark a project step as incomplete',
-    'GET /todo-list/entry': 'Get a todo list entry',
-    'GET /todo-list/entry/status-counter':
+    'GET /todo-list/entries': 'Get a todo list entries',
+    'GET /todo-list/entries/status-counter':
         'Get status counter of todo list entries',
-    'POST /todo-list/entry': 'Create a new todo list entry',
-    'POST /todo-list/entry/toggle/{id}':
-        'Toggle the status of a todo list entry by ID',
-    'PATCH /todo-list/entry/{id}': 'Update a todo list entry by ID',
-    'DELETE /todo-list/entry/{id}': 'Delete a todo list entry by ID',
+    'POST /todo-list/entries': 'Create a new todo list entries',
+    'POST /todo-list/entries/toggle/{id}':
+        'Toggle the status of a todo list entries by ID',
+    'PATCH /todo-list/entries/{id}': 'Update a todo list entries by ID',
+    'DELETE /todo-list/entries/{id}': 'Delete a todo list entries by ID',
     'GET /todo-list/list': 'Get a list of todo lists',
     'POST /todo-list/list': 'Create a new todo list',
     'PATCH /todo-list/list/{id}': 'Update a todo list by ID',
@@ -111,18 +111,18 @@ const DESCRIPTION = {
     'GET /code-time/statistics': 'Get coding statistics',
     'GET /code-time/user/minutes':
         'Get the number of coding minutes logged by the user',
-    'GET /notes/entry/get/{id}': 'Get a specific note entry by ID',
-    'GET /notes/entry/list/{subject}/*':
+    'GET /notes/entries/get/{id}': 'Get a specific note entries by ID',
+    'GET /notes/entries/list/{subject}/*':
         'Get a list of note entries for a specific subject',
-    'GET /notes/entry/valid/{workspace}/{subject}/*':
-        'Validate a note entry for a specific workspace and subject',
-    'GET /notes/entry/path/{workspace}/{subject}/*':
-        'Get the path of a note entry for a specific workspace and subject',
-    'POST /notes/entry/create/folder': 'Create a new folder for note entries',
-    'POST /notes/entry/upload/{workspace}/{subject}/*':
-        'Upload a note entry for a specific workspace and subject',
-    'PATCH /notes/entry/update/folder/{id}': 'Update a note entry folder by ID',
-    'DELETE /notes/entry/delete/{id}': 'Delete a note entry by ID',
+    'GET /notes/entries/valid/{workspace}/{subject}/*':
+        'Validate a note entries for a specific workspace and subject',
+    'GET /notes/entries/path/{workspace}/{subject}/*':
+        'Get the path of a note entries for a specific workspace and subject',
+    'POST /notes/entries/create/folder': 'Create a new folder for note entries',
+    'POST /notes/entries/upload/{workspace}/{subject}/*':
+        'Upload a note entries for a specific workspace and subject',
+    'PATCH /notes/entries/update/folder/{id}': 'Update a note entries folder by ID',
+    'DELETE /notes/entries/delete/{id}': 'Delete a note entries by ID',
     'GET /notes/subject/{id}': 'Get a specific note subject by ID',
     'POST /notes/subject': 'Create a new note subject',
     'PATCH /notes/subject/{id}': 'Update a note subject by ID',
@@ -137,19 +137,19 @@ const DESCRIPTION = {
     'GET /flashcards/deck/valid/{id}': 'Check if a deck is valid by ID',
     'GET /flashcards/deck/list': 'List all decks',
     'GET /flashcards/tag/list': 'List all tags',
-    'GET /journal/entry/get/{id}': 'Get journal entry by ID',
-    'GET /journal/entry/valid/{id}': 'Check if a journal entry is valid by ID',
-    'GET /journal/entry/list': 'List all journal entries',
-    'POST /journal/entry/create': 'Create a new journal entry',
-    'PATCH /journal/entry/update-title/{id}':
-        'Update the title of a journal entry by ID',
-    'PUT /journal/entry/update-content/{id}':
-        'Update the content of a journal entry by ID',
-    'DELETE /journal/entry/delete/{id}': 'Delete a journal entry by ID',
-    'GET /achievements/entry/{difficulty}': 'Get achievements by difficulty',
-    'POST /achievements/entry': 'Create a new achievement',
-    'PATCH /achievements/entry/{id}': 'Update an achievement by ID',
-    'DELETE /achievements/entry/{id}': 'Delete an achievement by ID',
+    'GET /journal/entries/get/{id}': 'Get journal entries by ID',
+    'GET /journal/entries/valid/{id}': 'Check if a journal entries is valid by ID',
+    'GET /journal/entries/list': 'List all journal entries',
+    'POST /journal/entries/create': 'Create a new journal entries',
+    'PATCH /journal/entries/update-title/{id}':
+        'Update the title of a journal entries by ID',
+    'PUT /journal/entries/update-content/{id}':
+        'Update the content of a journal entries by ID',
+    'DELETE /journal/entries/delete/{id}': 'Delete a journal entries by ID',
+    'GET /achievements/entries/{difficulty}': 'Get achievements by difficulty',
+    'POST /achievements/entries': 'Create a new achievement',
+    'PATCH /achievements/entries/{id}': 'Update an achievement by ID',
+    'DELETE /achievements/entries/{id}': 'Delete an achievement by ID',
     'GET /wallet/assets': 'List all assets',
     'POST /wallet/assets': 'Create a new asset',
     'PATCH /wallet/assets/{id}': 'Update an asset by ID',
@@ -190,28 +190,28 @@ const DESCRIPTION = {
     'DELETE /photos/album/remove-photo/{albumId}':
         'Remove a photo from an album by album ID',
     'DELETE /photos/album/delete/{albumId}': 'Delete an album by album ID',
-    'GET /photos/entry/name/{id}': 'Get photo entry name by ID',
-    'GET /photos/entry/download/{id}': 'Download photo entry by ID',
-    'GET /photos/entry/dimensions/async-get':
+    'GET /photos/entries/name/{id}': 'Get photo entries name by ID',
+    'GET /photos/entries/download/{id}': 'Download photo entries by ID',
+    'GET /photos/entries/dimensions/async-get':
         'Get photo dimensions asynchronously',
-    'GET /photos/entry/dimensions/async-res':
+    'GET /photos/entries/dimensions/async-res':
         'Get result of async dimensions request',
-    'GET /photos/entry/list': 'List all photo entries',
-    'GET /photos/entry/list/{albumId}': 'List photo entries by album ID',
-    'GET /photos/entry/import/progress': 'Get import progress of photo entries',
-    'POST /photos/entry/bulk-download': 'Bulk download photo entries',
-    'POST /photos/entry/import': 'Import photo entries',
-    'DELETE /photos/entry/delete': 'Delete a photo entry',
+    'GET /photos/entries/list': 'List all photo entries',
+    'GET /photos/entries/list/{albumId}': 'List photo entries by album ID',
+    'GET /photos/entries/import/progress': 'Get import progress of photo entries',
+    'POST /photos/entries/bulk-download': 'Bulk download photo entries',
+    'POST /photos/entries/import': 'Import photo entries',
+    'DELETE /photos/entries/delete': 'Delete a photo entries',
     'GET /photos/favourites/list': 'List all favourite photos',
     'PATCH /photos/favourites/add-photos': 'Add photos to favourites',
     'GET /photos/trash/list': 'List all photos in trash',
     'DELETE /photos/trash/empty': 'Empty the trash',
-    'GET /music/entry': 'List all music entries',
-    'GET /music/entry/import-status': 'Get music import status',
-    'POST /music/entry/import': 'Import music entries',
-    'POST /music/entry/favourite/{id}': 'Mark music entry as favourite by ID',
-    'PATCH /music/entry/{id}': 'Update music entry by ID',
-    'DELETE /music/entry/{id}': 'Delete music entry by ID',
+    'GET /music/entries': 'List all music entries',
+    'GET /music/entries/import-status': 'Get music import status',
+    'POST /music/entries/import': 'Import music entries',
+    'POST /music/entries/favourite/{id}': 'Mark music entries as favourite by ID',
+    'PATCH /music/entries/{id}': 'Update music entries by ID',
+    'DELETE /music/entries/{id}': 'Delete music entries by ID',
     'GET /music/youtube/get-info/{id}': 'Get YouTube video info by ID',
     'GET /music/youtube/download-status': 'Get YouTube download status',
     'POST /music/youtube/async-download/{id}':
@@ -260,13 +260,13 @@ const DESCRIPTION = {
         'Update a project visibility option by ID',
     'DELETE /projects-m/visibility/{id}':
         'Delete a project visibility option by ID',
-    'GET /projects-m/entry': 'Get a list of project entries',
-    'GET /projects-m/entry/{id}': 'Get a specific project entry by ID',
-    'GET /projects-m/entry/valid/{id}':
-        'Validate a specific project entry by ID',
-    'POST /projects-m/entry': 'Create a new project entry',
-    'PATCH /projects-m/entry/{id}': 'Update a project entry by ID',
-    'DELETE /projects-m/entry/{id}': 'Delete a project entry by ID',
+    'GET /projects-m/entries': 'Get a list of project entries',
+    'GET /projects-m/entries/{id}': 'Get a specific project entries by ID',
+    'GET /projects-m/entries/valid/{id}':
+        'Validate a specific project entries by ID',
+    'POST /projects-m/entries': 'Create a new project entries',
+    'PATCH /projects-m/entries/{id}': 'Update a project entries by ID',
+    'DELETE /projects-m/entries/{id}': 'Delete a project entries by ID',
     'GET /projects-m/kanban/column/{projectId}':
         'Get kanban columns for a specific project',
     'POST /projects-m/kanban/column/{projectId}':

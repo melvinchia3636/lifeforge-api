@@ -8,7 +8,7 @@ router.get(
     '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const subjects = await pb.collection('notes_subject').getFullList({
+        const subjects = await pb.collection('notes_subjects').getFullList({
             filter: `workspace = "${req.params.id}"`
         })
 
@@ -22,7 +22,7 @@ router.post(
         const { pb } = req
 
         const { title } = req.body
-        const existing = await pb.collection('notes_subject').getFullList({
+        const existing = await pb.collection('notes_subjects').getFullList({
             filter: `title = "${title}" && workspace = "${req.body.workspace}"`
         })
         if (existing.length > 0) {
@@ -33,7 +33,7 @@ router.post(
 
             return
         }
-        const subject = await pb.collection('notes_subject').create(req.body)
+        const subject = await pb.collection('notes_subjects').create(req.body)
 
         success(res, subject)
     })
@@ -44,7 +44,7 @@ router.patch(
     asyncWrapper(async (req, res) => {
         const { pb } = req
         const subject = await pb
-            .collection('notes_subject')
+            .collection('notes_subjects')
             .update(req.params.id, req.body)
 
         success(res, subject)
@@ -55,7 +55,7 @@ router.delete(
     '/:id',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        await pb.collection('notes_subject').delete(req.params.id)
+        await pb.collection('notes_subjects').delete(req.params.id)
 
         success(res, null)
     })

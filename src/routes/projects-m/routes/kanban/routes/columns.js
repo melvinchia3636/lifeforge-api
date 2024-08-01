@@ -11,16 +11,16 @@ router.get(
         const { projectId } = req.params
 
         const columns = await pb
-            .collection('projects_m_kanban_column')
+            .collection('projects_m_kanban_columns')
             .getFullList({
                 filter: `project="${projectId}"`,
-                expand: 'projects_m_kanban_entry_via_column'
+                expand: 'projects_m_kanban_entries_via_column'
             })
 
         columns.forEach(column => {
             if (column.expand) {
                 column.entries =
-                    column.expand.projects_m_kanban_entry_via_column
+                    column.expand.projects_m_kanban_entries_via_column
                 delete column.expand
             }
         })
@@ -41,7 +41,7 @@ router.post(
             return
         }
 
-        const column = await pb.collection('projects_m_kanban_column').create({
+        const column = await pb.collection('projects_m_kanban_columns').create({
             name,
             icon,
             color,
@@ -65,7 +65,7 @@ router.patch(
         }
 
         const column = await pb
-            .collection('projects_m_kanban_column')
+            .collection('projects_m_kanban_columns')
             .update(id, {
                 name,
                 icon,
@@ -83,7 +83,7 @@ router.delete(
         const { id } = req.params
 
         const column = await pb
-            .collection('projects_m_kanban_column')
+            .collection('projects_m_kanban_columns')
             .delete(id)
 
         success(res, column)

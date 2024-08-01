@@ -57,7 +57,7 @@ router.get(
             return
         }
 
-        const password = await pb.collection('passwords_entry').getOne(id)
+        const password = await pb.collection('passwords_entries').getOne(id)
 
         const decryptedPassword = decrypt(
             Buffer.from(password.password, 'base64'),
@@ -78,7 +78,7 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        const passwords = await pb.collection('passwords_entry').getFullList({
+        const passwords = await pb.collection('passwords_entries').getFullList({
             sort: '-pinned'
         })
 
@@ -134,7 +134,7 @@ router.post(
             decryptedMaster
         )
 
-        await pb.collection('passwords_entry').create({
+        await pb.collection('passwords_entries').create({
             name,
             icon,
             color,
@@ -195,7 +195,7 @@ router.patch(
             decryptedMaster
         )
 
-        await pb.collection('passwords_entry').update(id, {
+        await pb.collection('passwords_entries').update(id, {
             name,
             icon,
             color,
@@ -215,7 +215,7 @@ router.delete(
 
         const { pb } = req
 
-        await pb.collection('passwords_entry').delete(id)
+        await pb.collection('passwords_entries').delete(id)
 
         success(res)
     })
@@ -232,8 +232,8 @@ router.post(
             return
         }
 
-        const password = await pb.collection('passwords_entry').getOne(id)
-        await pb.collection('passwords_entry').update(id, {
+        const password = await pb.collection('passwords_entries').getOne(id)
+        await pb.collection('passwords_entries').update(id, {
             pinned: !password.pinned
         })
 

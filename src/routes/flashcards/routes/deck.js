@@ -11,19 +11,19 @@ router.get(
         const { pb } = req
         const { id } = req.params
 
-        const entry = await pb.collection('flashcards_deck').getOne(id)
+        const entries = await pb.collection('flashcards_decks').getOne(id)
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
-router.get('/valid/:id', validate('flashcards_deck'))
+router.get('/valid/:id', validate('flashcards_decks'))
 
 router.get(
     '/list',
     asyncWrapper(async (req, res) => {
         const { pb } = req
-        const entries = await pb.collection('flashcards_deck').getFullList({
+        const entries = await pb.collection('flashcards_decks').getFullList({
             expand: 'tag'
         })
 

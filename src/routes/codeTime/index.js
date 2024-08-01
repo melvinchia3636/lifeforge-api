@@ -28,7 +28,7 @@ router.get(
 
         const year = req.query.year || new Date().getFullYear()
 
-        const data = await pb.collection('code_time_daily_entry').getFullList({
+        const data = await pb.collection('code_time_daily_entries').getFullList({
             filter: `date >= "${year}-01-01 00:00:00.000Z" && date <= "${year}-12-31 23:59:59.999Z"`
         })
 
@@ -79,7 +79,7 @@ router.get(
         }
 
         const firstRecordEver = await pb
-            .collection('code_time_daily_entry')
+            .collection('code_time_daily_entries')
             .getList(1, 1, {
                 sort: '+date'
             })
@@ -99,7 +99,7 @@ router.get(
         const { pb } = req
 
         const everything = await pb
-            .collection('code_time_daily_entry')
+            .collection('code_time_daily_entries')
             .getFullList({
                 sort: 'date'
             })
@@ -214,7 +214,7 @@ router.get(
             )
             .format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time_daily_entry').getFullList({
+        const data = await pb.collection('code_time_daily_entries').getFullList({
             filter: `date >= "${date} 00:00:00.000Z"`
         })
 
@@ -264,7 +264,7 @@ router.get(
             )
             .format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time_daily_entry').getFullList({
+        const data = await pb.collection('code_time_daily_entries').getFullList({
             filter: `date >= "${date} 00:00:00.000Z"`
         })
 
@@ -299,7 +299,7 @@ router.get(
         // 30 days before today
         const firstDay = moment().subtract(30, 'days').format('YYYY-MM-DD')
 
-        const data = await pb.collection('code_time_daily_entry').getFullList({
+        const data = await pb.collection('code_time_daily_entries').getFullList({
             filter: `date >= "${firstDay} 00:00:00.000Z" && date <= "${lastDay} 23:59:59.999Z"`
         })
 
@@ -332,7 +332,7 @@ router.get(
                 .format('YYYY-MM-DD')
 
             const items = await pb
-                .collection('code_time_daily_entry')
+                .collection('code_time_daily_entries')
                 .getList(1, 1, {
                     filter: `date >= "${minTime}"`
                 })
@@ -341,9 +341,9 @@ router.get(
                 minutes:
                     items.totalItems > 0
                         ? items.items.reduce(
-                              (acc, item) => acc + item.total_minutes,
-                              0
-                          )
+                            (acc, item) => acc + item.total_minutes,
+                            0
+                        )
                         : 0
             })
         } catch (e) {
@@ -368,13 +368,13 @@ router.post(
         const date = moment(data.eventTime).format('YYYY-MM-DD')
 
         const lastData = await pb
-            .collection('code_time_daily_entry')
+            .collection('code_time_daily_entries')
             .getList(1, 1, {
                 filter: `date="${date} 00:00:00.000Z"`
             })
 
         if (lastData.totalItems === 0) {
-            await pb.collection('code_time_daily_entry').create({
+            await pb.collection('code_time_daily_entries').create({
                 date,
                 projects: {
                     [data.project]: 1
@@ -421,7 +421,7 @@ router.post(
                 languages[data.language] = 1
             }
 
-            await pb.collection('code_time_daily_entry').update(lastRecord.id, {
+            await pb.collection('code_time_daily_entries').update(lastRecord.id, {
                 projects,
                 relative_files: relativeFiles,
                 languages,

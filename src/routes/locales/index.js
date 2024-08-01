@@ -67,7 +67,7 @@ router.post(
 )
 
 router.post(
-    '/add-entry',
+    '/add-entries',
     asyncWrapper(async (req, res) => {
         const { key, translations } = req.body
         for (const language in translations) {

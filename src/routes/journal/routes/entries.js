@@ -38,39 +38,39 @@ router.get(
             return
         }
 
-        const entry = await pb.collection('journal_entry').getOne(id)
+        const entries = await pb.collection('journal_entries').getOne(id)
 
-        const decryptedTitle = entry.title
-            ? decrypt(Buffer.from(entry.title, 'base64'), decryptedMaster)
+        const decryptedTitle = entries.title
+            ? decrypt(Buffer.from(entries.title, 'base64'), decryptedMaster)
             : ''
 
         const decryptedContent = decrypt(
-            Buffer.from(entry.content, 'base64'),
+            Buffer.from(entries.content, 'base64'),
             decryptedMaster
         )
 
         const decryptedSummary = decrypt(
-            Buffer.from(entry.summary, 'base64'),
+            Buffer.from(entries.summary, 'base64'),
             decryptedMaster
         )
 
         const decryptedRaw = decrypt(
-            Buffer.from(entry.raw, 'base64'),
+            Buffer.from(entries.raw, 'base64'),
             decryptedMaster
         )
 
-        entry.title = decryptedTitle.toString()
-        entry.content = decryptedContent.toString()
-        entry.summary = decryptedSummary.toString()
-        entry.raw = decryptedRaw.toString()
+        entries.title = decryptedTitle.toString()
+        entries.content = decryptedContent.toString()
+        entries.summary = decryptedSummary.toString()
+        entries.raw = decryptedRaw.toString()
 
-        entry.token = await pb.files.getToken()
+        entries.token = await pb.files.getToken()
 
-        success(res, entry)
+        success(res, entries)
     })
 )
 
-router.get('/valid/:id', validate('journal_entry'))
+router.get('/valid/:id', validate('journal_entries'))
 
 router.get(
     '/list',
@@ -97,7 +97,7 @@ router.get(
             return
         }
 
-        const journals = await pb.collection('journal_entry').getFullList({
+        const journals = await pb.collection('journal_entries').getFullList({
             sort: '-created'
         })
 
@@ -165,7 +165,7 @@ router.post(
             return
         }
 
-        await pb.collection('journal_entry').create({
+        await pb.collection('journal_entries').create({
             date,
             title: encrypt(Buffer.from(title), master).toString('base64'),
             raw: encrypt(Buffer.from(raw), master).toString('base64'),
@@ -220,7 +220,7 @@ router.put(
             return
         }
 
-        await pb.collection('journal_entry').update(id, {
+        await pb.collection('journal_entries').update(id, {
             date: moment(date).format('YYYY-MM-DD'),
             title: encrypt(Buffer.from(title), master).toString('base64'),
             raw: encrypt(Buffer.from(raw), master).toString('base64'),
@@ -241,9 +241,9 @@ router.delete(
         const { id } = req.params
         const { pb } = req
 
-        await pb.collection('journal_entry').delete(id)
+        await pb.collection('journal_entries').delete(id)
 
-        success(res, 'Entry deleted')
+        success(res, 'entries deleted')
     })
 )
 
@@ -278,7 +278,7 @@ router.post(
             apiKey: process.env.GROQ_API_KEY
         })
 
-        const prompt = `This text is a journal entry. Please give me a suitable title for this journal, highlighting the stuff that happended that day. The title should not be longer than 10 words. Give the title in title case, which means the first letter of each word should be in uppercase, and lowercase otherwise. The response should contains ONLY the title, without any other unrelated text, especially those that are in the beginning of the response, like "Here is the..." or "The title is...".
+        const prompt = `This text is a journal entries. Please give me a suitable title for this journal, highlighting the stuff that happended that day. The title should not be longer than 10 words. Give the title in title case, which means the first letter of each word should be in uppercase, and lowercase otherwise. The response should contains ONLY the title, without any other unrelated text, especially those that are in the beginning of the response, like "Here is the..." or "The title is...".
         
         ${rawText}
         `
@@ -330,7 +330,7 @@ router.post(
             apiKey: process.env.GROQ_API_KEY
         })
 
-        const prompt = `This text is a diary entry. Translate it into grammatically correct and well-punctuated English, maintaining a natural flow with proper paragraph breaks. The diary content should be all normal paragraphs WITHOUT any headings or titles. Focus solely on the diary content itself. Omit any text like "Here is the...", headings like "Diary Entry", or closing remarks.
+        const prompt = `This text is a diary entries. Translate it into grammatically correct and well-punctuated English, maintaining a natural flow with proper paragraph breaks. The diary content should be all normal paragraphs WITHOUT any headings or titles. Focus solely on the diary content itself. Omit any text like "Here is the...", headings like "Diary entries", or closing remarks.
         
         ${rawText}
         `
@@ -382,7 +382,7 @@ router.post(
             apiKey: process.env.GROQ_API_KEY
         })
 
-        const prompt = `Below is a diary entry. Summarize the diary in first person perspective into a single paragraph, not more than three sentences and 50 words, capturing the main idea and key details. All the pronounces should be "I". The response should be just the summarized paragraph itself. Omit any greetings like "Here is the...", headings like "Diary Entry", or closing remarks.
+        const prompt = `Below is a diary entries. Summarize the diary in first person perspective into a single paragraph, not more than three sentences and 50 words, capturing the main idea and key details. All the pronounces should be "I". The response should be just the summarized paragraph itself. Omit any greetings like "Here is the...", headings like "Diary entries", or closing remarks.
         
         ${rawText}
         `
@@ -434,7 +434,7 @@ router.post(
             apiKey: process.env.GROQ_API_KEY
         })
 
-        const prompt = `Below is a diary entry. Use a word to describe the mood of the author, and give a suitable unicode emoji icon for the mood. The word should be in full lowercase, and do not use the word "reflective". The emoji icon should be those in the emoji keyboard of modern phone. The response should be a JSON object, with the key being "text" and "emoji". Make sure to wrap the emoji icon in double quote. Do not wrap the JSON in a markdown code environment, and make sure that the response can be parsed straightaway by javascript's JSON.parse() function.
+        const prompt = `Below is a diary entries. Use a word to describe the mood of the author, and give a suitable unicode emoji icon for the mood. The word should be in full lowercase, and do not use the word "reflective". The emoji icon should be those in the emoji keyboard of modern phone. The response should be a JSON object, with the key being "text" and "emoji". Make sure to wrap the emoji icon in double quote. Do not wrap the JSON in a markdown code environment, and make sure that the response can be parsed straightaway by javascript's JSON.parse() function.
         
         ${rawText}
         `

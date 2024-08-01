@@ -18,7 +18,7 @@ router.get(
         const { difficulty } = req.params
 
         const achievements = await pb
-            .collection('achievements_entry')
+            .collection('achievements_entries')
             .getFullList({
                 filter: `difficulty="${difficulty}"`
             })
@@ -43,7 +43,7 @@ router.post(
         const { pb } = req
         const { difficulty, title, thoughts } = req.body
 
-        const achievement = await pb.collection('achievements_entry').create({
+        const achievement = await pb.collection('achievements_entries').create({
             difficulty,
             title,
             thoughts
@@ -70,7 +70,7 @@ router.patch(
         const { difficulty, title, thoughts } = req.body
 
         const achievement = await pb
-            .collection('achievements_entry')
+            .collection('achievements_entries')
             .update(id, {
                 difficulty,
                 title,
@@ -87,7 +87,7 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        await pb.collection('achievements_entry').delete(id)
+        await pb.collection('achievements_entries').delete(id)
 
         success(res)
     })

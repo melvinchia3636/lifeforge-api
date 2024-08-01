@@ -1,12 +1,12 @@
 import express from 'express'
-import workspaceRoutes from './routes/workspace.js'
-import subjectRoutes from './routes/subject.js'
-import entryRoutes from './routes/entry.js'
+import workspaceRoutes from './routes/workspaces.js'
+import subjectRoutes from './routes/subjects.js'
+import entriesRoutes from './routes/entries.js'
 
 const router = express.Router()
 
 router.use('/workspace', workspaceRoutes)
 router.use('/subject', subjectRoutes)
-router.use('/entry', entryRoutes)
+router.use('/entries', entriesRoutes)
 
 export default router
