@@ -4,22 +4,15 @@ import moment from 'moment'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
 import { singleUploadMiddleware } from '../../../middleware/uploadMiddleware.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const transactions = await pb
-            .collection('wallet_transactions')
-            .getFullList({
-                sort: '-date,-created'
-            })
-
-        success(res, transactions)
-    })
+    asyncWrapper(async (req, res) =>
+        list(req, res, 'wallet_transactions', { sort: '-date,-created' })
+    )
 )
 
 router.get(
@@ -142,11 +135,11 @@ router.post(
                 side,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                        const fileBuffer = fs.readFileSync(file.path)
-                        return new File([fileBuffer], name, {
-                            type: file.mimetype
-                        })
-                    })()
+                          const fileBuffer = fs.readFileSync(file.path)
+                          return new File([fileBuffer], name, {
+                              type: file.mimetype
+                          })
+                      })()
                     : ''
             })
         }
@@ -169,11 +162,11 @@ router.post(
                 asset: toAsset,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                        const fileBuffer = fs.readFileSync(file.path)
-                        return new File([fileBuffer], name, {
-                            type: file.mimetype
-                        })
-                    })()
+                          const fileBuffer = fs.readFileSync(file.path)
+                          return new File([fileBuffer], name, {
+                              type: file.mimetype
+                          })
+                      })()
                     : ''
             })
 
@@ -186,11 +179,11 @@ router.post(
                 asset: fromAsset,
                 receipt: fs.existsSync(file.path)
                     ? (() => {
-                        const fileBuffer = fs.readFileSync(file.path)
-                        return new File([fileBuffer], name, {
-                            type: file.mimetype
-                        })
-                    })()
+                          const fileBuffer = fs.readFileSync(file.path)
+                          return new File([fileBuffer], name, {
+                              type: file.mimetype
+                          })
+                      })()
                     : ''
             })
         }
@@ -233,7 +226,9 @@ router.patch(
         const path = file.originalname.split('/')
         const name = path.pop()
 
-        const transaction = await pb.collection('wallet_transactions').getOne(id)
+        const transaction = await pb
+            .collection('wallet_transactions')
+            .getOne(id)
 
         amount = +amount
 
@@ -274,7 +269,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const transaction = await pb.collection('wallet_transactions').getOne(id)
+        const transaction = await pb
+            .collection('wallet_transactions')
+            .getOne(id)
 
         await pb.collection('wallet_transactions').delete(id)
 

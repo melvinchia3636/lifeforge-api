@@ -1,19 +1,15 @@
 import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/list-steps',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const steps = await pb
-            .collection('projects_k_progress_step')
-            .getFullList()
-
-        success(res, steps)
-    })
+    asyncWrapper(async (req, res) =>
+        list(req, res, 'projects_k_progress_steps')
+    )
 )
 
 router.get(

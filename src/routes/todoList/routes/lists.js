@@ -3,16 +3,13 @@ import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const categories = await pb.collection('todo_lists').getFullList()
-        success(res, categories)
-    })
+    asyncWrapper(async (req, res) => list(req, res, 'todo_lists'))
 )
 
 router.post(

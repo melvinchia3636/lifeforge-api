@@ -3,6 +3,7 @@ import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -19,16 +20,12 @@ router.get(
 
 router.get(
     '/list/:id',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const { id } = req.params
-
-        const folders = await pb.collection('idea_box_folders').getFullList({
-            filter: `container = "${id}"`,
+    asyncWrapper(async (req, res) =>
+        list(req, res, 'idea_box_folders', {
+            filter: `container = "${req.params.id}"`,
             sort: 'name'
         })
-        success(res, folders)
-    })
+    )
 )
 
 router.post(

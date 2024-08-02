@@ -1,5 +1,5 @@
-import asyncWrapper from '../utils/asyncWrapper.js'
-import { success } from '../utils/response.js'
+import asyncWrapper from './asyncWrapper.js'
+import { success } from './response.js'
 
 export default collectionName =>
     asyncWrapper(async (req, res) => {

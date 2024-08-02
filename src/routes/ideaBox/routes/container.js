@@ -2,7 +2,8 @@ import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
-import validate from '../../../common/validate.js'
+import validate from '../../../utils/validate.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -22,15 +23,7 @@ router.get('/valid/:id', validate('idea_box_containers'))
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const containers = await pb
-            .collection('idea_box_containers')
-            .getFullList()
-
-        success(res, containers)
-    })
+    asyncWrapper(async (req, res) => list(req, res, 'idea_box_containers'))
 )
 
 router.post(

@@ -24,10 +24,10 @@ router.get(
                 .startOf('day')
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}" && due_date <= "${moment()
-                    .endOf('day')
-                    .utc()
-                    .add(1, 'second')
-                    .format('YYYY-MM-DD HH:mm:ss')}"`,
+                .endOf('day')
+                .utc()
+                .add(1, 'second')
+                .format('YYYY-MM-DD HH:mm:ss')}"`,
             scheduled: `done = false && due_date != "" && due_date >= "${moment()
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}"`,
@@ -73,10 +73,10 @@ router.get(
                 .startOf('day')
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}" && due_date <= "${moment()
-                    .endOf('day')
-                    .utc()
-                    .add(1, 'second')
-                    .format('YYYY-MM-DD HH:mm:ss')}"`,
+                .endOf('day')
+                .utc()
+                .add(1, 'second')
+                .format('YYYY-MM-DD HH:mm:ss')}"`,
             scheduled: `done = false && due_date != "" && due_date >= "${moment()
                 .utc()
                 .format('YYYY-MM-DD HH:mm:ss')}"`,
@@ -118,7 +118,7 @@ router.post(
                     return
                 }
 
-                const subtask = await pb.collection('todo_subtask').create({
+                const subtask = await pb.collection('todo_subtasks').create({
                     title: task.title
                 })
 
@@ -139,6 +139,13 @@ router.post(
                 'amount+': 1
             })
         }
+
+        for (const tag of entries.tags) {
+            await pb.collection('todo_tags').update(tag, {
+                'amount+': 1
+            })
+        }
+
         success(res, entries)
     })
 )
@@ -159,10 +166,10 @@ router.patch(
 
             if (subtask.id.startsWith('new-')) {
                 newSubtask = await pb
-                    .collection('todo_subtask')
+                    .collection('todo_subtasks')
                     .create({ title: subtask.title })
             } else if (subtask.hasChanged) {
-                await pb.collection('todo_subtask').update(subtask.id, {
+                await pb.collection('todo_subtasks').update(subtask.id, {
                     title: subtask.title
                 })
             }
@@ -172,40 +179,40 @@ router.patch(
 
         const entries = await pb.collection('todo_entries').update(id, req.body)
 
-        if (originalentries.list !== entries.list) {
-            if (originalentries.list) {
-                await pb.collection('todo_lists').update(originalentries.list, {
-                    'amount-': 1
+        for (const list of [...new Set([originalentries.list, entries.list])]) {
+            if (!list) continue
+
+            const { totalItems } = await pb
+                .collection('todo_entries')
+                .getList(1, 1, {
+                    filter: `list ~ "${list}"`
                 })
-            }
 
-            if (entries.list) {
-                await pb.collection('todo_lists').update(entries.list, {
-                    'amount+': 1
-                })
-            }
-        }
-
-        for (const tag of originalentries.tags) {
-            if (entries.tags.include(tag)) continue
-
-            await pb.collection('todo_tags').update(tag, {
-                'amount-': 1
+            await pb.collection('todo_lists').update(list, {
+                amount: totalItems
             })
         }
 
-        for (const tag of entries.tags) {
-            if (originalentries.tags.includes(tag)) continue
+        for (const tag of [
+            ...new Set([...originalentries.tags, ...entries.tags])
+        ]) {
+            if (!tag) continue
+
+            const { totalItems } = await pb
+                .collection('todo_entries')
+                .getList(1, 1, {
+                    filter: `tags ~ "${tag}"`
+                })
 
             await pb.collection('todo_tags').update(tag, {
-                'amount+': 1
+                amount: totalItems
             })
         }
 
         for (const subtask of originalentries.subtasks) {
             if (entries.subtasks.includes(subtask)) continue
 
-            await pb.collection('todo_subtask').delete(subtask)
+            await pb.collection('todo_subtasks').delete(subtask)
         }
 
         success(res, entries)
@@ -234,7 +241,7 @@ router.delete(
         }
 
         for (const subtask of entries.subtasks) {
-            await pb.collection('todo_subtask').delete(subtask)
+            await pb.collection('todo_subtasks').delete(subtask)
         }
 
         success(res)
@@ -251,7 +258,7 @@ router.post(
 
         if (!entries.done) {
             for (const subtask of entries.subtasks) {
-                await pb.collection('todo_subtask').update(subtask, {
+                await pb.collection('todo_subtasks').update(subtask, {
                     done: true
                 })
             }

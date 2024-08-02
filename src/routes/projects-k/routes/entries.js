@@ -1,7 +1,7 @@
 import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import validate from '../../../common/validate.js'
+import validate from '../../../utils/validate.js'
 
 const router = express.Router()
 

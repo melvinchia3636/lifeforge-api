@@ -1,20 +1,13 @@
 import express from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const technologies = await pb
-            .collection('projects_m_technologies')
-            .getFullList()
-
-        success(res, technologies)
-    })
+    asyncWrapper(async (req, res) => list(req, res, 'projects_m_visibilities'))
 )
 
 router.post(
@@ -28,10 +21,12 @@ router.post(
             return
         }
 
-        const technology = await pb.collection('projects_m_technologies').create({
-            name,
-            icon
-        })
+        const technology = await pb
+            .collection('projects_m_technologies')
+            .create({
+                name,
+                icon
+            })
 
         success(res, technology)
     })

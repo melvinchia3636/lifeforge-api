@@ -5,6 +5,7 @@ import * as mm from 'music-metadata'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
 import { body, validationResult } from 'express-validator'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -12,14 +13,11 @@ let importProgress = 'empty'
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-        const entries = await pb.collection('music_entries').getFullList({
+    asyncWrapper(async (req, res) =>
+        list(req, res, 'music_entries', {
             sort: 'name'
         })
-
-        success(res, entries)
-    })
+    )
 )
 
 router.get(

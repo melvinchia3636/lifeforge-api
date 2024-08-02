@@ -51,9 +51,7 @@ router.get(
             let image
 
             if (isInAlbum === 'true') {
-                const dim = await pb
-                    .collection('photos_dimensions')
-                    .getOne(id)
+                const dim = await pb.collection('photos_dimensions').getOne(id)
                 image = await pb.collection('photos_entries').getOne(dim.photo)
                 const album = await pb
                     .collection('photos_albums')
@@ -78,9 +76,7 @@ router.get(
         let image
 
         if (isInAlbum === 'true') {
-            const dim = await pb
-                .collection('photos_dimensions')
-                .getOne(id)
+            const dim = await pb.collection('photos_dimensions').getOne(id)
             image = await pb.collection('photos_entries').getOne(dim.photo)
         } else {
             image = await pb.collection('photos_entries').getOne(id)
@@ -106,9 +102,7 @@ router.get(
             let image
 
             if (isInAlbum === 'true') {
-                const dim = await pb
-                    .collection('photos_dimensions')
-                    .getOne(id)
+                const dim = await pb.collection('photos_dimensions').getOne(id)
                 image = await pb.collection('photos_entries').getOne(dim.photo)
                 const album = await pb
                     .collection('photos_albums')
@@ -131,9 +125,7 @@ router.get(
         let image
 
         if (isInAlbum === 'true') {
-            const dim = await pb
-                .collection('photos_dimensions')
-                .getOne(id)
+            const dim = await pb.collection('photos_dimensions').getOne(id)
             image = await pb.collection('photos_entries').getOne(dim.photo)
         } else {
             image = await pb.collection('photos_entries').getOne(id)
@@ -143,8 +135,8 @@ router.get(
             .getUrl(
                 image,
                 image[
-                raw === 'true' ? 'raw' : 'image'
-                //TODO
+                    raw === 'true' ? 'raw' : 'image'
+                    //TODO
                 ]
             )
             .replace(
@@ -330,21 +322,19 @@ router.get(
             .startOf('day')
             .utc()
             .format('YYYY - MM - DD HH: mm:ss')}' && shot_time <= '${moment(
-                date,
-                'YYYY-MM-DD'
-            )
-                .endOf('day')
-                .utc()
-                .format(
-                    'YYYY-MM-DD HH:mm:ss'
-                )} ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`
-        let photos = await pb
-            .collection('photos_dimensions')
-            .getFullList({
-                filter,
-                expand: 'photo',
-                fields: 'expand.photo.raw,is_in_album,is_favourite,expand.photo.id,expand.photo.image'
-            })
+            date,
+            'YYYY-MM-DD'
+        )
+            .endOf('day')
+            .utc()
+            .format(
+                'YYYY-MM-DD HH:mm:ss'
+            )} ' ${hideInAlbum === 'true' ? ' && album = ""' : ''}`
+        let photos = await pb.collection('photos_dimensions').getFullList({
+            filter,
+            expand: 'photo',
+            fields: 'expand.photo.raw,is_in_album,is_favourite,expand.photo.id,expand.photo.image'
+        })
 
         photos = photos.map(photo => ({
             ...photo.expand.photo,
@@ -384,14 +374,12 @@ router.get(
             }
         }
 
-        let photos = await pb
-            .collection('photos_dimensions')
-            .getFullList({
-                filter: `photo.album = "${albumId}" && is_deleted = false && is_locked = false`,
-                expand: 'photo',
-                fields: 'expand.photo.id,expand.photo.image,expand,shot_time.photo.raw,width,height,id,expand.photo.collectionId',
-                sort: '-shot_time'
-            })
+        let photos = await pb.collection('photos_dimensions').getFullList({
+            filter: `photo.album = "${albumId}" && is_deleted = false && is_locked = false`,
+            expand: 'photo',
+            fields: 'expand.photo.id,expand.photo.image,expand,shot_time.photo.raw,width,height,id,expand.photo.collectionId',
+            sort: '-shot_time'
+        })
 
         photos = photos.map(photo => ({
             width: photo.width,
@@ -499,7 +487,7 @@ router.post(
                 let tags
                 try {
                     tags = await ExifReader.load(filePath)
-                } catch (e) {
+                } catch {
                     tags = {}
                 }
 
@@ -608,9 +596,7 @@ router.delete(
         for (const photo of photos) {
             let dim
             if (isInAlbum === 'true') {
-                dim = await pb
-                    .collection('photos_dimensions')
-                    .getOne(photo)
+                dim = await pb.collection('photos_dimensions').getOne(photo)
             } else {
                 dim = await pb
                     .collection('photos_dimensions')

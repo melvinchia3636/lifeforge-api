@@ -1,18 +1,13 @@
 import express from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const category = await pb.collection('wallet_categories').getFullList()
-
-        success(res, category)
-    })
+    asyncWrapper(async (req, res) => list(req, res, 'wallet_categories'))
 )
 
 router.post(

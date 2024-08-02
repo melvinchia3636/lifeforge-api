@@ -3,6 +3,7 @@ import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { success } from '../../../utils/response.js'
 import { body, param } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -14,16 +15,10 @@ router.get(
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
 
-        const { pb } = req
         const { difficulty } = req.params
-
-        const achievements = await pb
-            .collection('achievements_entries')
-            .getFullList({
-                filter: `difficulty="${difficulty}"`
-            })
-
-        success(res, achievements)
+        await list(req, res, 'achievements_entries', {
+            filter: `difficulty = "${difficulty}"`
+        })
     })
 )
 

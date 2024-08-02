@@ -1,20 +1,17 @@
 import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/list/:id',
     asyncWrapper(async (req, res) => {
-        const { pb } = req
         const { id } = req.params
-
-        const entries = await pb.collection('flashcards_cards').getFullList({
+        list(req, res, 'flashcards_cards', {
             filter: `deck='${id}'`
         })
-
-        success(res, entries)
     })
 )
 
@@ -32,10 +29,12 @@ router.put(
             switch (card.type) {
                 case 'update':
                     if (card.id) {
-                        await pb.collection('flashcards_cards').update(card.id, {
-                            question: card.question,
-                            answer: card.answer
-                        })
+                        await pb
+                            .collection('flashcards_cards')
+                            .update(card.id, {
+                                question: card.question,
+                                answer: card.answer
+                            })
                     } else {
                         await pb.collection('flashcards_cards').create({
                             deck,

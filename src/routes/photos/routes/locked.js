@@ -1,8 +1,6 @@
 import express from 'express'
 import { success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { body } from 'express-validator'
-import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
@@ -11,14 +9,12 @@ router.get(
     asyncWrapper(async (req, res) => {
         const { pb } = req
 
-        let photos = await pb
-            .collection('photos_dimensions')
-            .getFullList({
-                filter: 'is_locked = true',
-                expand: 'photo',
-                fields: 'expand.photo.id,expand.photo.image,expand.photo.raw,width,height,id,expand.photo.collectionId',
-                sort: '-shot_time'
-            })
+        let photos = await pb.collection('photos_dimensions').getFullList({
+            filter: 'is_locked = true',
+            expand: 'photo',
+            fields: 'expand.photo.id,expand.photo.image,expand.photo.raw,width,height,id,expand.photo.collectionId',
+            sort: '-shot_time'
+        })
 
         photos = photos.map(photo => ({
             width: photo.width,

@@ -11,6 +11,7 @@ import {
 } from '../../../utils/encryption.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -75,15 +76,11 @@ router.get(
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const passwords = await pb.collection('passwords_entries').getFullList({
+    asyncWrapper(async (req, res) =>
+        list(req, res, 'passwords_entries', {
             sort: '-pinned'
         })
-
-        success(res, passwords)
-    })
+    )
 )
 
 router.post(

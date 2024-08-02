@@ -1,19 +1,14 @@
 import express from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { clientError, success } from '../../../utils/response.js'
-import validate from '../../../common/validate.js'
+import validate from '../../../utils/validate.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req, res) => {
-        const { pb } = req
-
-        const entries = await pb.collection('projects_m_entries').getFullList()
-
-        success(res, entries)
-    })
+    asyncWrapper(async (req, res) => list(req, res, 'projects_m_entries'))
 )
 
 router.get(

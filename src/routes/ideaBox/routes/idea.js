@@ -4,6 +4,7 @@ import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { list } from '../../../utils/CRUD.js'
 
 const router = express.Router()
 
@@ -13,15 +14,13 @@ router.get(
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
 
-        const { pb } = req
         const { containerId } = req.params
         const { archived } = req.query
 
-        const ideas = await pb.collection('idea_box_entries').getFullList({
+        await list(req, res, 'idea_box_entries', {
             filter: `container = "${containerId}" && archived = ${archived || 'false'} && folder=""`,
             sort: '-pinned,-created'
         })
-        success(res, ideas)
     })
 )
 
@@ -31,15 +30,13 @@ router.get(
     asyncWrapper(async (req, res) => {
         if (hasError(req, res)) return
 
-        const { pb } = req
         const { folderId } = req.params
         const { archived } = req.query
 
-        const ideas = await pb.collection('idea_box_entries').getFullList({
+        await list(req, res, 'idea_box_entries', {
             filter: `folder = "${folderId}" && archived = ${archived || 'false'}`,
             sort: '-pinned,-created'
         })
-        success(res, ideas)
     })
 )
 

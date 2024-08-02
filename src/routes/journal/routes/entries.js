@@ -1,7 +1,7 @@
 import express from 'express'
 import { clientError, success } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import validate from '../../../common/validate.js'
+import validate from '../../../utils/validate.js'
 import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js'
 import { challenge } from '../index.js'
 import bcrypt from 'bcrypt'
