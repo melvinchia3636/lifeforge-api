@@ -7,3 +7,4 @@ scripts
 uploads
 # Local Netlify folder
 .netlify
+dist
