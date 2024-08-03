@@ -39,7 +39,7 @@ import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
 import DESCRIPTIONS from './constants/description.js'
 
 import asyncWrapper from './utils/asyncWrapper.js'
-import { query, validationResult } from 'express-validator'
+import { query } from 'express-validator'
 import hasError from './utils/checkError.js'
 
 // const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -184,7 +184,7 @@ router.get(
 router.get(
     '/media/:collectionId/:entriesId/:photoId',
     [
-        query('thumb').optional().isBoolean(),
+        query('thumb').optional().isString(),
         query('token').optional().isString()
     ],
     asyncWrapper(async (req: Request, res: Response) => {

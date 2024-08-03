@@ -63,7 +63,7 @@ router.post(
         body('type').isString().isIn(['text', 'link', 'image']).notEmpty(),
         body('imageLink').isString().optional(),
         body('folder').isString().optional(),
-        body('file').custom((value, { req }) => {
+        body('file').custom((_, { req }) => {
             if (req.body.type === 'image' && !req.file && !req.body.imageLink) {
                 throw new Error('Image is required')
             }

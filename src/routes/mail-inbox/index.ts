@@ -48,13 +48,12 @@ router.get(
 
                         const cleanedUpMessages = messages.map(
                             async message => {
-                                // @ts-ignore
-                                const header = _.find(message.parts, {
-                                    which: 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
-                                })
+                                const header = message.parts.find(part =>
+                                    part.which.startsWith('HEADER')
+                                )
+
                                 return Object.fromEntries(
-                                    // @ts-ignore
-                                    Object.entries(header.body).map(
+                                    Object.entries(header?.body).map(
                                         ([key, value]) => {
                                             // @ts-ignore
                                             return [key, value[0]]
