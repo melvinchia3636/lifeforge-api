@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../utils/asyncWrapper.js'
-import { success } from '../../utils/response.js'
+import { successWithBaseResponse } from '../../utils/response.js'
 
 const router = express.Router()
 
@@ -39,7 +39,7 @@ router.get(
             })
         }
 
-        success(res, results)
+        successWithBaseResponse(res, results)
     })
 )
 

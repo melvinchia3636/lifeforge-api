@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 
@@ -23,7 +23,7 @@ router.get(
             tag.count = totalItems
         }
 
-        success(res, tags)
+        successWithBaseResponse(res, tags)
     })
 )
 
@@ -41,7 +41,7 @@ router.patch(
             tags
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express'
 import multer from 'multer'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
@@ -10,6 +13,7 @@ import {
     IIdeaBoxFolder
 } from '../../../interfaces/ideabox_interfaces.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
+import { WithoutPBDefault } from '../../../interfaces/pocketbase_interfaces.js'
 
 const router = express.Router()
 
@@ -76,9 +80,8 @@ router.post(
             const { file } = req
             const { containerId } = req.params
 
-            let data: Pick<
-                IIdeaBoxEntry,
-                'title' | 'content' | 'type' | 'container' | 'folder'
+            let data: WithoutPBDefault<
+                Omit<IIdeaBoxEntry, 'image' | 'pinned' | 'archived'>
             > & {
                 image?: File
             } = {
@@ -137,7 +140,7 @@ router.post(
                 [`${type}_count+`]: 1
             })
 
-            success(res, idea)
+            successWithBaseResponse(res, idea)
         }
     )
 )
@@ -175,7 +178,7 @@ router.patch(
                 .collection('idea_box_entries')
                 .update(id, data)
 
-            success(res, entry)
+            successWithBaseResponse(res, entry)
         }
     )
 )
@@ -192,7 +195,7 @@ router.delete(
             [`${idea.type}_count-`]: 1
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -210,7 +213,7 @@ router.post(
                     pinned: !idea.pinned
                 })
 
-            success(res, entry)
+            successWithBaseResponse(res, entry)
         }
     )
 )
@@ -230,7 +233,7 @@ router.post(
                     pinned: false
                 })
 
-            success(res, entry)
+            successWithBaseResponse(res, entry)
         }
     )
 )

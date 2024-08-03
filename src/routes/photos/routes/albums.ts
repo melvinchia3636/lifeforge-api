@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
@@ -44,7 +47,7 @@ router.get(
             delete album.expand
         }
 
-        success(res, album)
+        successWithBaseResponse(res, album)
     })
 )
 
@@ -73,7 +76,7 @@ router.get(
             }
         })
 
-        success(res, albums)
+        successWithBaseResponse(res, albums)
     })
 )
 
@@ -90,7 +93,7 @@ router.get(
 
         const album = await pb.collection('photos_albums').getOne(id)
 
-        success(res, album.is_public)
+        successWithBaseResponse(res, album.is_public)
     })
 )
 
@@ -105,7 +108,7 @@ router.post(
 
         const album = await pb.collection('photos_albums').create({ name })
 
-        success(res, album)
+        successWithBaseResponse(res, album)
     })
 )
 
@@ -141,7 +144,7 @@ router.patch(
             .collection('photos_albums')
             .update(albumId, { amount: totalItems })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -183,7 +186,7 @@ router.delete(
             .collection('photos_albums')
             .update(albumId, { amount: totalItems })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -195,7 +198,7 @@ router.delete(
 
         await pb.collection('photos_albums').delete(albumId)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -216,7 +219,7 @@ router.patch(
 
         await pb.collection('photos_albums').update(albumId, { name })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -242,7 +245,7 @@ router.post(
             .collection('photos_albums')
             .update(albumId, { cover: image.id })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -260,7 +263,7 @@ router.post(
             .collection('photos_albums')
             .update(albumId, { is_public: publicity })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

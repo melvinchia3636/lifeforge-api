@@ -8,4 +8,14 @@ interface IMusicEntry extends BasePBCollection {
     is_favourite: boolean
 }
 
-export type { IMusicEntry }
+interface IYoutubeData {
+    title: string
+    uploadDate: string
+    uploader: string
+    duration: string
+    viewCount: number
+    likeCount: number
+    thumbnail: string
+}
+
+export type { IMusicEntry, IYoutubeData }

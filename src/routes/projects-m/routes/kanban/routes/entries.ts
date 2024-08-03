@@ -1,46 +1,59 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../../../utils/response.js'
+import { successWithBaseResponse } from '../../../../../utils/response.js'
+import { BaseResponse } from '../../../../../interfaces/base_response.js'
+import { body } from 'express-validator'
+import hasError from '../../../../../utils/checkError.js'
+import { IProjectsMKanbanEntry } from '../../../../../interfaces/projects_m_interfaces.js'
 
 const router = express.Router()
 
 router.post(
     '/:columnId',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { title } = req.body
-        const { columnId } = req.params
+    [body('title').isString()],
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IProjectsMKanbanEntry>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (title) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { title } = req.body
+            const { columnId } = req.params
+
+            const entry: IProjectsMKanbanEntry = await pb
+                .collection('projects_m_kanban_entries')
+                .create({
+                    column: columnId,
+                    title
+                })
+
+            successWithBaseResponse(res, entry)
         }
-
-        const entries = await pb
-            .collection('projects_m_kanban_entries')
-            .create({
-                column: columnId
-            })
-
-        success(res, entries)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const { title } = req.body
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IProjectsMKanbanEntry>>
+        ) => {
+            const { pb } = req
+            const { id } = req.params
+            const { title } = req.body
 
-        const column = await pb
-            .collection('projects_m_kanban_entries')
-            .update(id, {
-                title
-            })
+            const column: IProjectsMKanbanEntry = await pb
+                .collection('projects_m_kanban_entries')
+                .update(id, {
+                    title
+                })
 
-        success(res, column)
-    })
+            successWithBaseResponse(res, column)
+        }
+    )
 )
 
 router.delete(
@@ -49,11 +62,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const column = await pb
-            .collection('projects_m_kanban_entries')
-            .delete(id)
+        await pb.collection('projects_m_kanban_entries').delete(id)
 
-        success(res, column)
+        successWithBaseResponse(res)
     })
 )
 

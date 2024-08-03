@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import { list, validate } from '../../../utils/CRUD.js'
@@ -22,7 +22,7 @@ router.get(
                 .collection('idea_box_containers')
                 .getOne(id)
 
-            success(res, container)
+            successWithBaseResponse(res, container)
         }
     )
 )
@@ -62,7 +62,7 @@ router.post(
                     icon
                 })
 
-            success(res, container)
+            successWithBaseResponse(res, container)
         }
     )
 )
@@ -77,7 +77,7 @@ router.patch(
     asyncWrapper(
         async (
             req: Request,
-            res: Response<BaseResponse<IIdeaBoxContainer[]>>
+            res: Response<BaseResponse<IIdeaBoxContainer>>
         ) => {
             const { pb } = req
             const { id } = req.params
@@ -92,7 +92,7 @@ router.patch(
                     icon
                 })
 
-            success(res, container)
+            successWithBaseResponse(res, container)
         }
     )
 )
@@ -105,7 +105,7 @@ router.delete(
 
         await pb.collection('idea_box_containers').delete(id)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

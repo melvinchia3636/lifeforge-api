@@ -1,9 +1,13 @@
 import express, { Request, Response } from 'express'
 import fs from 'fs'
 import asyncWrapper from '../../utils/asyncWrapper.js'
-import { clientError, success } from '../../utils/response.js'
+import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { body, validationResult } from 'express-validator'
+
+if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY must be set')
+}
 
 const router = express.Router()
 
@@ -37,7 +41,13 @@ router.post(
         const valRes = validationResult(req)
 
         if (!valRes.isEmpty()) {
-            clientError(res, valRes.array())
+            clientError(
+                res,
+                valRes
+                    .array()
+                    .map(err => err.msg)
+                    .join(', ')
+            )
         }
 
         const { key } = req.body
@@ -47,7 +57,7 @@ router.post(
             return
         }
 
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
         const model = genAI.getGenerativeModel({
             model: 'gemini-1.5-flash'
@@ -62,52 +72,66 @@ router.post(
             response.text().replace(/`/g, '').trim().replace(/^json/, '')
         )
 
-        success(res, text)
+        successWithBaseResponse(res, text)
     })
 )
 
 router.post(
     '/add-entries',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { key, translations } = req.body
-        for (const language in translations) {
-            if (!['en', 'ms', 'zh-CN', 'zh-TW'].includes(language)) {
-                res.status(404).json({
-                    state: 'error',
-                    message: 'Language not found'
+    asyncWrapper(
+        async (
+            req: Request<
+                {},
+                {},
+                {
+                    key: string
+                    translations: {
+                        [key: string]: string
+                    }
+                }
+            >,
+            res: Response
+        ) => {
+            const { key, translations } = req.body
+            for (const language in translations) {
+                if (!['en', 'ms', 'zh-CN', 'zh-TW'].includes(language)) {
+                    res.status(404).json({
+                        state: 'error',
+                        message: 'Language not found'
+                    })
+                }
+
+                const translation = translations[language]
+
+                const data = JSON.parse(
+                    fs.readFileSync(
+                        `${process.cwd()}/public/locales/${language}.json`,
+                        'utf-8'
+                    )
+                )
+
+                const keyPath = key.split('.')
+                const lastKey = keyPath.pop() ?? ''
+                let current = data
+                keyPath.forEach(key => {
+                    if (!current[key]) {
+                        current[key] = {}
+                    }
+                    current = current[key]
                 })
+                current[lastKey] = translation
+
+                fs.writeFileSync(
+                    `${process.cwd()}/public/locales/${language}.json`,
+                    JSON.stringify(data, null, 2)
+                )
             }
 
-            const translation = translations[language]
-
-            const data = JSON.parse(
-                fs.readFileSync(
-                    `${process.cwd()}/public/locales/${language}.json`,
-                    'utf-8'
-                )
-            )
-
-            const keyPath = key.split('.')
-            const lastKey = keyPath.pop()
-            let current = data
-            keyPath.forEach(key => {
-                if (!current[key]) {
-                    current[key] = {}
-                }
-                current = current[key]
+            res.json({
+                state: 'success'
             })
-            current[lastKey] = translation
-
-            fs.writeFileSync(
-                `${process.cwd()}/public/locales/${language}.json`,
-                JSON.stringify(data, null, 2)
-            )
         }
-
-        res.json({
-            state: 'success'
-        })
-    })
+    )
 )
 
 router.put(
@@ -135,50 +159,55 @@ router.put(
 
 router.patch(
     '/rename-key',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { oldKey, newKey } = req.body
-        for (const language of ['en', 'ms', 'zh-CN', 'zh-TW']) {
-            const data = JSON.parse(
-                fs.readFileSync(
-                    `${process.cwd()}/public/locales/${language}.json`,
-                    'utf-8'
+    asyncWrapper(
+        async (
+            req: Request<{}, {}, { oldKey: string; newKey: string }>,
+            res: Response
+        ) => {
+            const { oldKey, newKey } = req.body
+            for (const language of ['en', 'ms', 'zh-CN', 'zh-TW']) {
+                const data = JSON.parse(
+                    fs.readFileSync(
+                        `${process.cwd()}/public/locales/${language}.json`,
+                        'utf-8'
+                    )
                 )
-            )
 
-            const oldKeyPath = oldKey.split('.')
-            const oldLastKey = oldKeyPath.pop()
-            let oldCurrent = data
-            oldKeyPath.forEach(key => {
-                if (!oldCurrent[key]) {
-                    oldCurrent[key] = {}
-                }
-                oldCurrent = oldCurrent[key]
+                const oldKeyPath = oldKey.split('.')
+                const oldLastKey = oldKeyPath.pop() || ''
+                let oldCurrent = data
+                oldKeyPath.forEach(key => {
+                    if (!oldCurrent[key]) {
+                        oldCurrent[key] = {}
+                    }
+                    oldCurrent = oldCurrent[key]
+                })
+                const oldContent = oldCurrent[oldLastKey]
+                delete oldCurrent[oldLastKey]
+
+                const newKeyPath = newKey.split('.')
+                const newLastKey = newKeyPath.pop() ?? ''
+                let newCurrent = data
+                newKeyPath.forEach(key => {
+                    if (!newCurrent[key]) {
+                        newCurrent[key] = {}
+                    }
+                    newCurrent = newCurrent[key]
+                })
+
+                newCurrent[newLastKey] = oldContent
+
+                fs.writeFileSync(
+                    `${process.cwd()}/public/locales/${language}.json`,
+                    JSON.stringify(data, null, 2)
+                )
+            }
+
+            res.json({
+                state: 'success'
             })
-            const oldContent = oldCurrent[oldLastKey]
-            delete oldCurrent[oldLastKey]
-
-            const newKeyPath = newKey.split('.')
-            const newLastKey = newKeyPath.pop()
-            let newCurrent = data
-            newKeyPath.forEach(key => {
-                if (!newCurrent[key]) {
-                    newCurrent[key] = {}
-                }
-                newCurrent = newCurrent[key]
-            })
-
-            newCurrent[newLastKey] = oldContent
-
-            fs.writeFileSync(
-                `${process.cwd()}/public/locales/${language}.json`,
-                JSON.stringify(data, null, 2)
-            )
         }
-
-        res.json({
-            state: 'success'
-        })
-    })
+    )
 )
 
 export default router

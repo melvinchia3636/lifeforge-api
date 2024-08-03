@@ -1,6 +1,7 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express'
 import moment from 'moment'
-import { clientError, success } from '../../utils/response.js'
+import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -86,7 +87,7 @@ router.get(
                 sort: '+date'
             })
 
-        success(res, {
+        successWithBaseResponse(res, {
             data: final,
             firstYear: +firstRecordEver.items[0].date
                 .split(' ')[0]
@@ -181,7 +182,7 @@ router.get(
             return streak
         })()
 
-        success(res, {
+        successWithBaseResponse(res, {
             'Most time spent': mostTimeSpent,
             'Total time spent': total,
             'Average time spent': average,
@@ -239,7 +240,7 @@ router.get(
             Object.entries(groupByProject).sort(([, a], [, b]) => b - a)
         )
 
-        success(res, groupByProject)
+        successWithBaseResponse(res, groupByProject)
     })
 )
 
@@ -291,7 +292,7 @@ router.get(
             Object.entries(groupByLanguage).sort(([, a], [, b]) => b - a)
         )
 
-        success(res, groupByLanguage)
+        successWithBaseResponse(res, groupByLanguage)
     })
 )
 
@@ -318,7 +319,7 @@ router.get(
             groupByDate[dateKey] = item.total_minutes
         }
 
-        success(
+        successWithBaseResponse(
             res,
             Object.entries(groupByDate).map(([date, item]) => ({
                 date,

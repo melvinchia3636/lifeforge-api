@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { success } from './response.js'
+import { successWithBaseResponse } from './response.js'
 import { BaseResponse } from '../interfaces/base_response.js'
 
 async function list<T>(
@@ -12,7 +12,7 @@ async function list<T>(
 
     const data: T[] = await pb.collection(collection).getFullList(options)
 
-    success(res, data)
+    successWithBaseResponse(res, data)
 }
 
 async function validate(req: Request, res: Response, collectionName: string) {
@@ -23,7 +23,7 @@ async function validate(req: Request, res: Response, collectionName: string) {
         filter: `id = "${id}"`
     })
 
-    success(res, totalItems === 1)
+    successWithBaseResponse(res, totalItems === 1)
 }
 
 export { list, validate }

@@ -9,7 +9,7 @@ export default function hasError(req: Request, res: Response) {
             res,
             result
                 .array()
-                .map(i => i.msg)
+                .map(i => `invalid ${i.type}: ${i.msg}`)
                 .join(', ')
         )
         return true

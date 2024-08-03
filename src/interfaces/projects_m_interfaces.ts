@@ -48,5 +48,6 @@ export type {
     IProjectsMStatus,
     IProjectsMVisibility,
     IProjectsMTechnology,
-    IProjectsMKanbanColumn
+    IProjectsMKanbanColumn,
+    IProjectsMKanbanEntry
 }

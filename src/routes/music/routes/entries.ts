@@ -3,28 +3,44 @@ import fs from 'fs'
 import mime from 'mime-types'
 import * as mm from 'music-metadata'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import { body, validationResult } from 'express-validator'
 import { list } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IMusicEntry } from '../../../interfaces/music_interfaces.js'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
-let importProgress = 'empty'
+let importProgress: 'in_progress' | 'completed' | 'failed' | 'empty' = 'empty'
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'music_entries', {
-            sort: 'name'
-        })
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IMusicEntry[]>>) =>
+            list(req, res, 'music_entries', {
+                sort: 'name'
+            })
     )
 )
 
 router.get(
     '/import-status',
-    asyncWrapper(async (req: Request, res: Response) => {
-        success(res, { status: importProgress })
-    })
+    asyncWrapper(
+        async (
+            _: Request,
+            res: Response<
+                BaseResponse<{
+                    status: 'in_progress' | 'completed' | 'failed' | 'empty'
+                }>
+            >
+        ) => {
+            successWithBaseResponse(res, { status: importProgress })
+        }
+    )
 )
 
 router.post(
@@ -53,13 +69,11 @@ router.post(
 
             const newFiles = fs
                 .readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
-                .filter(
-                    file =>
-                        !file.startsWith('.') &&
-                        (mime.lookup(file)
-                            ? mime.lookup(file).startsWith('audio')
-                            : false)
-                )
+                .filter(file => {
+                    const fileMime = mime.lookup(file)
+                    !file.startsWith('.') &&
+                        (fileMime ? fileMime.startsWith('audio') : false)
+                })
 
             for (const file of newFiles) {
                 const fp = `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
@@ -89,23 +103,24 @@ router.post(
 router.patch(
     '/:id',
     [body('name').notEmpty(), body('author').notEmpty()],
-    asyncWrapper(async (req: Request, res: Response) => {
-        const result = validationResult(req)
-        if (!result.isEmpty()) {
-            return clientError(res, result.array())
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IMusicEntry>>) => {
+            if (hasError(req, res)) return
+
+            const { pb } = req
+            const { id } = req.params
+            const { name, author } = req.body
+
+            const entry: IMusicEntry = await pb
+                .collection('music_entries')
+                .update(id, {
+                    name,
+                    author
+                })
+
+            successWithBaseResponse(res, entry)
         }
-
-        const { pb } = req
-        const { id } = req.params
-        const { name, author } = req.body
-
-        await pb.collection('music_entries').update(id, {
-            name,
-            author
-        })
-
-        success(res)
-    })
+    )
 )
 
 router.delete(
@@ -116,23 +131,27 @@ router.delete(
 
         await pb.collection('music_entries').delete(id)
 
-        success(res, { id })
+        successWithBaseResponse(res)
     })
 )
 
 router.post(
     '/favourite/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IMusicEntry>>) => {
+            const { pb } = req
+            const { id } = req.params
 
-        const entries = await pb.collection('music_entries').getOne(id)
-        await pb.collection('music_entries').update(id, {
-            is_favourite: !entries.is_favourite
-        })
+            const entries = await pb.collection('music_entries').getOne(id)
+            const entry: IMusicEntry = await pb
+                .collection('music_entries')
+                .update(id, {
+                    is_favourite: !entries.is_favourite
+                })
 
-        success(res, { is_favourite: !entries.favourite })
-    })
+            successWithBaseResponse(res, entry)
+        }
+    )
 )
 
 export default router

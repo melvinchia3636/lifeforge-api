@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import Pocketbase from 'pocketbase'
 import moment from 'moment'
-import { success } from '../../utils/response.js'
+import { successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 import { IChangeLogVersion } from '../../interfaces/changelog_interfaces.js'
 import { BaseResponse } from '../../interfaces/base_response.js'
@@ -47,7 +47,7 @@ router.get(
                     })
             }
 
-            success(res, final.reverse())
+            successWithBaseResponse(res, final.reverse())
         }
     )
 )

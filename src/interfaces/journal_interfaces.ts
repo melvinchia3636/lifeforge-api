@@ -4,8 +4,8 @@ interface IJournalEntry extends BasePBCollection {
     date: string
     title: string
     content: string
-    raw: string
-    summary: string
+    raw?: string
+    summary?: string
     mood: {
         text: string
         emoji: string

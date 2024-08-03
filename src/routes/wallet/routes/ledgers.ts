@@ -1,58 +1,78 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import { list } from '../../../utils/CRUD.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
+import { IWalletLedger } from '../../../interfaces/wallet_interfaces.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'wallet_ledgers')
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletLedger[]>>) =>
+            list(req, res, 'wallet_ledgers')
     )
 )
 
 router.post(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { name, icon, color } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('color').isHexColor()
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletLedger>>) => {
+            if (hasError(req, res)) return
 
-        if (!name || !icon || !color) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { name, icon, color } = req.body
+
+            const ledger: IWalletLedger = await pb
+                .collection('wallet_ledgers')
+                .create({
+                    name,
+                    icon,
+                    color
+                })
+
+            successWithBaseResponse(res, ledger)
         }
-
-        const ledger = await pb.collection('wallet_ledgers').create({
-            name,
-            icon,
-            color
-        })
-
-        success(res, ledger)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const { name, icon, color } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('color').isHexColor()
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletLedger>>) => {
+            if (hasError(req, res)) return
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
+            const { pb } = req
+            const { id } = req.params
+            const { name, icon, color } = req.body
+
+            const ledger: IWalletLedger = await pb
+                .collection('wallet_ledgers')
+                .update(id, {
+                    name,
+                    icon,
+                    color
+                })
+
+            successWithBaseResponse(res, ledger)
         }
-
-        const ledger = await pb.collection('wallet_ledgers').update(id, {
-            name,
-            icon,
-            color
-        })
-
-        success(res, ledger)
-    })
+    )
 )
 
 router.delete(
@@ -61,9 +81,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const ledger = await pb.collection('wallet_ledgers').delete(id)
+        await pb.collection('wallet_ledgers').delete(id)
 
-        success(res, ledger)
+        successWithBaseResponse(res)
     })
 )
 

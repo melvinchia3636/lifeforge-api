@@ -1,3 +1,4 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express'
 
 import fs from 'fs'
@@ -5,7 +6,7 @@ import mime from 'mime-types'
 import ExifReader from 'exifreader'
 import moment from 'moment'
 import axios from 'axios'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import sizeOf from 'image-size'
 
@@ -82,7 +83,7 @@ router.get(
             image = await pb.collection('photos_entries').getOne(id)
         }
 
-        success(res, image.name)
+        successWithBaseResponse(res, image.name)
     })
 )
 
@@ -144,7 +145,7 @@ router.get(
                 'https://main--pms-api-proxy.netlify.app/media'
             )
 
-        success(res, {
+        successWithBaseResponse(res, {
             url,
             fileName: `${image.name}.${image[raw === 'true' ? 'raw' : 'image']
                 .split('.')
@@ -181,7 +182,7 @@ router.post(
             )
         }
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -283,7 +284,7 @@ router.get(
                 state: 'pending'
             })
         } else if (allPhotosDimensions !== undefined) {
-            success(res, allPhotosDimensions)
+            successWithBaseResponse(res, allPhotosDimensions)
             allPhotosDimensions = undefined
         } else {
             res.status(404).json({
@@ -347,7 +348,7 @@ router.get(
             delete photo.raw
         })
 
-        success(res, photos)
+        successWithBaseResponse(res, photos)
     })
 )
 
@@ -395,7 +396,7 @@ router.get(
             delete photo.raw
         })
 
-        success(res, photos)
+        successWithBaseResponse(res, photos)
     })
 )
 
@@ -582,7 +583,7 @@ router.post(
 router.get(
     '/import/progress',
     asyncWrapper(async (req: Request, res: Response) => {
-        success(res, progress)
+        successWithBaseResponse(res, progress)
     })
 )
 
@@ -622,7 +623,7 @@ router.delete(
             })
         }
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

@@ -1,6 +1,7 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 
 const router = express.Router()
 
@@ -30,7 +31,7 @@ router.get(
             delete photo.raw
         })
 
-        success(res, photos)
+        successWithBaseResponse(res, photos)
     })
 )
 
@@ -50,7 +51,7 @@ router.delete(
             })
         )
 
-        success(res, 'All photos in trash have been deleted')
+        successWithBaseResponse(res, 'All photos in trash have been deleted')
     })
 )
 

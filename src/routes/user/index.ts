@@ -2,7 +2,7 @@ import fs from 'fs'
 import express, { Request, Response } from 'express'
 import passkey from './routes/passkey.js'
 import Pocketbase from 'pocketbase'
-import { clientError, success } from '../../utils/response.js'
+import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 import { singleUploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { body, validationResult } from 'express-validator'
@@ -124,7 +124,7 @@ router.patch(
             enabledModules: data
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -137,7 +137,7 @@ router.put(
             moduleConfigs: data
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -166,7 +166,7 @@ router.patch(
 
         await pb.collection('users').update(id, toBeUpdated)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -195,7 +195,7 @@ router.put(
 
         fs.unlinkSync(file.path)
 
-        success(res, newRecord.avatar)
+        successWithBaseResponse(res, newRecord.avatar)
     })
 )
 
@@ -209,7 +209,7 @@ router.delete(
             avatar: null
         })
 
-        success(res, newRecord.avatar)
+        successWithBaseResponse(res, newRecord.avatar)
     })
 )
 
@@ -241,7 +241,7 @@ router.patch(
 
         await pb.collection('users').update(id, newData)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -254,7 +254,7 @@ router.post(
             .collection('users')
             .requestPasswordReset(pb.authStore.model?.email)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

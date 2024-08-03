@@ -37,9 +37,9 @@ interface IWalletIncomeExpenses {
 }
 
 export type {
-    IWalletAssetEntry,
-    IWalletLedgerEntry,
+    IWalletAssetEntry as IWalletAsset,
+    IWalletLedgerEntry as IWalletLedger,
     IWalletTransactionEntry,
-    IWalletCategoryEntry,
+    IWalletCategoryEntry as IWalletCategory,
     IWalletIncomeExpenses
 }

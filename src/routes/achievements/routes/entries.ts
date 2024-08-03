@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import { body, param } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
@@ -58,7 +58,7 @@ router.post(
                     thoughts
                 })
 
-            success(res, achievement)
+            successWithBaseResponse(res, achievement)
         }
     )
 )
@@ -87,7 +87,7 @@ router.patch(
                 thoughts
             })
 
-        success(res, achievement)
+        successWithBaseResponse(res, achievement)
     })
 )
 
@@ -102,7 +102,7 @@ router.delete(
 
         await pb.collection('achievements_entries').delete(id)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

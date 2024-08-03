@@ -1,58 +1,71 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import { list } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IProjectsMStatus } from '../../../interfaces/projects_m_interfaces.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'projects_m_statuses')
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMStatus[]>>) =>
+            list(req, res, 'projects_m_statuses')
     )
 )
 
 router.post(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { name, icon, color } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('color').isHexColor()
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMStatus>>) => {
+            if (hasError(req, res)) return
 
-        if (!name || !icon || !color) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { name, icon, color } = req.body
+
+            const status: IProjectsMStatus = await pb
+                .collection('projects_m_statuses')
+                .create({
+                    name,
+                    icon,
+                    color
+                })
+
+            successWithBaseResponse(res, status)
         }
-
-        const status = await pb.collection('projects_m_statuses').create({
-            name,
-            icon,
-            color
-        })
-
-        success(res, status)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const { name, icon, color } = req.body
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMStatus>>) => {
+            const { pb } = req
+            const { id } = req.params
+            const { name, icon, color } = req.body
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
+            const status: IProjectsMStatus = await pb
+                .collection('projects_m_statuses')
+                .update(id, {
+                    name,
+                    icon,
+                    color
+                })
+
+            successWithBaseResponse(res, status)
         }
-
-        const status = await pb.collection('projects_m_statuses').update(id, {
-            name,
-            icon,
-            color
-        })
-
-        success(res, status)
-    })
+    )
 )
 
 router.delete(
@@ -61,9 +74,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const status = await pb.collection('projects_m_statuses').delete(id)
+        await pb.collection('projects_m_statuses').delete(id)
 
-        success(res, status)
+        successWithBaseResponse(res)
     })
 )
 

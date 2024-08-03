@@ -1,15 +1,19 @@
 import imaps from 'imap-simple'
 import _ from 'underscore'
 import express, { Request, Response } from 'express'
-import { success } from '../../utils/response.js'
+import { successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
+
+if (!process.env.GMAIL_APP_PASSWORD) {
+    throw new Error('GMAIL_APP_PASSWORD not set')
+}
 
 const router = express.Router()
 
 const config = {
     imap: {
         user: 'melvinchia623600@gmail.com',
-        password: process.env.GMAIL_APP_PASSWORD,
+        password: process.env.GMAIL_APP_PASSWORD!,
         host: 'imap.gmail.com',
         port: 993,
         tls: true,
@@ -20,10 +24,10 @@ const config = {
 
 router.get(
     '/list',
-    asyncWrapper(async (req: Request, res: Response) => {
+    asyncWrapper(async (_: Request, res: Response) => {
         imaps
             .connect(config)
-            .then(connection => {
+            .then(async connection => {
                 return connection
                     .openBox('INBOX')
                     .then(() => {
@@ -39,17 +43,20 @@ router.get(
                     })
                     .then(messages => {
                         messages = messages.sort(
-                            (a, b) => b.attributes.date - a.attributes.date
+                            (a, b) => +b.attributes.date - +a.attributes.date
                         )
 
                         const cleanedUpMessages = messages.map(
                             async message => {
+                                // @ts-ignore
                                 const header = _.find(message.parts, {
                                     which: 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
                                 })
                                 return Object.fromEntries(
+                                    // @ts-ignore
                                     Object.entries(header.body).map(
                                         ([key, value]) => {
+                                            // @ts-ignore
                                             return [key, value[0]]
                                         }
                                     )
@@ -59,7 +66,7 @@ router.get(
 
                         Promise.all(cleanedUpMessages).then(
                             cleanedUpMessages => {
-                                success(res, cleanedUpMessages)
+                                successWithBaseResponse(res, cleanedUpMessages)
                             }
                         )
 

@@ -1,74 +1,94 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IWalletAsset } from '../../../interfaces/wallet_interfaces.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletAsset[]>>) => {
+            const { pb } = req
 
-        const assets = await pb.collection('wallet_assets').getFullList()
-        const transactions = await pb
-            .collection('wallet_transactions')
-            .getFullList()
+            const assets: IWalletAsset[] = await pb
+                .collection('wallet_assets')
+                .getFullList()
+            const transactions = await pb
+                .collection('wallet_transactions')
+                .getFullList()
 
-        assets.forEach(asset => {
-            asset.balance = transactions
-                .filter(transaction => transaction.asset === asset.id)
-                .reduce((acc, curr) => {
-                    return curr.side === 'credit'
-                        ? acc - curr.amount
-                        : acc + curr.amount
-                }, asset.starting_balance)
-        })
+            assets.forEach(asset => {
+                asset.balance = transactions
+                    .filter(transaction => transaction.asset === asset.id)
+                    .reduce((acc, curr) => {
+                        return curr.side === 'credit'
+                            ? acc - curr.amount
+                            : acc + curr.amount
+                    }, asset.starting_balance)
+            })
 
-        success(res, assets)
-    })
+            successWithBaseResponse(res, assets)
+        }
+    )
 )
 
 router.post(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { name, icon, starting_balance } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('starting_balance').isNumeric()
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletAsset>>) => {
+            if (hasError(req, res)) return
 
-        if (!name || !icon || !starting_balance) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { name, icon, starting_balance } = req.body
+
+            const asset: IWalletAsset = await pb
+                .collection('wallet_assets')
+                .create({
+                    name,
+                    icon,
+                    starting_balance
+                })
+
+            successWithBaseResponse(res, asset)
         }
-
-        const asset = await pb.collection('wallet_assets').create({
-            name,
-            icon,
-            starting_balance
-        })
-
-        success(res, asset)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const { name, icon, starting_balance } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('starting_balance').isNumeric
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IWalletAsset>>) => {
+            if (hasError(req, res)) return
 
-        if (!id || !name || !icon || !starting_balance) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { id } = req.params
+            const { name, icon, starting_balance } = req.body
+
+            const asset: IWalletAsset = await pb
+                .collection('wallet_assets')
+                .update(id, {
+                    name,
+                    icon,
+                    starting_balance
+                })
+
+            successWithBaseResponse(res, asset)
         }
-
-        const asset = await pb.collection('wallet_assets').update(id, {
-            name,
-            icon,
-            starting_balance
-        })
-
-        success(res, asset)
-    })
+    )
 )
 
 router.delete(
@@ -77,9 +97,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const asset = await pb.collection('wallet_assets').delete(id)
+        await pb.collection('wallet_assets').delete(id)
 
-        success(res, asset)
+        successWithBaseResponse(res)
     })
 )
 

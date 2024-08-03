@@ -1,5 +1,6 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -24,7 +25,7 @@ router.get(
             id: photo.id
         }))
 
-        success(res, photos)
+        successWithBaseResponse(res, photos)
     })
 )
 

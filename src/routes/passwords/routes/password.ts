@@ -1,7 +1,10 @@
 import express, { Request, Response } from 'express'
 import { v4 } from 'uuid'
 import bcrypt from 'bcrypt'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import {
     decrypt,
@@ -9,9 +12,11 @@ import {
     encrypt,
     encrypt2
 } from '../../../utils/encryption.js'
-import { body, query } from 'express-validator'
+import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IPasswordEntry } from '../../../interfaces/password_interfaces.js'
 
 const router = express.Router()
 
@@ -21,44 +26,53 @@ setTimeout(() => {
     challenge = v4()
 }, 1000 * 60)
 
+async function getDecryptedMaster(
+    req: Request,
+    res: Response
+): Promise<string | null> {
+    const { master } = req.body
+
+    const { pb } = req
+
+    if (!pb.authStore.model) {
+        clientError(res, 'Auth store not initialized')
+        return null
+    }
+
+    const { masterPasswordHash } = pb.authStore.model
+    const decryptedMaster = decrypt2(master, challenge)
+    const isMatch = await bcrypt.compare(decryptedMaster, masterPasswordHash)
+
+    if (!isMatch) {
+        clientError(res, 'Invalid master password')
+        return null
+    }
+
+    return decryptedMaster
+}
+
 router.get(
     '/challenge',
-    asyncWrapper(async (req: Request, res: Response) => {
-        success(res, challenge)
+    asyncWrapper(async (_: Request, res: Response<BaseResponse<string>>) => {
+        successWithBaseResponse(res, challenge)
     })
 )
 
-router.get(
+router.post(
     '/decrypt/:id',
-    [query('master').notEmpty(), query('user').notEmpty()],
-    asyncWrapper(async (req: Request, res: Response) => {
+    [body('master').notEmpty()],
+    asyncWrapper(async (req: Request, res: Response<BaseResponse<string>>) => {
         if (hasError(req, res)) return
 
-        const { id } = req.params
-        const { master, user: userId } = req.query
         const { pb } = req
+        const { id } = req.params
 
-        if (!master) {
-            clientError(res, 'master is required')
-            return
-        }
+        const decryptedMaster = await getDecryptedMaster(req, res)
+        if (!decryptedMaster) return
 
-        const user = await pb.collection('users').getOne(userId)
-        const { masterPasswordHash } = user
-
-        const decryptedMaster = decrypt2(master, challenge)
-
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            masterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
-
-        const password = await pb.collection('passwords_entries').getOne(id)
+        const password: IPasswordEntry = await pb
+            .collection('passwords_entries')
+            .getOne(id)
 
         const decryptedPassword = decrypt(
             Buffer.from(password.password, 'base64'),
@@ -70,23 +84,23 @@ router.get(
             challenge
         )
 
-        success(res, encryptedPassword)
+        successWithBaseResponse(res, encryptedPassword)
     })
 )
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'passwords_entries', {
-            sort: '-pinned'
-        })
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IPasswordEntry[]>>) =>
+            list(req, res, 'passwords_entries', {
+                sort: '-pinned'
+            })
     )
 )
 
 router.post(
     '/',
     [
-        body('userId').notEmpty(),
         body('name').notEmpty(),
         body('icon').notEmpty(),
         body('color').isHexColor(),
@@ -95,59 +109,46 @@ router.post(
         body('password').notEmpty(),
         body('master').notEmpty()
     ],
-    asyncWrapper(async (req: Request, res: Response) => {
-        if (hasError(req, res)) return
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IPasswordEntry>>) => {
+            if (hasError(req, res)) return
 
-        const {
-            userId,
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password,
-            master
-        } = req.body
-        const { pb } = req
+            const { name, icon, color, website, username, password } = req.body
+            const { pb } = req
 
-        const user = await pb.collection('users').getOne(userId)
-        const { masterPasswordHash } = user
+            if (!pb.authStore.model) {
+                clientError(res, 'Auth store not initialized')
+                return
+            }
 
-        const decryptedMaster = decrypt2(master, challenge)
+            const decryptedMaster = await getDecryptedMaster(req, res)
+            if (!decryptedMaster) return
 
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            masterPasswordHash
-        )
+            const decryptedPassword = decrypt2(password, challenge)
+            const encryptedPassword = encrypt(
+                Buffer.from(decryptedPassword),
+                decryptedMaster
+            )
 
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
+            const entry: IPasswordEntry = await pb
+                .collection('passwords_entries')
+                .create({
+                    name,
+                    icon,
+                    color,
+                    website,
+                    username,
+                    password: encryptedPassword.toString('base64')
+                })
+
+            successWithBaseResponse(res, entry)
         }
-
-        const decryptedPassword = decrypt2(password, challenge)
-        const encryptedPassword = encrypt(
-            Buffer.from(decryptedPassword),
-            decryptedMaster
-        )
-
-        await pb.collection('passwords_entries').create({
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password: encryptedPassword.toString('base64')
-        })
-
-        success(res)
-    })
+    )
 )
 
 router.patch(
     '/:id',
     [
-        body('userId').notEmpty(),
         body('name').notEmpty(),
         body('icon').notEmpty(),
         body('color').isHexColor(),
@@ -156,53 +157,36 @@ router.patch(
         body('password').notEmpty(),
         body('master').notEmpty()
     ],
-    asyncWrapper(async (req: Request, res: Response) => {
-        if (hasError(req, res)) return
-        const { id } = req.params
-        const {
-            userId,
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password,
-            master
-        } = req.body
-        const { pb } = req
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IPasswordEntry>>) => {
+            if (hasError(req, res)) return
+            const { id } = req.params
+            const { name, icon, color, website, username, password } = req.body
+            const { pb } = req
 
-        const user = await pb.collection('users').getOne(userId)
-        const { masterPasswordHash } = user
+            const decryptedMaster = await getDecryptedMaster(req, res)
+            if (!decryptedMaster) return
 
-        const decryptedMaster = decrypt2(master, challenge)
+            const decryptedPassword = decrypt2(password, challenge)
+            const encryptedPassword = encrypt(
+                Buffer.from(decryptedPassword),
+                decryptedMaster
+            )
 
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            masterPasswordHash
-        )
+            const entry: IPasswordEntry = await pb
+                .collection('passwords_entries')
+                .update(id, {
+                    name,
+                    icon,
+                    color,
+                    website,
+                    username,
+                    password: encryptedPassword.toString('base64')
+                })
 
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
+            successWithBaseResponse(res, entry)
         }
-
-        const decryptedPassword = decrypt2(password, challenge)
-        const encryptedPassword = encrypt(
-            Buffer.from(decryptedPassword),
-            decryptedMaster
-        )
-
-        await pb.collection('passwords_entries').update(id, {
-            name,
-            icon,
-            color,
-            website,
-            username,
-            password: encryptedPassword.toString('base64')
-        })
-
-        success(res)
-    })
+    )
 )
 
 router.delete(
@@ -214,7 +198,7 @@ router.delete(
 
         await pb.collection('passwords_entries').delete(id)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -234,7 +218,7 @@ router.post(
             pinned: !password.pinned
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

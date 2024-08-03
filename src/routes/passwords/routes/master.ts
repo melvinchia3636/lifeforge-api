@@ -1,11 +1,12 @@
 import express, { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import { v4 } from 'uuid'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt2 } from '../../../utils/encryption.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
 
 const router = express.Router()
 
@@ -17,8 +18,8 @@ setTimeout(() => {
 
 router.get(
     '/challenge',
-    asyncWrapper(async (req: Request, res: Response) => {
-        success(res, challenge)
+    asyncWrapper(async (_: Request, res: Response<BaseResponse<string>>) => {
+        successWithBaseResponse(res, challenge)
     })
 )
 
@@ -38,15 +39,13 @@ router.post(
             masterPasswordHash
         })
 
-        res.json({
-            state: 'success'
-        })
+        successWithBaseResponse(res)
     })
 )
 
 router.post(
     '/verify',
-    asyncWrapper(async (req: Request, res: Response) => {
+    asyncWrapper(async (req: Request, res: Response<BaseResponse<boolean>>) => {
         const { id, password } = req.body
         const { pb } = req
 
@@ -60,7 +59,7 @@ router.post(
             masterPasswordHash
         )
 
-        success(res, isMatch)
+        successWithBaseResponse(res, isMatch)
     })
 )
 

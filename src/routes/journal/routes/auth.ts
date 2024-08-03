@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
-import { success } from '../../../utils/response.js'
+import { success, successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt2 } from '../../../utils/encryption.js'
 import { body } from 'express-validator'
@@ -33,7 +33,7 @@ router.post(
             journalMasterPasswordHash
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

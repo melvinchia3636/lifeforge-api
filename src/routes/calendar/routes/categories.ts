@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
@@ -32,7 +32,7 @@ router.post(
             icon,
             color
         })
-        success(res, category)
+        successWithBaseResponse(res, category)
     })
 )
 
@@ -56,7 +56,7 @@ router.patch(
             color
         })
 
-        success(res, category)
+        successWithBaseResponse(res, category)
     })
 )
 
@@ -67,7 +67,7 @@ router.delete(
         const { id } = req.params
 
         await pb.collection('calendar_categories').delete(id)
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

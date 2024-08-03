@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
@@ -46,7 +46,7 @@ router.post(
                 })
             }
 
-            success(res, events)
+            successWithBaseResponse(res, events)
         }
     )
 )
@@ -87,7 +87,7 @@ router.patch(
                 }
             }
 
-            success(res, events)
+            successWithBaseResponse(res, events)
         }
     )
 )
@@ -108,7 +108,7 @@ router.delete(
             })
         }
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

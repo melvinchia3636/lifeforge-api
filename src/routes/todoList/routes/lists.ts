@@ -1,16 +1,19 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { ITodoListList } from '../../../interfaces/todo_list_interfaces.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'todo_lists')
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<ITodoListList[]>>) =>
+            list(req, res, 'todo_lists')
     )
 )
 
@@ -21,19 +24,24 @@ router.post(
         body('icon').exists().notEmpty(),
         body('color').exists().isHexColor()
     ],
-    asyncWrapper(async (req: Request, res: Response) => {
-        if (hasError(req, res)) return
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<ITodoListList>>) => {
+            if (hasError(req, res)) return
 
-        const { pb } = req
-        const { name, icon, color } = req.body
+            const { pb } = req
+            const { name, icon, color } = req.body
 
-        const category = await pb.collection('todo_lists').create({
-            name,
-            icon,
-            color
-        })
-        success(res, category)
-    })
+            const list: ITodoListList = await pb
+                .collection('todo_lists')
+                .create({
+                    name,
+                    icon,
+                    color
+                })
+
+            successWithBaseResponse(res, list)
+        }
+    )
 )
 
 router.patch(
@@ -43,21 +51,25 @@ router.patch(
         body('icon').exists().notEmpty(),
         body('color').exists().isHexColor()
     ],
-    asyncWrapper(async (req: Request, res: Response) => {
-        if (hasError(req, res)) return
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<ITodoListList>>) => {
+            if (hasError(req, res)) return
 
-        const { pb } = req
-        const { id } = req.params
-        const { name, icon, color } = req.body
+            const { pb } = req
+            const { id } = req.params
+            const { name, icon, color } = req.body
 
-        const category = await pb.collection('todo_lists').update(id, {
-            name,
-            icon,
-            color
-        })
+            const list: ITodoListList = await pb
+                .collection('todo_lists')
+                .update(id, {
+                    name,
+                    icon,
+                    color
+                })
 
-        success(res, category)
-    })
+            successWithBaseResponse(res, list)
+        }
+    )
 )
 
 router.delete(
@@ -67,7 +79,8 @@ router.delete(
         const { id } = req.params
 
         await pb.collection('todo_lists').delete(id)
-        success(res)
+
+        successWithBaseResponse(res)
     })
 )
 

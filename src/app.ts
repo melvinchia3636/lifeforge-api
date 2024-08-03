@@ -3,7 +3,6 @@ import cors from 'cors'
 import helmet from 'helmet'
 import request from 'request'
 import all_routes from 'express-list-endpoints'
-import dotenv from 'dotenv'
 import { exec } from 'child_process'
 import { rateLimit } from 'express-rate-limit'
 import Pocketbase from 'pocketbase'
@@ -11,7 +10,7 @@ import Pocketbase from 'pocketbase'
 import localesRoutes from './routes/locales/index.js'
 import userRoutes from './routes/user/index.js'
 import projectsMRoutes from './routes/projects-m/index.js'
-import projectsKRoutes from './routes/projects-k/index.js'
+// import projectsKRoutes from './routes/projects-k/index.js'
 import todoListRoutes from './routes/todoList/index.js'
 import calendarRoutes from './routes/calendar/index.js'
 import ideaBoxRoutes from './routes/ideaBox/index.js'
@@ -44,8 +43,6 @@ import { query, validationResult } from 'express-validator'
 import hasError from './utils/checkError.js'
 
 // const __dirname = dirname(fileURLToPath(import.meta.url));
-
-dotenv.config({ path: '.env.local' })
 
 const app = express()
 app.disable('x-powered-by')
@@ -217,7 +214,7 @@ router.get(
 router.use('/locales', localesRoutes)
 router.use('/user', userRoutes)
 router.use('/projects-m', projectsMRoutes)
-router.use('/projects-k', projectsKRoutes)
+// router.use('/projects-k', projectsKRoutes)
 router.use('/todo-list', todoListRoutes)
 router.use('/calendar', calendarRoutes)
 router.use('/idea-box', ideaBoxRoutes)

@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { validate } from '../../../utils/CRUD.js'
 
@@ -13,7 +13,7 @@ router.get(
             .collection('notes_workspaces')
             .getOne(req.params.id)
 
-        success(res, category)
+        successWithBaseResponse(res, category)
     })
 )
 
@@ -30,7 +30,7 @@ router.get(
         const { pb } = req
         const categories = await pb.collection('notes_workspaces').getFullList()
 
-        success(res, categories)
+        successWithBaseResponse(res, categories)
     })
 )
 

@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
@@ -23,7 +26,7 @@ router.get(
                 .collection('idea_box_folders')
                 .getOne(id)
 
-            success(res, folder)
+            successWithBaseResponse(res, folder)
         }
     )
 )
@@ -63,7 +66,7 @@ router.post(
                     color
                 })
 
-            success(res, folder)
+            successWithBaseResponse(res, folder)
         }
     )
 )
@@ -91,7 +94,7 @@ router.patch(
                     color
                 })
 
-            success(res, folder)
+            successWithBaseResponse(res, folder)
         }
     )
 )
@@ -104,7 +107,7 @@ router.delete(
 
         await pb.collection('idea_box_folders').delete(id)
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
@@ -125,36 +128,38 @@ router.post(
                     folder: folderId
                 })
 
-            success(res, entry)
+            successWithBaseResponse(res, entry)
         }
     )
 )
 
 router.delete(
     '/idea/:folderId',
-    asyncWrapper(async (req: Request, res: Response<BaseResponse>) => {
-        const { pb } = req
-        const { folderId } = req.params
-        const { ideaId } = req.body
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IIdeaBoxEntry>>) => {
+            const { pb } = req
+            const { folderId } = req.params
+            const { ideaId } = req.body
 
-        if (!folderId) {
-            clientError(res, 'folderId is required')
-            return
+            if (!folderId) {
+                clientError(res, 'folderId is required')
+                return
+            }
+
+            if (!ideaId) {
+                clientError(res, 'Idea id is required')
+                return
+            }
+
+            const entry: IIdeaBoxEntry = await pb
+                .collection('idea_box_entries')
+                .update(ideaId, {
+                    folder: ''
+                })
+
+            successWithBaseResponse(res, entry)
         }
-
-        if (!ideaId) {
-            clientError(res, 'Idea id is required')
-            return
-        }
-
-        const entry: IIdeaBoxEntry = await pb
-            .collection('idea_box_entries')
-            .update(ideaId, {
-                folder: ''
-            })
-
-        success(res, entry)
-    })
+    )
 )
 
 export default router

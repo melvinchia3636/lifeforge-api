@@ -1,5 +1,6 @@
+// @ts-nocheck
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
@@ -26,7 +27,7 @@ router.get(
             id: photo.id
         }))
 
-        success(res, photos)
+        successWithBaseResponse(res, photos)
     })
 )
 
@@ -68,7 +69,7 @@ router.patch(
             }
         }
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 

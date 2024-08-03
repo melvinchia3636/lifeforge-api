@@ -1,4 +1,12 @@
 import { Response } from 'express'
+import { BaseResponse } from '../interfaces/base_response.js'
+
+function successWithBaseResponse<T>(res: Response<BaseResponse<T>>, data?: T) {
+    res.json({
+        state: 'success',
+        data: data ?? undefined
+    })
+}
 
 function success<T>(res: Response, data?: T) {
     res.json({
@@ -14,4 +22,11 @@ function clientError(res: Response, message = 'Bad Request') {
     })
 }
 
-export { success, clientError }
+function serverError(res: Response, message = 'Internal Server Error') {
+    res.status(500).json({
+        state: 'error',
+        message
+    })
+}
+
+export { successWithBaseResponse, success, clientError, serverError }

@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js'
 import { challenge } from '../index.js'
@@ -9,235 +12,336 @@ import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
 import fs from 'fs'
 import moment from 'moment/moment.js'
 import { validate } from '../../../utils/CRUD.js'
+import { body, query } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
+import { IJournalEntry } from '../../../interfaces/journal_interfaces.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { WithoutPBDefault } from '../../../interfaces/pocketbase_interfaces.js'
 
 const router = express.Router()
 
+async function checkMasterPassword(
+    master: string,
+    journalMasterPasswordHash: string
+): Promise<[boolean, string]> {
+    const decryptedMaster = decrypt2(master, challenge)
+
+    const isMatch = await bcrypt.compare(
+        decryptedMaster,
+        journalMasterPasswordHash
+    )
+
+    return [isMatch, decryptedMaster]
+}
+
+async function getDecryptedMaster(
+    req: Request,
+    res: Response
+): Promise<string | null> {
+    const { pb } = req
+    const { master } = req.body
+
+    if (!pb.authStore.model) {
+        clientError(res, 'authStore is not initialized')
+        return null
+    }
+
+    const { journalMasterPasswordHash } = pb.authStore.model
+
+    const [isMatched, decryptedMaster] = await checkMasterPassword(
+        master,
+        journalMasterPasswordHash
+    )
+
+    if (!isMatched) {
+        clientError(res, 'Invalid master password')
+        return null
+    }
+
+    return decryptedMaster
+}
+
 router.get(
     '/get/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { id } = req.params
-        const { pb } = req
-        let master = decodeURIComponent(req.query.master || '')
+    [query('master').exists().notEmpty()],
+    asyncWrapper(
+        async (
+            req: Request<
+                { id: string },
+                {},
+                {},
+                {
+                    master: string
+                }
+            >,
+            res: Response<BaseResponse<IJournalEntry>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (!master) {
-            clientError(res, 'master is required')
-            return
+            const { id } = req.params
+            const { pb } = req
+            let master = decodeURIComponent(req.query.master || '')
+
+            if (pb.authStore.model === null) {
+                clientError(res, 'authStore is not initialized')
+                return
+            }
+
+            const { journalMasterPasswordHash } = pb.authStore.model
+            const [isMatched, decryptedMaster] = await checkMasterPassword(
+                master,
+                journalMasterPasswordHash
+            )
+
+            if (!isMatched) {
+                clientError(res, 'Invalid master password')
+                return
+            }
+
+            const entries: IJournalEntry = await pb
+                .collection('journal_entries')
+                .getOne(id)
+
+            for (const item of [
+                'title',
+                'content',
+                'summary',
+                'raw'
+            ] as (keyof Pick<
+                IJournalEntry,
+                'title' | 'content' | 'summary' | 'raw'
+            >)[]) {
+                entries[item] = decrypt(
+                    Buffer.from(entries[item] ?? '', 'base64'),
+                    decryptedMaster
+                ).toString()
+            }
+
+            entries.token = await pb.files.getToken()
+
+            successWithBaseResponse(res, entries)
         }
-
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const decryptedMaster = decrypt2(master, challenge)
-
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
-
-        const entries = await pb.collection('journal_entries').getOne(id)
-
-        const decryptedTitle = entries.title
-            ? decrypt(Buffer.from(entries.title, 'base64'), decryptedMaster)
-            : ''
-
-        const decryptedContent = decrypt(
-            Buffer.from(entries.content, 'base64'),
-            decryptedMaster
-        )
-
-        const decryptedSummary = decrypt(
-            Buffer.from(entries.summary, 'base64'),
-            decryptedMaster
-        )
-
-        const decryptedRaw = decrypt(
-            Buffer.from(entries.raw, 'base64'),
-            decryptedMaster
-        )
-
-        entries.title = decryptedTitle.toString()
-        entries.content = decryptedContent.toString()
-        entries.summary = decryptedSummary.toString()
-        entries.raw = decryptedRaw.toString()
-
-        entries.token = await pb.files.getToken()
-
-        success(res, entries)
-    })
+    )
 )
 
 router.get(
     '/valid/:id',
-    asyncWrapper(async (req: Request, res: Response) =>
+    asyncWrapper(async (req: Request, res: Response<boolean>) =>
         validate(req, res, 'journal_entries')
     )
 )
 
 router.get(
     '/list',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        let master = decodeURIComponent(req.query.master || '')
+    [query('master').exists().notEmpty()],
+    asyncWrapper(
+        async (
+            req: Request<{}, {}, {}, { master: string }>,
+            res: Response<BaseResponse<IJournalEntry[]>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (!master) {
-            clientError(res, 'master is required')
-            return
-        }
+            const { pb } = req
+            let master = decodeURIComponent(req.query.master || '')
 
-        const { journalMasterPasswordHash } = pb.authStore.model
+            if (pb.authStore.model === null) {
+                clientError(res, 'authStore is not initialized')
+                return
+            }
 
-        const decryptedMaster = decrypt2(master, challenge)
+            const { journalMasterPasswordHash } = pb.authStore.model
 
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
-
-        const journals = await pb.collection('journal_entries').getFullList({
-            sort: '-created'
-        })
-
-        for (const journal of journals) {
-            const decryptedTitle = journal.title
-                ? decrypt(Buffer.from(journal.title, 'base64'), decryptedMaster)
-                : ''
-
-            const decryptedSummary = decrypt(
-                Buffer.from(journal.summary, 'base64'),
-                decryptedMaster
+            const [isMatched, decryptedMaster] = await checkMasterPassword(
+                master,
+                journalMasterPasswordHash
             )
 
-            journal.title = decryptedTitle.toString()
-            journal.content = decryptedSummary.toString()
+            if (!isMatched) {
+                clientError(res, 'Invalid master password')
+                return
+            }
 
-            delete journal.summary
-            delete journal.raw
+            const journals: IJournalEntry[] = await pb
+                .collection('journal_entries')
+                .getFullList({
+                    sort: '-created'
+                })
+
+            for (const journal of journals) {
+                journal.title = decrypt(
+                    Buffer.from(journal.title, 'base64'),
+                    decryptedMaster
+                ).toString()
+
+                journal.content = decrypt(
+                    Buffer.from(journal.summary ?? '', 'base64'),
+                    decryptedMaster
+                ).toString()
+
+                delete journal.summary
+                delete journal.raw
+            }
+
+            successWithBaseResponse(res, journals)
         }
-
-        success(res, journals)
-    })
+    )
 )
 
 router.post(
     '/create',
     uploadMiddleware,
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { data } = req.body
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IJournalEntry>>) => {
+            const { pb } = req
+            const { data } = req.body
+            const files = req.files as Express.Multer.File[]
 
-        const files = req.files
+            if (!pb.authStore.model) {
+                clientError(res, 'authStore is not initialized')
 
-        if (!data) {
-            clientError(res, 'data is required')
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
 
-            for (const file of files) {
-                fs.unlinkSync(file.path)
+                return
             }
 
-            return
-        }
+            const { journalMasterPasswordHash } = pb.authStore.model
 
-        let { title, date, raw, cleanedUp, summarized, mood, master } =
-            JSON.parse(decrypt2(data, challenge))
+            if (!data) {
+                clientError(res, 'data is required')
 
-        master = decrypt2(master, challenge)
-        title = decrypt2(title, master)
-        raw = decrypt2(raw, master)
-        cleanedUp = decrypt2(cleanedUp, master)
-        summarized = decrypt2(summarized, master)
-        mood = JSON.parse(decrypt2(mood, master))
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
 
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const isMatch = await bcrypt.compare(master, journalMasterPasswordHash)
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-
-            for (const file of files) {
-                fs.unlinkSync(file.path)
+                return
             }
 
-            return
-        }
+            let { title, date, raw, cleanedUp, summarized, mood, master } =
+                JSON.parse(decrypt2(data, challenge))
 
-        await pb.collection('journal_entries').create({
-            date,
-            title: encrypt(Buffer.from(title), master).toString('base64'),
-            raw: encrypt(Buffer.from(raw), master).toString('base64'),
-            content: encrypt(Buffer.from(cleanedUp), master).toString('base64'),
-            summary: encrypt(Buffer.from(summarized), master).toString(
-                'base64'
-            ),
-            mood,
-            photos: files.map(
-                file =>
-                    new File([fs.readFileSync(file.path)], file.originalname)
+            master = decrypt2(master, challenge)
+            const isMatch = await bcrypt.compare(
+                master,
+                journalMasterPasswordHash
             )
-        })
 
-        for (const file of files) {
-            fs.unlinkSync(file.path)
+            if (!isMatch) {
+                clientError(res, 'Invalid master password')
+
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
+
+                return
+            }
+
+            title = decrypt2(title, master)
+            raw = decrypt2(raw, master)
+            cleanedUp = decrypt2(cleanedUp, master)
+            summarized = decrypt2(summarized, master)
+            mood = JSON.parse(decrypt2(mood, master))
+
+            const newEntry: Omit<WithoutPBDefault<IJournalEntry>, 'photos'> & {
+                photos: File[]
+            } = {
+                date,
+                title: encrypt(Buffer.from(title), master).toString('base64'),
+                raw: encrypt(Buffer.from(raw), master).toString('base64'),
+                content: encrypt(Buffer.from(cleanedUp), master).toString(
+                    'base64'
+                ),
+                summary: encrypt(Buffer.from(summarized), master).toString(
+                    'base64'
+                ),
+                mood,
+                photos: files.map(
+                    file =>
+                        new File(
+                            [fs.readFileSync(file.path)],
+                            file.originalname
+                        )
+                )
+            }
+
+            const entry: IJournalEntry = await pb
+                .collection('journal_entries')
+                .create(newEntry)
+
+            for (const file of files) {
+                fs.unlinkSync(file.path)
+            }
+
+            successWithBaseResponse(res, entry)
         }
-
-        success(res)
-    })
+    )
 )
 
 router.put(
     '/update/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { id } = req.params
-        const { pb } = req
-        const { data } = req.body
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IJournalEntry>>) => {
+            const { id } = req.params
+            const { pb } = req
+            const { data } = req.body
 
-        if (!data) {
-            clientError(res, 'data is required')
-            return
+            if (!pb.authStore.model) {
+                clientError(res, 'authStore is not initialized')
+                return
+            }
+
+            const { journalMasterPasswordHash } = pb.authStore.model
+
+            if (!data) {
+                clientError(res, 'data is required')
+                return
+            }
+
+            let { title, date, raw, cleanedUp, summarized, mood, master } =
+                JSON.parse(decrypt2(data, challenge))
+
+            master = decrypt2(master, challenge)
+            const isMatch = await bcrypt.compare(
+                master,
+                journalMasterPasswordHash
+            )
+
+            if (!isMatch) {
+                clientError(res, 'Invalid master password')
+
+                return
+            }
+
+            title = decrypt2(title, master)
+            raw = decrypt2(raw, master)
+            cleanedUp = decrypt2(cleanedUp, master)
+            summarized = decrypt2(summarized, master)
+            mood = JSON.parse(decrypt2(mood, master))
+
+            const updatedEntry: Omit<
+                WithoutPBDefault<IJournalEntry>,
+                'photos'
+            > = {
+                date: moment(date).format('YYYY-MM-DD'),
+                title: encrypt(Buffer.from(title), master).toString('base64'),
+                raw: encrypt(Buffer.from(raw), master).toString('base64'),
+                content: encrypt(Buffer.from(cleanedUp), master).toString(
+                    'base64'
+                ),
+                summary: encrypt(Buffer.from(summarized), master).toString(
+                    'base64'
+                ),
+                mood
+            }
+
+            const entry: IJournalEntry = await pb
+                .collection('journal_entries')
+                .update(id, updatedEntry)
+
+            successWithBaseResponse(res, entry)
         }
-
-        let { title, date, raw, cleanedUp, summarized, mood, master } =
-            JSON.parse(decrypt2(data, challenge))
-
-        master = decrypt2(master, challenge)
-        title = decrypt2(title, master)
-        raw = decrypt2(raw, master)
-        cleanedUp = decrypt2(cleanedUp, master)
-        summarized = decrypt2(summarized, master)
-        mood = JSON.parse(decrypt2(mood, master))
-
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const isMatch = await bcrypt.compare(master, journalMasterPasswordHash)
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-
-            return
-        }
-
-        await pb.collection('journal_entries').update(id, {
-            date: moment(date).format('YYYY-MM-DD'),
-            title: encrypt(Buffer.from(title), master).toString('base64'),
-            raw: encrypt(Buffer.from(raw), master).toString('base64'),
-            content: encrypt(Buffer.from(cleanedUp), master).toString('base64'),
-            summary: encrypt(Buffer.from(summarized), master).toString(
-                'base64'
-            ),
-            mood
-        })
-
-        success(res)
-    })
+    )
 )
 
 router.delete(
@@ -248,34 +352,20 @@ router.delete(
 
         await pb.collection('journal_entries').delete(id)
 
-        success(res, 'entries deleted')
+        successWithBaseResponse(res, 'entries deleted')
     })
 )
 
 router.post(
     '/ai/title',
+    [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
-        const { text, master } = req.body
-        const { pb } = req
+        if (hasError(req, res)) return
 
-        if (!text || !master) {
-            clientError(res, 'text and master are required')
-            return
-        }
+        const { text } = req.body
 
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const decryptedMaster = decrypt2(master, challenge)
-
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
+        const decryptedMaster = await getDecryptedMaster(req, res)
+        if (!decryptedMaster) return
 
         const rawText = decrypt2(text, decryptedMaster)
 
@@ -300,34 +390,20 @@ router.post(
 
         const title = response.choices[0]?.message?.content
 
-        success(res, title)
+        successWithBaseResponse(res, title)
     })
 )
 
 router.post(
     '/ai/cleanup',
+    [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
-        const { text, master } = req.body
-        const { pb } = req
+        if (hasError(req, res)) return
 
-        if (!text || !master) {
-            clientError(res, 'text and master are required')
-            return
-        }
+        const { text } = req.body
 
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const decryptedMaster = decrypt2(master, challenge)
-
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
+        const decryptedMaster = await getDecryptedMaster(req, res)
+        if (!decryptedMaster) return
 
         const rawText = decrypt2(text, decryptedMaster)
 
@@ -352,34 +428,20 @@ router.post(
 
         const cleanedup = response.choices[0]?.message?.content
 
-        success(res, cleanedup)
+        successWithBaseResponse(res, cleanedup)
     })
 )
 
 router.post(
     '/ai/summarize',
+    [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
-        const { text, master } = req.body
-        const { pb } = req
+        if (hasError(req, res)) return
 
-        if (!text || !master) {
-            clientError(res, 'text and master are required')
-            return
-        }
+        const { text } = req.body
 
-        const { journalMasterPasswordHash } = pb.authStore.model
-
-        const decryptedMaster = decrypt2(master, challenge)
-
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
-
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
+        const decryptedMaster = await getDecryptedMaster(req, res)
+        if (!decryptedMaster) return
 
         const rawText = decrypt2(text, decryptedMaster)
 
@@ -404,71 +466,64 @@ router.post(
 
         const summarized = response.choices[0]?.message?.content
 
-        success(res, summarized)
+        successWithBaseResponse(res, summarized)
     })
 )
 
 router.post(
     '/ai/mood/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { text, master } = req.body
-        const { pb } = req
+    [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IJournalEntry['mood']>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (!text || !master) {
-            clientError(res, 'text and master are required')
-            return
-        }
+            const { text } = req.body
 
-        const { journalMasterPasswordHash } = pb.authStore.model
+            const decryptedMaster = await getDecryptedMaster(req, res)
+            if (!decryptedMaster) return
 
-        const decryptedMaster = decrypt2(master, challenge)
+            const rawText = decrypt2(text, decryptedMaster)
 
-        const isMatch = await bcrypt.compare(
-            decryptedMaster,
-            journalMasterPasswordHash
-        )
+            const groq = new Groq({
+                apiKey: process.env.GROQ_API_KEY
+            })
 
-        if (!isMatch) {
-            clientError(res, 'Invalid master password')
-            return
-        }
-
-        const rawText = decrypt2(text, decryptedMaster)
-
-        const groq = new Groq({
-            apiKey: process.env.GROQ_API_KEY
-        })
-
-        const prompt = `Below is a diary entries. Use a word to describe the mood of the author, and give a suitable unicode emoji icon for the mood. The word should be in full lowercase, and do not use the word "reflective". The emoji icon should be those in the emoji keyboard of modern phone. The response should be a JSON object, with the key being "text" and "emoji". Make sure to wrap the emoji icon in double quote. Do not wrap the JSON in a markdown code environment, and make sure that the response can be parsed straightaway by javascript's JSON.parse() function.
+            const prompt = `Below is a diary entries. Use a word to describe the mood of the author, and give a suitable unicode emoji icon for the mood. The word should be in full lowercase, and do not use the word "reflective". The emoji icon should be those in the emoji keyboard of modern phone. The response should be a JSON object, with the key being "text" and "emoji". Make sure to wrap the emoji icon in double quote. Do not wrap the JSON in a markdown code environment, and make sure that the response can be parsed straightaway by javascript's JSON.parse() function.
         
         ${rawText}
         `
 
-        const MAX_RETRY = 5
-        let tries = 0
+            const MAX_RETRY = 5
+            let tries = 0
 
-        while (tries < MAX_RETRY) {
-            try {
-                const response = await groq.chat.completions.create({
-                    messages: [
-                        {
-                            role: 'user',
-                            content: prompt
-                        }
-                    ],
-                    model: 'llama3-70b-8192'
-                })
+            while (tries < MAX_RETRY) {
+                try {
+                    const response = await groq.chat.completions.create({
+                        messages: [
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        model: 'llama3-70b-8192'
+                    })
 
-                const mood = JSON.parse(response.choices[0]?.message?.content)
+                    const mood: IJournalEntry['mood'] = JSON.parse(
+                        response.choices[0]?.message?.content ?? '{}'
+                    )
 
-                success(res, mood)
+                    successWithBaseResponse(res, mood)
 
-                break
-            } catch {
-                tries++
+                    break
+                } catch {
+                    tries++
+                }
             }
         }
-    })
+    )
 )
 
 export default router

@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { list, validate } from '../../../utils/CRUD.js'
 
@@ -13,7 +13,7 @@ router.get(
 
         const entries = await pb.collection('flashcards_decks').getOne(id)
 
-        success(res, entries)
+        successWithBaseResponse(res, entries)
     })
 )
 

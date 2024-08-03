@@ -4,25 +4,23 @@ import { exec } from 'child_process'
 import os from 'os'
 import osUtils from 'os-utils'
 import si from 'systeminformation'
-import { success } from '../../utils/response.js'
+import { successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 
 const router = express.Router()
 
 router.get(
     '/disks',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { err, stdout, stderr } = exec('df -h')
-        if (err) {
-            throw new Error(err)
-        }
-        stdout.on('data', data => {
+    asyncWrapper(async (_: Request, res: Response) => {
+        const { stdout, stderr } = exec('df -h')
+
+        stdout?.on('data', data => {
             const result = data
                 .split('\n')
-                .map(e => e.split(' ').filter(e => e !== ''))
+                .map((e: string) => e.split(' ').filter(e => e !== ''))
                 .slice(1, -1)
-                .filter(e => e[5].startsWith('/media'))
-                .map(e => ({
+                .filter((e: string[]) => e[5].startsWith('/media'))
+                .map((e: string[]) => ({
                     name: e[5],
                     size: e[1].replace(/(\d)([A-Z])/, '$1 $2'),
                     used: e[2].replace(/(\d)([A-Z])/, '$1 $2'),
@@ -30,10 +28,10 @@ router.get(
                     usedPercent: e[4]
                 }))
 
-            success(res, result)
+            successWithBaseResponse(res, result)
         })
 
-        stderr.on('data', data => {
+        stderr?.on('data', data => {
             throw new Error(data)
         })
     })
@@ -47,7 +45,7 @@ router.get(
         const used = total - free
         const percent = (used / total) * 100
 
-        success(res, {
+        successWithBaseResponse(res, {
             total,
             free,
             used,
@@ -60,7 +58,7 @@ router.get(
     '/cpu',
     asyncWrapper(async (req: Request, res: Response) => {
         osUtils.cpuUsage(v => {
-            success(res, {
+            successWithBaseResponse(res, {
                 usage: v * 100,
                 uptime: os.uptime()
             })
@@ -77,7 +75,7 @@ router.get(
         const networkInterfaces = await si.networkInterfaces()
         const networkStats = await si.networkStats()
 
-        success(res, {
+        successWithBaseResponse(res, {
             osInfo,
             cpu,
             mem,
@@ -91,7 +89,7 @@ router.get(
     '/cpu-temp',
     asyncWrapper(async (req: Request, res: Response) => {
         const temp = await si.cpuTemperature()
-        success(res, temp)
+        successWithBaseResponse(res, temp)
     })
 )
 

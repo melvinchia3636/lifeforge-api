@@ -4,10 +4,11 @@ import pdfThumbnail from 'pdf-thumbnail'
 // @ts-expect-error no type for this
 import pdfPageCounter from 'pdf-page-counter'
 import fs from 'fs'
-import { clientError, success } from '../../utils/response.js'
+import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import { uploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { BaseResponse } from '../../interfaces/base_response.js'
 import IGuitarTabsEntry from '../../interfaces/guitar_tabs_interfaces.js'
+import { ListResult } from 'pocketbase'
 
 const router = express.Router()
 
@@ -28,7 +29,7 @@ router.get(
                     page: number
                 }
             >,
-            res: Response<BaseResponse<IGuitarTabsEntry[]>>
+            res: Response<BaseResponse<ListResult<IGuitarTabsEntry[]>>>
         ) => {
             const { pb } = req
             const page = req.query.page || 1
@@ -36,12 +37,12 @@ router.get(
 
             const entries = await pb
                 .collection('guitar_tabs_entries')
-                .getList(page, 20, {
+                .getList<IGuitarTabsEntry[]>(page, 20, {
                     filter: `name~"${search}" || author~"${search}"`,
                     sort: 'name'
                 })
 
-            success(res, entries)
+            successWithBaseResponse(res, entries)
         }
     )
 )
@@ -148,7 +149,7 @@ router.get(
                 }>
             >
         ) => {
-            success(res, { status: processing, left, total })
+            successWithBaseResponse(res, { status: processing, left, total })
         }
     )
 )
@@ -168,7 +169,7 @@ router.put(
                     author
                 })
 
-            success(res, updatedentries)
+            successWithBaseResponse(res, updatedentries)
         }
     )
 )

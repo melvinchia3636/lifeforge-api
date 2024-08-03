@@ -1,96 +1,119 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import { list, validate } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IProjectsMEntry } from '../../../interfaces/projects_m_interfaces.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) =>
-        list(req, res, 'projects_m_entries')
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMEntry[]>>) =>
+            list(req, res, 'projects_m_entries')
     )
 )
 
 router.get(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMEntry>>) => {
+            const { pb } = req
+            const { id } = req.params
 
-        const entries = await pb.collection('projects_m_entries').getOne(id)
+            const entry: IProjectsMEntry = await pb
+                .collection('projects_m_entries')
+                .getOne(id)
 
-        success(res, entries)
-    })
+            successWithBaseResponse(res, entry)
+        }
+    )
 )
 
 router.get(
     '/valid/:id',
-    asyncWrapper(async (req: Request, res: Response) =>
+    asyncWrapper(async (req: Request, res: Response<boolean>) =>
         validate(req, res, 'projects_m_entries')
     )
 )
 
 router.post(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const {
-            name,
-            icon,
-            color,
-            visibility,
-            status,
-            category,
-            technologies
-        } = req.body
+    [
+        body('name').isString(),
+        body('icon').isString(),
+        body('color').isHexColor(),
+        body('visibility').isBoolean(),
+        body('status').isString(),
+        body('category').isString(),
+        body('technologies').isArray()
+    ],
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMEntry>>) => {
+            if (hasError(req, res)) return
 
-        if (!name || !icon || !color || !visibility || !status || !category) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const {
+                name,
+                icon,
+                color,
+                visibility,
+                status,
+                category,
+                technologies
+            } = req.body
+
+            const entry: IProjectsMEntry = await pb
+                .collection('projects_m_entries')
+                .create({
+                    name,
+                    icon,
+                    color,
+                    visibility,
+                    status,
+                    category,
+                    technologies
+                })
+
+            successWithBaseResponse(res, entry)
         }
-
-        const entries = await pb.collection('projects_m_entries').create({
-            name,
-            icon,
-            color,
-            visibility,
-            status,
-            category,
-            technologies
-        })
-
-        success(res, entries)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const {
-            name,
-            icon,
-            color,
-            visibility,
-            status,
-            category,
-            technologies
-        } = req.body
+    asyncWrapper(
+        async (req: Request, res: Response<BaseResponse<IProjectsMEntry>>) => {
+            const { pb } = req
+            const { id } = req.params
+            const {
+                name,
+                icon,
+                color,
+                visibility,
+                status,
+                category,
+                technologies
+            } = req.body
 
-        const entries = await pb.collection('projects_m_entries').update(id, {
-            name,
-            icon,
-            color,
-            visibility,
-            status,
-            category,
-            technologies
-        })
+            const entries: IProjectsMEntry = await pb
+                .collection('projects_m_entries')
+                .update(id, {
+                    name,
+                    icon,
+                    color,
+                    visibility,
+                    status,
+                    category,
+                    technologies
+                })
 
-        success(res, entries)
-    })
+            successWithBaseResponse(res, entries)
+        }
+    )
 )
 
 router.delete(
@@ -99,9 +122,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const entries = await pb.collection('projects_m_entries').delete(id)
+        await pb.collection('projects_m_entries').delete(id)
 
-        success(res, entries)
+        successWithBaseResponse(res)
     })
 )
 

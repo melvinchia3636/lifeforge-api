@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import { exec } from 'child_process'
-import { success } from '../../utils/response.js'
+import { successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -8,17 +8,15 @@ const router = express.Router()
 router.get(
     '/stats',
     asyncWrapper(async (req: Request, res: Response) => {
-        const { err, stdout, stderr } = exec('df -h')
-        if (err) {
-            throw new Error(err)
-        }
-        stdout.on('data', data => {
+        const { stdout, stderr } = exec('df -h')
+
+        stdout?.on('data', data => {
             const result = data
                 .split('\n')
-                .map(e => e.split(' ').filter(e => e !== ''))
+                .map((e: string) => e.split(' ').filter(e => e !== ''))
                 .slice(1, -1)
-                .filter(e => e[8].startsWith('/Volumes'))
-                .map(e => ({
+                .filter((e: string[]) => e[8].startsWith('/Volumes'))
+                .map((e: string[]) => ({
                     name: e[8],
                     size: e[1],
                     used: e[2],
@@ -26,10 +24,10 @@ router.get(
                     usedPercent: e[4]
                 }))
 
-            success(res, result)
+            successWithBaseResponse(res, result)
         })
 
-        stderr.on('data', data => {
+        stderr?.on('data', data => {
             throw new Error(data)
         })
     })

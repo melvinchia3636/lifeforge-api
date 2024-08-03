@@ -1,63 +1,73 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { clientError, success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
+import { list } from '../../../utils/CRUD.js'
+import { BaseResponse } from '../../../interfaces/base_response.js'
+import { IProjectsMCategory } from '../../../interfaces/projects_m_interfaces.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
 
 const router = express.Router()
 
 router.get(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-
-        const categorys = await pb
-            .collection('projects_m_categories')
-            .getFullList()
-
-        success(res, categorys)
-    })
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IProjectsMCategory[]>>
+        ) => list(req, res, 'projects_m_categories')
+    )
 )
 
 router.post(
     '/',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { name, icon } = req.body
+    [body('name').isString(), body('icon').isString()],
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IProjectsMCategory>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (!name || !icon) {
-            clientError(res, 'Missing required fields')
-            return
+            const { pb } = req
+            const { name, icon } = req.body
+
+            const category: IProjectsMCategory = await pb
+                .collection('projects_m_categories')
+                .create({
+                    name,
+                    icon
+                })
+
+            successWithBaseResponse(res, category)
         }
-
-        const category = await pb.collection('projects_m_categories').create({
-            name,
-            icon
-        })
-
-        success(res, category)
-    })
+    )
 )
 
 router.patch(
     '/:id',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { pb } = req
-        const { id } = req.params
-        const { name, icon } = req.body
+    [body('name').isString(), body('icon').isString()],
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IProjectsMCategory>>
+        ) => {
+            if (hasError(req, res)) return
 
-        if (!id) {
-            clientError(res, 'id is required')
-            return
+            const { pb } = req
+            const { id } = req.params
+            const { name, icon } = req.body
+
+            const category: IProjectsMCategory = await pb
+                .collection('projects_m_categories')
+                .update(id, {
+                    name,
+                    icon
+                })
+
+            successWithBaseResponse(res, category)
         }
-
-        const category = await pb
-            .collection('projects_m_categories')
-            .update(id, {
-                name,
-                icon
-            })
-
-        success(res, category)
-    })
+    )
 )
 
 router.delete(
@@ -66,9 +76,9 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const category = await pb.collection('projects_m_categories').delete(id)
+        await pb.collection('projects_m_categories').delete(id)
 
-        success(res, category)
+        successWithBaseResponse(res)
     })
 )
 

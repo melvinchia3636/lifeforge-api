@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express'
 import * as webauthn from '@passwordless-id/webauthn'
-import { clientError, success } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 if (!process.env.PB_EMAIL || !process.env.PB_PASSWORD) {
@@ -21,7 +24,7 @@ setTimeout(
 router.get(
     '/challenge',
     asyncWrapper(async (req: Request, res: Response) => {
-        success(res, challenge)
+        successWithBaseResponse(res, challenge)
     })
 )
 
@@ -59,7 +62,7 @@ router.post(
             webauthnAlgorithm: algorithm
         })
 
-        success(res, 'register')
+        successWithBaseResponse(res, 'register')
     })
 )
 

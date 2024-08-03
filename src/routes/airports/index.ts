@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../utils/asyncWrapper.js'
-import { clientError, success } from '../../utils/response.js'
+import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import JSDOM from 'jsdom'
 import fs from 'fs'
 import COUNTRIES from './data/countries.js'
@@ -165,7 +165,7 @@ router.get(
                 })
                 .slice(0, 10)
 
-            success(res, result)
+            successWithBaseResponse(res, result)
         }
     )
 )
@@ -186,7 +186,7 @@ router.get(
             {}
         )
 
-        success(res, result)
+        successWithBaseResponse(res, result)
     })
 )
 
@@ -223,7 +223,7 @@ router.get(
             ])
         )
 
-        success(res, final)
+        successWithBaseResponse(res, final)
     })
 )
 
@@ -257,7 +257,7 @@ router.get(
 
         const breadcrumbs = [COUNTRIES[Object.keys(final)[0].split('-')[0]]]
 
-        success(res, {
+        successWithBaseResponse(res, {
             data: final,
             breadcrumbs
         })
@@ -288,7 +288,7 @@ router.get(
             REGIONS[id as keyof typeof REGIONS]
         ]
 
-        success(res, {
+        successWithBaseResponse(res, {
             data: result,
             breadcrumbs
         })
@@ -328,7 +328,7 @@ router.get(
             final.name
         ]
 
-        success(res, {
+        successWithBaseResponse(res, {
             data: final,
             breadcrumbs
         })
@@ -372,7 +372,7 @@ router.get(
                 Number(new Date()) - cache.get(flightIDKey).lastFetch <
                     1000 * 60
             ) {
-                success(res, cache.get(flightIDKey).data)
+                successWithBaseResponse(res, cache.get(flightIDKey).data)
                 return
             }
 
@@ -430,7 +430,7 @@ router.get(
                 lastFetch: new Date()
             })
 
-            success(res, flights)
+            successWithBaseResponse(res, flights)
         }
     )
 )
@@ -450,7 +450,7 @@ router.get(
 
             const parsedMETAR = metarParser(metar)
 
-            success(res, parsedMETAR)
+            successWithBaseResponse(res, parsedMETAR)
         } catch {
             try {
                 const response = await fetch(
@@ -462,9 +462,9 @@ router.get(
 
                 const parsedMETAR = metarParser(metar)
 
-                success(res, parsedMETAR)
+                successWithBaseResponse(res, parsedMETAR)
             } catch {
-                success(res, 'none')
+                successWithBaseResponse(res, 'none')
             }
         }
     })
@@ -482,7 +482,7 @@ router.get(
             ).then(res => res.text())
 
             if (response === 'DONE') {
-                success(res, [])
+                successWithBaseResponse(res, [])
                 return
             }
 
@@ -512,10 +512,10 @@ router.get(
                 }
             })
 
-            success(res, NOTAMs)
+            successWithBaseResponse(res, NOTAMs)
         } catch (err) {
             console.log(err)
-            success(res, 'none')
+            successWithBaseResponse(res, 'none')
         }
     })
 )
@@ -534,7 +534,7 @@ router.get(
             const NOTAM = dom.window.document.querySelector('pre')?.innerHTML
 
             if (!NOTAM) {
-                success(res, 'none')
+                successWithBaseResponse(res, 'none')
                 return
             }
 
@@ -549,9 +549,9 @@ router.get(
                 ]
             }
 
-            success(res, result)
+            successWithBaseResponse(res, result)
         } catch (err) {
-            success(res, 'none')
+            successWithBaseResponse(res, 'none')
         }
     })
 )
@@ -598,7 +598,7 @@ router.get(
                 const final = result.response
                 const text = final.text()
 
-                success(res, text)
+                successWithBaseResponse(res, text)
                 return
             } catch {
                 MAX_RETRY--
@@ -632,7 +632,7 @@ router.get(
                 }
             })
 
-        success(res, radios)
+        successWithBaseResponse(res, radios)
     })
 )
 
@@ -664,7 +664,7 @@ router.get(
             info: runwaysInfo[i]
         }))
 
-        success(res, runways)
+        successWithBaseResponse(res, runways)
     })
 )
 

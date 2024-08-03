@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -12,7 +12,7 @@ router.get(
             filter: `workspace = "${req.params.id}"`
         })
 
-        success(res, subjects)
+        successWithBaseResponse(res, subjects)
     })
 )
 
@@ -35,7 +35,7 @@ router.post(
         }
         const subject = await pb.collection('notes_subjects').create(req.body)
 
-        success(res, subject)
+        successWithBaseResponse(res, subject)
     })
 )
 
@@ -47,7 +47,7 @@ router.patch(
             .collection('notes_subjects')
             .update(req.params.id, req.body)
 
-        success(res, subject)
+        successWithBaseResponse(res, subject)
     })
 )
 
@@ -57,7 +57,7 @@ router.delete(
         const { pb } = req
         await pb.collection('notes_subjects').delete(req.params.id)
 
-        success(res, null)
+        successWithBaseResponse(res, null)
     })
 )
 

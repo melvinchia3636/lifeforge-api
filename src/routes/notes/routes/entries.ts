@@ -3,7 +3,7 @@
 import express, { Request, Response } from 'express'
 import fs from 'fs'
 import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 const router = express.Router()
@@ -14,7 +14,7 @@ router.get(
         const { pb } = req
         const note = await pb.collection('notes_entries').getOne(req.params.id)
 
-        success(res, note)
+        successWithBaseResponse(res, note)
     })
 )
 
@@ -26,7 +26,7 @@ router.get(
             filter: `subject = "${req.params.subject}" && parent = "${req.params[0].split('/').pop()}"`
         })
 
-        success(res, notes)
+        successWithBaseResponse(res, notes)
     })
 )
 
@@ -46,7 +46,7 @@ router.get(
             })
 
         if (!totalWorkspaceItems || !totalSubjectItems) {
-            success(res, false)
+            successWithBaseResponse(res, false)
             return
         }
 
@@ -60,12 +60,12 @@ router.get(
                 })
 
             if (!totalentriesItems) {
-                success(res, false)
+                successWithBaseResponse(res, false)
                 return
             }
         }
 
-        success(res, true)
+        successWithBaseResponse(res, true)
     })
 )
 
@@ -101,7 +101,7 @@ router.get(
             })
         }
 
-        success(res, {
+        successWithBaseResponse(res, {
             icon: subject.icon,
             path: result
         })
@@ -128,7 +128,7 @@ router.post(
 
         const note = await pb.collection('notes_entries').create(req.body)
 
-        success(res, note)
+        successWithBaseResponse(res, note)
     })
 )
 
@@ -138,14 +138,14 @@ router.post(
     asyncWrapper(async (req: Request, res: Response) => {
         const { pb } = req
 
-        if (req.files.length === 0) {
+        if (!req.files || req.files.length === 0) {
             return res.status(400).send({
                 state: 'error',
                 message: 'No files were uploaded.'
             })
         }
 
-        for (const file of req.files) {
+        for (const file of req.files as Express.Multer.File[]) {
             let parent = req.params[0].split('/').pop()
 
             if (file.originalname.endsWith('.DS_Store')) {
@@ -201,7 +201,7 @@ router.post(
                         type: 'file',
                         parent,
                         subject: req.params.subject,
-                        file: new File([fileBuffer], name, {
+                        file: new File([fileBuffer], name ?? 'notes', {
                             type: file.mimetype
                         })
                     },
@@ -214,7 +214,7 @@ router.post(
             }
         }
 
-        success(res, null)
+        successWithBaseResponse(res, null)
     })
 )
 
@@ -226,7 +226,7 @@ router.patch(
             .collection('notes_entries')
             .update(req.params.id, req.body)
 
-        success(res, note)
+        successWithBaseResponse(res, note)
     })
 )
 
@@ -236,7 +236,7 @@ router.delete(
         const { pb } = req
         await pb.collection('notes_entries').delete(req.params.id)
 
-        success(res, null)
+        successWithBaseResponse(res, null)
     })
 )
 

@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express'
-import { success } from '../../../utils/response.js'
+import { successWithBaseResponse } from '../../../utils/response.js'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { list } from '../../../utils/CRUD.js'
 
@@ -65,7 +65,7 @@ router.put(
             card_amount: totalItems
         })
 
-        success(res)
+        successWithBaseResponse(res)
     })
 )
 
