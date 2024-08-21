@@ -8,10 +8,7 @@ import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { body, query } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
-import {
-    IIdeaBoxEntry,
-    IIdeaBoxFolder
-} from '../../../interfaces/ideabox_interfaces.js'
+import { IIdeaBoxEntry } from '../../../interfaces/ideabox_interfaces.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
 import { WithoutPBDefault } from '../../../interfaces/pocketbase_interfaces.js'
 

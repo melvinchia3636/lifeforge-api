@@ -199,13 +199,27 @@ router.get(
         if (allPhotosDimensions === undefined) {
             allPhotosDimensions = 'pending'
             const filter = `is_deleted = false && is_locked = false ${hideInAlbum === 'true' ? '&& is_in_album=false' : ''} `
-            const response = await pb
+            let response = await pb
                 .collection('photos_dimensions')
                 .getList(1, 1, { filter })
-            const { collectionId } = await pb
+                .catch()
+
+            const collectionId = await pb
                 .collection('photos_entries')
-                .getFirstListItem('name != ""')
-            const { totalItems } = response
+                .collectionIdOrName
+            const { totalItems } = response ?? {totalItems: 0}
+
+            if (totalItems === 0) {
+                allPhotosDimensions = {
+                    items: [],
+                    firstDayOfYear: null,
+                    firstDayOfMonth: null,
+                    totalItems: 0,
+                    collectionId
+                }
+                return
+            }
+
             const photos = await pb
                 .collection('photos_dimensions')
                 .getFullList({
