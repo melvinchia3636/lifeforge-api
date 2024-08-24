@@ -23,7 +23,7 @@ const upload = multer({
 // Custom file upload middleware
 const uploadMiddleware = (req: Request, res: Response, next: NextFunction) => {
     // Use multer upload instance
-    upload.array('files', 25)(req, res, err => {
+    upload.array('files', 100)(req, res, err => {
         // Proceed to the next middleware or route handler
         next()
     })

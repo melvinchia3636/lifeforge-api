@@ -77,7 +77,7 @@ router.post(
 )
 
 router.post(
-    '/add-entries',
+    '/',
     asyncWrapper(
         async (
             req: Request<
@@ -135,7 +135,7 @@ router.post(
 )
 
 router.put(
-    '/update/:language',
+    '/:language',
     asyncWrapper(async (req: Request, res: Response) => {
         const { language } = req.params
         if (!['en', 'ms', 'zh-CN', 'zh-TW'].includes(language)) {
@@ -158,7 +158,7 @@ router.put(
 )
 
 router.patch(
-    '/rename-key',
+    '/',
     asyncWrapper(
         async (
             req: Request<{}, {}, { oldKey: string; newKey: string }>,

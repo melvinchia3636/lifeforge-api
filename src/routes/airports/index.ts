@@ -642,7 +642,7 @@ router.get(
         const { airportID } = req.params
 
         const response = await fetch(
-            `https://www.airport-data.com/world-airports/${airportID}`
+            `http://www.airport-data.com/world-airports/${airportID}`
         ).then(res => res.text())
 
         const dom = new JSDOM.JSDOM(response)

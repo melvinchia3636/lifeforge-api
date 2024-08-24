@@ -9,6 +9,7 @@ import { uploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { BaseResponse } from '../../interfaces/base_response.js'
 import IGuitarTabsEntry from '../../interfaces/guitar_tabs_interfaces.js'
 import { ListResult } from 'pocketbase'
+import { WithoutPBDefault } from '../../interfaces/pocketbase_interfaces.js'
 
 const router = express.Router()
 
@@ -67,17 +68,63 @@ router.post(
             return
         }
 
+        let groups: Record<
+            string,
+            {
+                pdf: Express.Multer.File | null
+                mscz: Express.Multer.File | null
+                mp3: Express.Multer.File | null
+            }
+        > = {}
+
+        for (const file of files as Express.Multer.File[]) {
+            const decodedName = decodeURIComponent(file.originalname)
+            const extension = decodedName.split('.').pop()
+
+            if (!extension || !['mscz', 'mp3', 'pdf'].includes(extension)) {
+                continue
+            }
+
+            const name = decodedName.split('.').slice(0, -1).join('.')
+
+            if (!groups[name]) {
+                groups[name] = {
+                    pdf: null,
+                    mscz: null,
+                    mp3: null
+                }
+            }
+
+            groups[name][extension as 'pdf' | 'mscz' | 'mp3'] = file
+        }
+
+        for (const group of Object.values(groups)) {
+            if (!group.pdf) {
+                for (const file of Object.values(group)) {
+                    if (file) {
+                        fs.unlinkSync(file.path)
+                    }
+                }
+            }
+        }
+
+        groups = Object.fromEntries(
+            Object.entries(groups).filter(([_, group]) => group.pdf)
+        )
+
         processing = 'in_progress'
-        left = files.length as number
-        total = files.length as number
+        left = Object.keys(groups).length
+        total = Object.keys(groups).length
         res.status(202).json({
             state: 'accepted',
             message: 'Processing started'
         })
 
-        for (const file of files as Express.Multer.File[]) {
+        for (const group of Object.values(groups)) {
             try {
-                const name = decodeURIComponent(file.originalname)
+                const file = group.pdf!
+                const decodedName = decodeURIComponent(file.originalname)
+                const name = decodedName.split('.').slice(0, -1).join('.')
                 const path = file.path
                 const buffer = fs.readFileSync(path)
 
@@ -91,21 +138,45 @@ router.post(
                 const { numpages } = await pdfPageCounter(buffer)
 
                 thumbnail
-                    .pipe(fs.createWriteStream(`uploads/${name}.jpg`))
+                    .pipe(fs.createWriteStream(`uploads/${decodedName}.jpg`))
                     .once('close', async () => {
                         const thumbnailBuffer = fs.readFileSync(
-                            `uploads/${name}.jpg`
+                            `uploads/${decodedName}.jpg`
                         )
+
+                        const otherFiles: {
+                            audio: File | null
+                            musescore: File | null
+                        } = {
+                            audio: null,
+                            musescore: null
+                        }
+
+                        if (group.mscz) {
+                            otherFiles.musescore = new File(
+                                [fs.readFileSync(group.mscz.path)],
+                                group.mscz.originalname
+                            )
+                        }
+
+                        if (group.mp3) {
+                            otherFiles.audio = new File(
+                                [fs.readFileSync(group.mp3.path)],
+                                group.mp3.originalname
+                            )
+                        }
 
                         await pb.collection('guitar_tabs_entries').create(
                             {
                                 name,
                                 thumbnail: new File(
                                     [thumbnailBuffer],
-                                    `${name}.jpeg`
+                                    `${decodedName}.jpeg`
                                 ),
-                                file: new File([buffer], name),
-                                pageCount: numpages
+                                author: '',
+                                pdf: new File([buffer], decodedName),
+                                pageCount: numpages,
+                                ...otherFiles
                             },
                             {
                                 $autoCancel: false
@@ -113,7 +184,13 @@ router.post(
                         )
 
                         fs.unlinkSync(path)
-                        fs.unlinkSync(`uploads/${name}.jpg`)
+                        fs.unlinkSync(`uploads/${decodedName}.jpg`)
+                        if (group.mscz) {
+                            fs.unlinkSync(group.mscz.path)
+                        }
+                        if (group.mp3) {
+                            fs.unlinkSync(group.mp3.path)
+                        }
                         left--
 
                         if (left === 0) {

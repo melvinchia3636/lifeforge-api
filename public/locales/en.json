@@ -117,7 +117,8 @@
     "airlineInformation": "Airline Information",
     "changiFlightStatus": "Changi Airport Flight Status",
     "airports": "Airports",
-    "header": {}
+    "header": {},
+    "tipsAndTricks": "Tips & Tricks"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"

@@ -117,7 +117,8 @@
     "header": {},
     "airlineInformation": "Maklumat Penerbangan",
     "changiFlightStatus": "Status Penerbangan Changi Airport",
-    "airports": "Lapangan Terbang"
+    "airports": "Lapangan Terbang",
+    "tipsAndTricks": "Petua & Trik"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"

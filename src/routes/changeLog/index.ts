@@ -47,7 +47,7 @@ router.get(
                     })
             }
 
-            successWithBaseResponse(res, final.reverse())
+            successWithBaseResponse(res, final.sort((a, b) => (a.date_range[0] > b.date_range[0] ? -1 : 1)))
         }
     )
 )

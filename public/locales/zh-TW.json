@@ -118,7 +118,8 @@
     "header": {},
     "airlineInformation": "航空公司資訊",
     "changiFlightStatus": "樟宜機場航班狀態",
-    "airports": "機場"
+    "airports": "機場",
+    "tipsAndTricks": "技巧與竅門"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"

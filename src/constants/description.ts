@@ -4,10 +4,10 @@ const DESCRIPTION = {
         'Retrieve a specific media photo by collection, entries, and photo IDs',
     'GET /locales/{language}':
         'Retrieve localization data for a specified language',
-    'POST /locales/add-entries': 'Add a new entries to the localization data',
+    'POST /locales/': 'Add a new entries to the localization data',
     'POST /locales/ai-generate': 'AI-generated localization entries',
-    'PATCH /locales/rename-key': 'Rename a key in the localization data',
-    'PUT /locales/update/{language}':
+    'PATCH /locales/': 'Rename a key in the localization data',
+    'PUT /locales/{language}':
         'Update localization data for a specified language',
     'POST /user/auth/login': 'User login authentication',
     'POST /user/auth/verify': 'Verify user authentication',
@@ -121,7 +121,8 @@ const DESCRIPTION = {
     'POST /notes/entries/create/folder': 'Create a new folder for note entries',
     'POST /notes/entries/upload/{workspace}/{subject}/*':
         'Upload a note entries for a specific workspace and subject',
-    'PATCH /notes/entries/update/folder/{id}': 'Update a note entries folder by ID',
+    'PATCH /notes/entries/update/folder/{id}':
+        'Update a note entries folder by ID',
     'DELETE /notes/entries/delete/{id}': 'Delete a note entries by ID',
     'GET /notes/subject/{id}': 'Get a specific note subject by ID',
     'POST /notes/subject': 'Create a new note subject',
@@ -138,7 +139,8 @@ const DESCRIPTION = {
     'GET /flashcards/deck/list': 'List all decks',
     'GET /flashcards/tag/list': 'List all tags',
     'GET /journal/entries/get/{id}': 'Get journal entries by ID',
-    'GET /journal/entries/valid/{id}': 'Check if a journal entries is valid by ID',
+    'GET /journal/entries/valid/{id}':
+        'Check if a journal entries is valid by ID',
     'GET /journal/entries/list': 'List all journal entries',
     'POST /journal/entries/create': 'Create a new journal entries',
     'PATCH /journal/entries/update-title/{id}':
@@ -198,7 +200,8 @@ const DESCRIPTION = {
         'Get result of async dimensions request',
     'GET /photos/entries/list': 'List all photo entries',
     'GET /photos/entries/list/{albumId}': 'List photo entries by album ID',
-    'GET /photos/entries/import/progress': 'Get import progress of photo entries',
+    'GET /photos/entries/import/progress':
+        'Get import progress of photo entries',
     'POST /photos/entries/bulk-download': 'Bulk download photo entries',
     'POST /photos/entries/import': 'Import photo entries',
     'DELETE /photos/entries/delete': 'Delete a photo entries',
@@ -209,7 +212,8 @@ const DESCRIPTION = {
     'GET /music/entries': 'List all music entries',
     'GET /music/entries/import-status': 'Get music import status',
     'POST /music/entries/import': 'Import music entries',
-    'POST /music/entries/favourite/{id}': 'Mark music entries as favourite by ID',
+    'POST /music/entries/favourite/{id}':
+        'Mark music entries as favourite by ID',
     'PATCH /music/entries/{id}': 'Update music entries by ID',
     'DELETE /music/entries/{id}': 'Delete music entries by ID',
     'GET /music/youtube/get-info/{id}': 'Get YouTube video info by ID',
