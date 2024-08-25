@@ -309,7 +309,7 @@
     "save": "保存",
     "edit": "編輯",
     "addMusic": "添加音樂",
-    "downloading": "下載中",
+    "downloading": "下載中...",
     "downloaded": "已下載",
     "new": "新建",
     "submit": "提交",
@@ -371,7 +371,11 @@
     "regenerate": "重新生成",
     "uploadPhotos": "上傳照片",
     "addToAlbum": "新增至相簿",
-    "setAsAlbumCover": "設定為專輯封面"
+    "setAsAlbumCover": "設定為專輯封面",
+    "downloadAll": "全部下載",
+    "newTag": "新增標籤",
+    "manageTags": "管理標籤",
+    "editTags": "編輯標籤"
   },
   "modals": {
     "header": {
@@ -425,7 +429,13 @@
       "viewJournalEntry": "查看日誌項目",
       "modifyJournalentries": "修改日誌項目",
       "createJournalentries": "建立日記條目",
-      "modifyGuitarTab": "修改吉他譜"
+      "modifyGuitarTab": "修改吉他譜",
+      "imagePreview": "圖片預覽",
+      "createAlbum": "建立相簿",
+      "renameAlbum": "重新命名相冊",
+      "manageTags": "管理標籤",
+      "renameTag": "重新命名標籤",
+      "addPhotosToAlbum": "新增{{amount}}照片张照片至相簿"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -580,7 +590,9 @@
       "favourites": "收藏",
       "archive": "已歸檔照片",
       "lockedFolder": "鎖定資料夾",
-      "trash": "資源回收桶"
+      "trash": "資源回收桶",
+      "allPhotos": "所有照片",
+      "viewAllAlbum": "查看所有相簿"
     },
     "projects-m": {
       "allProjects": "所有專案",
@@ -619,7 +631,9 @@
       "generate": "生成",
       "cleanedup": "已清理",
       "summarized": "摘要",
-      "unlock": "解鎖"
+      "unlock": "解鎖",
+      "download": "下載",
+      "NASFilesReady": "檔案已就緒，請前往您的NAS下載。"
     },
     "redirected": "已重新導向"
   },
@@ -647,6 +661,10 @@
     "dashboard": {
       "title": "沒有啟用小工具",
       "description": "您可以從「管理小工具」選單添加小工具"
+    },
+    "trash": {
+      "title": "資源回收桶已清空",
+      "description": "垃圾桶中沒有項目。"
     }
   },
   "todoList": {

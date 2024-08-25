@@ -174,11 +174,11 @@ router.post(
                 image = await pb.collection('photos_entries').getOne(photo)
             }
 
-            const filePath = `/media/${process.env.DATABASE_OWNER}/database/pb_data/storage/${image.collectionId}/${image.id}/${image.image}`
+            const filePath = `/home/pi/${process.env.DATABASE_OWNER}/database/pb_data/storage/${image.collectionId}/${image.id}/${image.image}`
 
             fs.cpSync(
                 filePath,
-                `/media/${process.env.DATABASE_OWNER}/uploads/${image.name}.${image.image.split('.').pop()}`
+                `/home/pi/${process.env.DATABASE_OWNER}/medium/${image.name}.${image.image.split('.').pop()}`
             )
         }
 
@@ -204,10 +204,9 @@ router.get(
                 .getList(1, 1, { filter })
                 .catch()
 
-            const collectionId = await pb
-                .collection('photos_entries')
-                .collectionIdOrName
-            const { totalItems } = response ?? {totalItems: 0}
+            const collectionId =
+                await pb.collection('photos_entries').collectionIdOrName
+            const { totalItems } = response ?? { totalItems: 0 }
 
             if (totalItems === 0) {
                 allPhotosDimensions = {
@@ -420,16 +419,16 @@ router.post(
         const { pb } = req
         const locked = req.query.locked === 'true'
 
-        fs.readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
+        fs.readdirSync(`/home/pi/${process.env.DATABASE_OWNER}/medium`)
             .filter(file => file.startsWith('.'))
             .forEach(file =>
                 fs.unlinkSync(
-                    `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
+                    `/home/pi/${process.env.DATABASE_OWNER}/medium/${file}`
                 )
             )
 
         const newFiles = fs
-            .readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
+            .readdirSync(`/home/pi/${process.env.DATABASE_OWNER}/medium`)
             .filter(
                 file =>
                     !file.startsWith('.') &&
@@ -493,7 +492,7 @@ router.post(
             }
 
             if (imageFiles.length > 0) {
-                const filePath = `/media/${process.env.DATABASE_OWNER}/uploads/${imageFiles[0]}`
+                const filePath = `/home/pi/${process.env.DATABASE_OWNER}/medium/${imageFiles[0]}`
                 data.image = new File(
                     [fs.readFileSync(filePath)],
                     imageFiles[0]
@@ -545,7 +544,7 @@ router.post(
             if (rawFiles.length > 0) {
                 data.raw = rawFiles.map(file => {
                     const buffer = fs.readFileSync(
-                        `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
+                        `/home/pi/${process.env.DATABASE_OWNER}/medium/${file}`
                     )
                     return new File([buffer], file)
                 })[0]
@@ -584,7 +583,7 @@ router.post(
 
             for (const file of [...rawFiles, ...imageFiles]) {
                 fs.unlinkSync(
-                    `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
+                    `/home/pi/${process.env.DATABASE_OWNER}/medium/${file}`
                 )
             }
 

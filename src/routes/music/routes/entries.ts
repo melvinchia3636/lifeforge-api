@@ -59,16 +59,16 @@ router.post(
 
         try {
             const { pb } = req
-            fs.readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
+            fs.readdirSync(`/home/pi/${process.env.DATABASE_OWNER}/medium`)
                 .filter(file => file.startsWith('.'))
                 .forEach(file =>
                     fs.unlinkSync(
-                        `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
+                        `/home/pi/${process.env.DATABASE_OWNER}/medium/${file}`
                     )
                 )
 
             const newFiles = fs
-                .readdirSync(`/media/${process.env.DATABASE_OWNER}/uploads`)
+                .readdirSync(`/home/pi/${process.env.DATABASE_OWNER}/medium`)
                 .filter(file => {
                     const fileMime = mime.lookup(file)
                     !file.startsWith('.') &&
@@ -76,7 +76,7 @@ router.post(
                 })
 
             for (const file of newFiles) {
-                const fp = `/media/${process.env.DATABASE_OWNER}/uploads/${file}`
+                const fp = `/home/pi/${process.env.DATABASE_OWNER}/medium/${file}`
                 const fileBuffer = fs.readFileSync(fp)
                 const metadata = await mm.parseFile(fp)
                 const artist = metadata.common.artist || 'Unknown'

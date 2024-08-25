@@ -263,7 +263,11 @@ router.get(
     '/books-library/cover/:author/:book',
     asyncWrapper(async (req: Request, res: Response) => {
         const { author, book } = req.params
-        res.sendFile(`/media/melvin/calibre/${author}/${book}/cover.jpg`)
+        res.sendFile(
+            `/home/pi/${
+                process.env.DATABASE_OWNER
+            }/calibre/${author}/${book}/cover.jpg`
+        )
     })
 )
 

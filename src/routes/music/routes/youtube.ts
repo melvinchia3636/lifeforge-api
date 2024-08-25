@@ -29,9 +29,15 @@ router.get(
             }
 
             exec(
-                `yt-dlp --skip-download --print "title,upload_date,uploader,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
+                `${process.cwd()}/src/bin/yt-dlp --skip-download --print "title,upload_date,uploader,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
                 (err, stdout) => {
-                    serverError(res, err?.message ?? 'Internal server error')
+                    if (err) {
+                        serverError(
+                            res,
+                            err?.message ?? 'Internal server error'
+                        )
+                        return
+                    }
 
                     const [
                         title,
@@ -88,10 +94,10 @@ router.post(
         const downloadID = v4()
 
         exec(
-            `yt-dlp -f bestaudio -o "${process.cwd()}/uploads/${downloadID}-%(title)s.%(ext)s" --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=${id}"`,
+            `${process.cwd()}/src/bin/yt-dlp -f bestaudio -o "${process.cwd()}/uploads/${downloadID}-%(title)s.%(ext)s" --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=${id}"`,
             async err => {
                 if (err) {
-                    res.status(500).json({ error: err.message })
+                    console.log(err)
                     downloading = 'failed'
                     return
                 }

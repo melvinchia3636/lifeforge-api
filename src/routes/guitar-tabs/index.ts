@@ -4,12 +4,16 @@ import pdfThumbnail from 'pdf-thumbnail'
 // @ts-expect-error no type for this
 import pdfPageCounter from 'pdf-page-counter'
 import fs from 'fs'
-import { clientError, successWithBaseResponse } from '../../utils/response.js'
+import {
+    clientError,
+    success,
+    successWithBaseResponse
+} from '../../utils/response.js'
 import { uploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { BaseResponse } from '../../interfaces/base_response.js'
 import IGuitarTabsEntry from '../../interfaces/guitar_tabs_interfaces.js'
 import { ListResult } from 'pocketbase'
-import { WithoutPBDefault } from '../../interfaces/pocketbase_interfaces.js'
+import moment from 'moment'
 
 const router = express.Router()
 
@@ -81,9 +85,8 @@ router.post(
             const decodedName = decodeURIComponent(file.originalname)
             const extension = decodedName.split('.').pop()
 
-            if (!extension || !['mscz', 'mp3', 'pdf'].includes(extension)) {
+            if (!extension || !['mscz', 'mp3', 'pdf'].includes(extension))
                 continue
-            }
 
             const name = decodedName.split('.').slice(0, -1).join('.')
 
@@ -99,12 +102,12 @@ router.post(
         }
 
         for (const group of Object.values(groups)) {
-            if (!group.pdf) {
-                for (const file of Object.values(group)) {
-                    if (file) {
-                        fs.unlinkSync(file.path)
-                    }
-                }
+            if (group.pdf) continue
+
+            for (const file of Object.values(group)) {
+                if (!file) continue
+
+                fs.unlinkSync(file.path)
             }
         }
 
@@ -249,6 +252,61 @@ router.put(
             successWithBaseResponse(res, updatedentries)
         }
     )
+)
+
+router.get(
+    '/download-all',
+    asyncWrapper(async (req: Request, res: Response) => {
+        const { pb } = req
+        const entries = await pb
+            .collection('guitar_tabs_entries')
+            .getFullList<IGuitarTabsEntry>()
+
+        let mediumLocation = `/home/pi/${process.env.DATABASE_OWNER}/medium`
+        const date = moment().format('YYYY-MM-DD')
+        if (!fs.existsSync(`${mediumLocation}/guitar_tabs-${date}`)) {
+            fs.mkdirSync(`${mediumLocation}/guitar_tabs-${date}`)
+            mediumLocation = `${mediumLocation}/guitar_tabs-${date}`
+        } else {
+            let i = 1
+            while (
+                fs.existsSync(`${mediumLocation}/guitar_tabs-${date}-${i}`)
+            ) {
+                i++
+            }
+            fs.mkdirSync(`${mediumLocation}/guitar_tabs-${date}-${i}`)
+            mediumLocation = `${mediumLocation}/guitar_tabs-${date}-${i}`
+        }
+
+        for (const entry of entries) {
+            let targetLocation = mediumLocation
+            const folderLocation = `/home/pi/${process.env.DATABASE_OWNER}/database/pb_data/storage/${entry.collectionId}/${entry.id}`
+
+            if (entry.audio || entry.musescore) {
+                fs.mkdirSync(`${mediumLocation}/${entry.name}`)
+                targetLocation = `${mediumLocation}/${entry.name}`
+            }
+
+            fs.copyFileSync(
+                `${folderLocation}/${entry.pdf}`,
+                `${targetLocation}/${entry.name}.pdf`
+            )
+            if (entry.audio) {
+                fs.copyFileSync(
+                    `${folderLocation}/${entry.audio}`,
+                    `${targetLocation}/${entry.name}.${entry.audio.split('.').pop()}`
+                )
+            }
+            if (entry.musescore) {
+                fs.copyFileSync(
+                    `${folderLocation}/${entry.musescore}`,
+                    `${targetLocation}/${entry.name}.${entry.musescore.split('.').pop()}`
+                )
+            }
+        }
+
+        success(res)
+    })
 )
 
 export default router

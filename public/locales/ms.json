@@ -308,7 +308,7 @@
     "save": "Simpan",
     "edit": "Edit",
     "addMusic": "Tambah Muzik",
-    "downloading": "Memuat turun",
+    "downloading": "Memuat turun...",
     "downloaded": "Dimuat turun",
     "new": "Baru",
     "submit": "Hantar",
@@ -370,7 +370,11 @@
     "regenerate": "Jana semula",
     "uploadPhotos": "Muat Naik Foto",
     "addToAlbum": "Tambah ke Album",
-    "setAsAlbumCover": "Tetapkan sebagai Sampul Album"
+    "setAsAlbumCover": "Tetapkan sebagai Sampul Album",
+    "downloadAll": "Muat Turun Semua",
+    "newTag": "Tag baharu",
+    "manageTags": "Urus Tag",
+    "editTags": "Sunting Tag"
   },
   "modals": {
     "header": {
@@ -424,7 +428,13 @@
       "viewJournalEntry": "Lihat Journal Entri",
       "modifyJournalentries": "Sunting Entri Journal",
       "createJournalentries": "Buat Entri Jurnal",
-      "modifyGuitarTab": "Sunting Tab"
+      "modifyGuitarTab": "Sunting Tab",
+      "imagePreview": "Pratonton Imej",
+      "createAlbum": "Cipta Album",
+      "renameAlbum": "Namakan Semula Album",
+      "manageTags": "Urus Tag",
+      "renameTag": "Tukar Nama Tag",
+      "addPhotosToAlbum": "Tambah {{amount}} Foto ke dalam Album"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -579,7 +589,9 @@
       "favourites": "Kegemaran",
       "archive": "Diarkib",
       "lockedFolder": "Folder Terkunci",
-      "trash": "Sampah"
+      "trash": "Sampah",
+      "allPhotos": "Semua Foto",
+      "viewAllAlbum": "Lihat Semua Album"
     },
     "projects-m": {
       "allProjects": "Semua Projek",
@@ -618,7 +630,9 @@
       "generate": "menjana",
       "summarized": "meringkaskan",
       "cleanedup": "membersihkan",
-      "unlock": "Buka Kunci"
+      "unlock": "Buka Kunci",
+      "download": "muat turun",
+      "NASFilesReady": "Fail sedia untuk dimuat turunkan. Sila pergi ke NAS anda."
     },
     "redirected": "Dilencongkan"
   },
@@ -646,6 +660,10 @@
     "dashboard": {
       "title": "Tiada Widget Didayakan",
       "description": "Kamu boleh menambah widget dari menu Urus Widget"
+    },
+    "trash": {
+      "title": "Tong Sampah Kosong",
+      "description": "Tiada item dijumpai dalam tong sampah."
     }
   },
   "todoList": {

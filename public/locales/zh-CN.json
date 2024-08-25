@@ -309,7 +309,7 @@
     "save": "保存",
     "edit": "编辑",
     "addMusic": "添加音乐",
-    "downloading": "下载中",
+    "downloading": "下载中...",
     "downloaded": "已下载",
     "new": "新建",
     "submit": "提交",
@@ -371,7 +371,11 @@
     "regenerate": "重新生成",
     "uploadPhotos": "上传照片",
     "addToAlbum": "添加到相册",
-    "setAsAlbumCover": "设为专辑封面"
+    "setAsAlbumCover": "设为专辑封面",
+    "downloadAll": "全部下载",
+    "newTag": "添加新标签",
+    "manageTags": "管理标签",
+    "editTags": "编辑标签"
   },
   "modals": {
     "header": {
@@ -425,7 +429,13 @@
       "viewJournalEntry": "查看日记条目",
       "modifyJournalentries": "修改日记条目",
       "createJournalentries": "创建日记条目",
-      "modifyGuitarTab": "修改吉他谱"
+      "modifyGuitarTab": "修改吉他谱",
+      "imagePreview": "图片预览",
+      "createAlbum": "创建相册",
+      "renameAlbum": "重命名专辑",
+      "manageTags": "管理标签",
+      "renameTag": "重命名标签",
+      "addPhotosToAlbum": "添加{{amount}}张照片至相册"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -580,7 +590,9 @@
       "favourites": "收藏",
       "archive": "已归档照片",
       "lockedFolder": "锁定文件夹",
-      "trash": "回收站"
+      "trash": "回收站",
+      "allPhotos": "所有照片",
+      "viewAllAlbum": "查看所有相册"
     },
     "projects-m": {
       "allProjects": "所有项目",
@@ -618,7 +630,9 @@
       "generate": "生成",
       "cleanedup": "已清理",
       "summarized": "摘要",
-      "unlock": "解锁"
+      "unlock": "解锁",
+      "download": "下载",
+      "NASFilesReady": "文件已就绪，请前往您的NAS下载。"
     },
     "fetchError": "从服务器获取数据失败",
     "redirected": "已重定向"
@@ -647,6 +661,10 @@
     "dashboard": {
       "title": "未启用任何小部件",
       "description": "您可以从“管理小部件”菜单添加小部件"
+    },
+    "trash": {
+      "title": "回收站为空",
+      "description": "垃圾桶中没有项目。"
     }
   },
   "todoList": {

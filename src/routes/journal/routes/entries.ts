@@ -385,7 +385,7 @@ router.post(
                     content: prompt
                 }
             ],
-            model: 'llama3-70b-8192'
+            model: 'llama-3.1-70b-versatile'
         })
 
         const title = response.choices[0]?.message?.content
@@ -423,7 +423,7 @@ router.post(
                     content: prompt
                 }
             ],
-            model: 'llama3-70b-8192'
+            model: 'llama-3.1-70b-versatile'
         })
 
         const cleanedup = response.choices[0]?.message?.content
@@ -461,7 +461,7 @@ router.post(
                     content: prompt
                 }
             ],
-            model: 'llama3-70b-8192'
+            model: 'llama-3.1-70b-versatile'
         })
 
         const summarized = response.choices[0]?.message?.content
@@ -508,7 +508,7 @@ router.post(
                                 content: prompt
                             }
                         ],
-                        model: 'llama3-70b-8192'
+                        model: 'llama-3.1-70b-versatile'
                     })
 
                     const mood: IJournalEntry['mood'] = JSON.parse(

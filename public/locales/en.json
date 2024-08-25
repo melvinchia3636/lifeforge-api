@@ -308,7 +308,7 @@
     "save": "Save",
     "edit": "Edit",
     "addMusic": "Add Music",
-    "downloading": "Downloading",
+    "downloading": "Downloading...",
     "downloaded": "Downloaded",
     "new": "New",
     "submit": "Submit",
@@ -370,7 +370,11 @@
     "regenerate": "Regenerate",
     "uploadPhotos": "Upload Photos",
     "addToAlbum": "Add to Album",
-    "setAsAlbumCover": "Set as Album Cover"
+    "setAsAlbumCover": "Set as Album Cover",
+    "downloadAll": "Download All",
+    "newTag": "New tag",
+    "manageTags": "Manage Tags",
+    "editTags": "Edit Tags"
   },
   "modals": {
     "header": {
@@ -424,7 +428,13 @@
       "viewJournalEntry": "View Journal entries",
       "modifyJournalentries": "Modify Journal entries",
       "createJournalentries": "Create Journal entries",
-      "modifyGuitarTab": "Edit Tab"
+      "modifyGuitarTab": "Edit Tab",
+      "imagePreview": "Image Preview",
+      "createAlbum": "Create Album",
+      "renameAlbum": "Rename Album",
+      "manageTags": "Manage Tags",
+      "renameTag": "Rename Tag",
+      "addPhotosToAlbum": "Add {{amount}} Photos to Album"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -579,7 +589,9 @@
       "favourites": "Favourites",
       "archive": "Archived",
       "lockedFolder": "Locked Folder",
-      "trash": "Trash"
+      "trash": "Trash",
+      "allPhotos": "All Photos",
+      "viewAllAlbum": "View All Albums"
     },
     "projects-m": {
       "allProjects": "All Projects",
@@ -618,7 +630,9 @@
       "generate": "generated",
       "cleanedup": "cleaned up",
       "summarized": "summarized",
-      "unlock": "Unlocked"
+      "unlock": "Unlocked",
+      "download": "downloaded",
+      "NASFilesReady": " Files are now ready for download. Head to your NAS."
     },
     "redirected": "Redirected",
     "redirecting": "Redirecting..."
@@ -647,6 +661,10 @@
     "dashboard": {
       "title": "No Widget is Enabled",
       "description": "You can add widgets from the Manage Widgets menu"
+    },
+    "trash": {
+      "title": "Trash is Empty",
+      "description": "No items found in trash."
     }
   },
   "todoList": {

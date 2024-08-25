@@ -379,7 +379,7 @@ router.post(
         const lastData = await pb
             .collection('code_time_daily_entries')
             .getList(1, 1, {
-                filter: `date="${date} 00:00:00.000Z"`
+                filter: `date~"${date}"`
             })
 
         if (lastData.totalItems === 0) {
