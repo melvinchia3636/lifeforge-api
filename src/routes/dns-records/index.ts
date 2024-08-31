@@ -1,11 +1,7 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../utils/asyncWrapper.js'
-import {
-    clientError,
-    serverError,
-    successWithBaseResponse
-} from '../../utils/response.js'
-import { body, param, query } from 'express-validator'
+import { serverError, successWithBaseResponse } from '../../utils/response.js'
+import { body, query } from 'express-validator'
 import hasError from '../../utils/checkError.js'
 
 const router = express.Router()

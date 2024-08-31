@@ -71,8 +71,11 @@ router.post(
                 .readdirSync(`/home/pi/${process.env.DATABASE_OWNER}/medium`)
                 .filter(file => {
                     const fileMime = mime.lookup(file)
-                    !file.startsWith('.') &&
+
+                    return (
+                        !file.startsWith('.') &&
                         (fileMime ? fileMime.startsWith('audio') : false)
+                    )
                 })
 
             for (const file of newFiles) {
