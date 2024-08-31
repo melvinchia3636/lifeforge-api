@@ -68,7 +68,8 @@
       "technology": "Technology",
       "changiAirport": "Changi Airport",
       "aviation": "Aviation",
-      "dateRange": "Date Range"
+      "dateRange": "Date Range",
+      "references": "References"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -108,7 +109,8 @@
       "guitarTabs": "Stores and organizes your guitar tablatures effortlessly.",
       "accountSettings": "A place to manage all your accounts details and info",
       "flightStatus": "Tracks Changi Airport flight statuses in real-time",
-      "airports": "View all sorts of information about airports around the world"
+      "airports": "View all sorts of information about airports around the world",
+      "cfopAlgorithms": "View and train all the algorithms required for speedcubing."
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
@@ -118,7 +120,8 @@
     "changiFlightStatus": "Changi Airport Flight Status",
     "airports": "Airports",
     "header": {},
-    "tipsAndTricks": "Tips & Tricks"
+    "tipsAndTricks": "Tips & Tricks",
+    "cfopAlgorithms": "CFOP Algorithms"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -286,7 +289,8 @@
     "continents": "Search Continents...",
     "countries": "Search Countries...",
     "regions": "Search Regions...",
-    "allAirports": "Search All Airports..."
+    "allAirports": "Search All Airports...",
+    "passwords": "Passwords"
   },
   "button": {
     "create": "Create",
@@ -374,7 +378,8 @@
     "downloadAll": "Download All",
     "newTag": "New tag",
     "manageTags": "Manage Tags",
-    "editTags": "Edit Tags"
+    "editTags": "Edit Tags",
+    "bulkDelete": "Bulk Delete"
   },
   "modals": {
     "header": {
@@ -665,6 +670,12 @@
     "trash": {
       "title": "Trash is Empty",
       "description": "No items found in trash."
+    },
+    "wallet": {
+      "transactions": {
+        "title": "No Transactions Found",
+        "description": "You have not made any transactions yet."
+      }
     }
   },
   "todoList": {

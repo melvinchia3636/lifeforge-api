@@ -69,7 +69,8 @@
       "technology": "技术",
       "changiAirport": "樟宜机场",
       "aviation": "航空",
-      "dateRange": "日期范围"
+      "dateRange": "日期范围",
+      "references": "参考"
     },
     "descriptions": {
       "dashboard": "您的任务控制中心，妙不可言！",
@@ -109,7 +110,8 @@
       "guitarTabs": "轻松存储和整理您的吉他谱。",
       "accountSettings": "管理所有账户信息和资料的地方",
       "flightStatus": "实时跟踪樟宜机场的航班状态",
-      "airports": "查看世界各地机场的各种信息"
+      "airports": "查看世界各地机场的各种信息",
+      "cfopAlgorithms": "查看并训练速解魔方所需的所有公式。"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
@@ -119,7 +121,8 @@
     "airlineInformation": "航空公司信息",
     "changiFlightStatus": "樟宜机场航班状态",
     "airports": "机场",
-    "tipsAndTricks": "技巧与窍门"
+    "tipsAndTricks": "技巧与窍门",
+    "cfopAlgorithms": "CFOP 公式表"
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -287,7 +290,8 @@
     "continents": "搜索大陆...",
     "countries": "搜索国家...",
     "regions": "搜索地区...",
-    "allAirports": "搜索所有机场"
+    "allAirports": "搜索所有机场",
+    "passwords": "密码"
   },
   "button": {
     "create": "创建",
@@ -375,7 +379,8 @@
     "downloadAll": "全部下载",
     "newTag": "添加新标签",
     "manageTags": "管理标签",
-    "editTags": "编辑标签"
+    "editTags": "编辑标签",
+    "bulkDelete": "批量删除"
   },
   "modals": {
     "header": {
@@ -665,6 +670,12 @@
     "trash": {
       "title": "回收站为空",
       "description": "垃圾桶中没有项目。"
+    },
+    "wallet": {
+      "transactions": {
+        "title": "没有交易记录",
+        "description": "您尚未记录任何交易"
+      }
     }
   },
   "todoList": {
