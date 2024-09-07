@@ -547,7 +547,8 @@
     "achievementDifficulty": "Achievement Difficulty",
     "startTime": "Start Time",
     "endTime": "End Time",
-    "eventCategory": "Event Category"
+    "eventCategory": "Event Category",
+    "resourceType": "Resource Type"
   },
   "table": {
     "date": "Date",

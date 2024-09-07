@@ -21,7 +21,9 @@ const NO_NEED_AUTH = [
     '/locales/zh-CN',
     '/locales/zh-TW',
     '/locales/ms',
-    '/style.css'
+    '/style.css',
+    '/youtube-video-storage/video/thumbnail',
+    '/youtube-video-storage/video/stream'
 ]
 
 const pocketbaseMiddleware = async (

@@ -19,7 +19,7 @@ router.get(
                 .split('\n')
                 .map((e: string) => e.split(' ').filter(e => e !== ''))
                 .slice(1, -1)
-                .filter((e: string[]) => e[5].startsWith('/media'))
+                .filter((e: string[]) => e[5].startsWith('/home/pi'))
                 .map((e: string[]) => ({
                     name: e[5],
                     size: e[1].replace(/(\d)([A-Z])/, '$1 $2'),

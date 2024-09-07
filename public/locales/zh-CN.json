@@ -548,7 +548,8 @@
     "achievementDifficulty": "成就难度",
     "startTime": "开始时间",
     "endTime": "结束时间",
-    "eventCategory": "事件类别"
+    "eventCategory": "事件类别",
+    "resourceType": "资源类型"
   },
   "table": {
     "date": "日期",

@@ -15,7 +15,7 @@ router.get(
                 .split('\n')
                 .map((e: string) => e.split(' ').filter(e => e !== ''))
                 .slice(1, -1)
-                .filter((e: string[]) => e[8].startsWith('/Volumes'))
+                .filter((e: string[]) => e[8].startsWith('/home/pi'))
                 .map((e: string[]) => ({
                     name: e[8],
                     size: e[1],

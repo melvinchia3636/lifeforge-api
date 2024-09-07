@@ -9,7 +9,7 @@ import Pocketbase from 'pocketbase'
 
 import localesRoutes from './routes/locales/index.js'
 import userRoutes from './routes/user/index.js'
-import projectsMRoutes from './routes/projects-m/index.js'
+import projectsMRoutes from './routes/projectsM/index.js'
 // import projectsKRoutes from './routes/projects-k/index.js'
 import todoListRoutes from './routes/todoList/index.js'
 import calendarRoutes from './routes/calendar/index.js'
@@ -21,7 +21,7 @@ import achievementsRoutes from './routes/achievements/index.js'
 import spotifyRoutes from './routes/spotify/index.js'
 import photosRoutes from './routes/photos/index.js'
 import musicRoutes from './routes/music/index.js'
-import guitarTabsRoutes from './routes/guitar-tabs/index.js'
+import guitarTabsRoutes from './routes/guitarTabs/index.js'
 import repositoriesRoutes from './routes/repositories/index.js'
 import passwordsRoutes from './routes/passwords/index.js'
 import airportsRoutes from './routes/airports/index.js'
@@ -29,9 +29,10 @@ import changiRoutes from './routes/changi/index.js'
 import journalRoutes from './routes/journal/index.js'
 import serverRoutes from './routes/server/index.js'
 import changeLogRoutes from './routes/changeLog/index.js'
-import DNSRecordsRoutes from './routes/dns-records/index.js'
-import mailInboxRoutes from './routes/mail-inbox/index.js'
+import DNSRecordsRoutes from './routes/dnsRecords/index.js'
+import mailInboxRoutes from './routes/mailInbox/index.js'
 import walletRoutes from './routes/wallet/index.js'
+import youtubeVideoStorageRoutes from './routes/youtubeVideoStorage/index.js'
 
 import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
@@ -228,6 +229,7 @@ router.use('/spotify', spotifyRoutes)
 router.use('/photos', photosRoutes)
 router.use('/music', musicRoutes)
 router.use('/guitar-tabs', guitarTabsRoutes)
+router.use('/youtube-video-storage', youtubeVideoStorageRoutes)
 router.use('/repositories', repositoriesRoutes)
 router.use('/passwords', passwordsRoutes)
 router.use('/airports', airportsRoutes)
