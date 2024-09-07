@@ -52,8 +52,6 @@
       "lists": "清單",
       "tags": "標籤",
       "category": "類別",
-      "status": "狀態",
-      "visibility": "公開狀態",
       "projectType": "專案類型",
       "progress": "進度",
       "categories": "類別",
@@ -70,7 +68,9 @@
       "changiAirport": "樟宜機場",
       "aviation": "航空",
       "dateRange": "日期範圍",
-      "references": "參考"
+      "references": "參考",
+      "statuses": "狀態",
+      "visibilities": "公開狀態"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -111,7 +111,8 @@
       "accountSettings": "管理所有帳號資訊和資料的地方",
       "flightStatus": "即時追蹤樟宜機場航班狀態",
       "airports": "查看有關世界各地機場的各種信息",
-      "cfopAlgorithms": "查看並訓練速拧所需的所有公式。"
+      "cfopAlgorithms": "查看並訓練速拧所需的所有公式。",
+      "youtubeVideoStorage": "下載、儲存及管理您喜歡的YouTube影片"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
@@ -122,7 +123,8 @@
     "changiFlightStatus": "樟宜機場航班狀態",
     "airports": "機場",
     "tipsAndTricks": "技巧與竅門",
-    "cfopAlgorithms": "CFOP 公式表"
+    "cfopAlgorithms": "CFOP 公式表",
+    "youtubeVideoStorage": "YouTube 影片儲存"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -380,7 +382,9 @@
     "newTag": "新增標籤",
     "manageTags": "管理標籤",
     "editTags": "編輯標籤",
-    "bulkDelete": "批量刪除"
+    "bulkDelete": "批量刪除",
+    "newEntry": "新增項目",
+    "addVideo": "新增影片"
   },
   "modals": {
     "header": {
@@ -440,7 +444,8 @@
       "renameAlbum": "重新命名相冊",
       "manageTags": "管理標籤",
       "renameTag": "重新命名標籤",
-      "addPhotosToAlbum": "新增{{amount}}照片张照片至相簿"
+      "addPhotosToAlbum": "新增{{amount}}照片张照片至相簿",
+      "addVideos": "新增影片"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -537,7 +542,13 @@
     "emoji": "表情符號",
     "journalTitle": "日誌名稱",
     "startDate": "開始日期",
-    "endDate": "結束日期"
+    "endDate": "結束日期",
+    "fromAsset": "從資產",
+    "toAsset": "到資產",
+    "achievementDifficulty": "成就難度",
+    "startTime": "開始時間",
+    "endTime": "結束時間",
+    "eventCategory": "事件類別"
   },
   "table": {
     "date": "日期",

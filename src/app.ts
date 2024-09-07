@@ -57,8 +57,8 @@ const limiter = rateLimit({
             req.path.startsWith('/media/') ||
             req.path.match(/\/locales\/(\w|-){2,5}$/) ||
             [
-                '/codetime/minutes',
-                '/codetime/eventLog',
+                '/code-time/user/minutes',
+                '/code-time/eventLog',
                 '/user/passkey/challenge',
                 '/user/passkey/login',
                 '/user/auth/verify',
@@ -241,7 +241,7 @@ router.get(
     '/books-library/list',
     asyncWrapper(async (_: Request, res: Response) => {
         exec(
-            'calibredb list --with-library ../calibre --for-machine -f cover,authors,title'
+            'xvfb-run calibredb list --with-library ../calibre --for-machine -f cover,authors,title'
         ).stdout?.once('data', data => {
             const parsedData = JSON.parse(data)
             parsedData.forEach((item: any) => {
@@ -263,6 +263,11 @@ router.get(
     '/books-library/cover/:author/:book',
     asyncWrapper(async (req: Request, res: Response) => {
         const { author, book } = req.params
+        console.log(
+            `/home/pi/${
+                process.env.DATABASE_OWNER
+            }/calibre/${author}/${book}/cover.jpg`
+        )
         res.sendFile(
             `/home/pi/${
                 process.env.DATABASE_OWNER
@@ -283,15 +288,6 @@ router.use((req: Request, res: Response) => {
     res.json({
         state: 'error',
         message: 'Not Found'
-    })
-})
-
-router.use((err: Error, req: Request, res: Response) => {
-    res.status(500)
-
-    res.json({
-        state: 'error',
-        message: err.message
     })
 })
 

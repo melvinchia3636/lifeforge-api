@@ -52,8 +52,6 @@
       "lists": "Lists",
       "tags": "Tags",
       "category": "Category",
-      "status": "Status",
-      "visibility": "Visibility",
       "projectType": "Project Type",
       "progress": "Progress",
       "categories": "Categories",
@@ -69,7 +67,9 @@
       "changiAirport": "Changi Airport",
       "aviation": "Aviation",
       "dateRange": "Date Range",
-      "references": "References"
+      "references": "References",
+      "statuses": "Statuses",
+      "visibilities": "Visibilities"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -110,7 +110,8 @@
       "accountSettings": "A place to manage all your accounts details and info",
       "flightStatus": "Tracks Changi Airport flight statuses in real-time",
       "airports": "View all sorts of information about airports around the world",
-      "cfopAlgorithms": "View and train all the algorithms required for speedcubing."
+      "cfopAlgorithms": "View and train all the algorithms required for speedcubing.",
+      "youtubeVideoStorage": "Download, store, and organize all your favourite videos from YouTube"
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
@@ -121,7 +122,8 @@
     "airports": "Airports",
     "header": {},
     "tipsAndTricks": "Tips & Tricks",
-    "cfopAlgorithms": "CFOP Algorithms"
+    "cfopAlgorithms": "CFOP Algorithms",
+    "youtubeVideoStorage": "Youtube Video Storage"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -379,7 +381,9 @@
     "newTag": "New tag",
     "manageTags": "Manage Tags",
     "editTags": "Edit Tags",
-    "bulkDelete": "Bulk Delete"
+    "bulkDelete": "Bulk Delete",
+    "newEntry": "New Entry",
+    "addVideo": "Add Video"
   },
   "modals": {
     "header": {
@@ -439,7 +443,8 @@
       "renameAlbum": "Rename Album",
       "manageTags": "Manage Tags",
       "renameTag": "Rename Tag",
-      "addPhotosToAlbum": "Add {{amount}} Photos to Album"
+      "addPhotosToAlbum": "Add {{amount}} Photos to Album",
+      "addVideos": "Add Videos"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -536,7 +541,13 @@
     "emoji": "Emoji",
     "journalTitle": "Journal Title",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "fromAsset": "From Asset",
+    "toAsset": "To Asset",
+    "achievementDifficulty": "Achievement Difficulty",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "eventCategory": "Event Category"
   },
   "table": {
     "date": "Date",

@@ -52,8 +52,6 @@
       "lists": "Senarai",
       "tags": "Tag",
       "category": "Kategori",
-      "status": "Status",
-      "visibility": "Keterlihatan",
       "projectType": "Jenis Projek",
       "progress": "Kemajuan",
       "categories": "Kategori",
@@ -69,7 +67,9 @@
       "changiAirport": "Lapangan Terbang Changi",
       "aviation": "Penerbangan",
       "dateRange": "Julat Tarikh",
-      "references": "Rujukan"
+      "references": "Rujukan",
+      "statuses": "Status",
+      "visibilities": "Keterlihatan"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -110,7 +110,8 @@
       "accountSettings": "Tempat untuk mengurus semua maklumat dan profil akaun anda",
       "flightStatus": "Menjejaki status penerbangan Lapangan Terbang Changi dalam masa nyata",
       "airports": "Lihat semua jenis maklumat tentang lapangan terbang di seluruh dunia",
-      "cfopAlgorithms": "Lihat dan latih semua algoritma yang diperlukan untuk speedcubing."
+      "cfopAlgorithms": "Lihat dan latih semua algoritma yang diperlukan untuk speedcubing.",
+      "youtubeVideoStorage": "Simpan Video YouTube Kegemaran Anda"
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
@@ -121,7 +122,8 @@
     "changiFlightStatus": "Status Penerbangan Changi Airport",
     "airports": "Lapangan Terbang",
     "tipsAndTricks": "Petua & Trik",
-    "cfopAlgorithms": "Algoritma CFOP"
+    "cfopAlgorithms": "Algoritma CFOP",
+    "youtubeVideoStorage": "Penyimpanan Video YouTube"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -379,7 +381,9 @@
     "newTag": "Tag baharu",
     "manageTags": "Urus Tag",
     "editTags": "Sunting Tag",
-    "bulkDelete": "Padam Secara Pukal"
+    "bulkDelete": "Padam Secara Pukal",
+    "newEntry": "Entri Baru",
+    "addVideo": "Tambah Video"
   },
   "modals": {
     "header": {
@@ -439,7 +443,8 @@
       "renameAlbum": "Namakan Semula Album",
       "manageTags": "Urus Tag",
       "renameTag": "Tukar Nama Tag",
-      "addPhotosToAlbum": "Tambah {{amount}} Foto ke dalam Album"
+      "addPhotosToAlbum": "Tambah {{amount}} Foto ke dalam Album",
+      "addVideos": "Tambah Video"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -536,7 +541,13 @@
     "emoji": "Emoji",
     "journalTitle": "Tajuk Jurnal",
     "startDate": "Tarikh Mula",
-    "endDate": "Tarikh Akhir"
+    "endDate": "Tarikh Akhir",
+    "fromAsset": "Dari Aset",
+    "toAsset": "Ke Aset",
+    "achievementDifficulty": "Kesukaran Pencapaian",
+    "startTime": "Masa Mula",
+    "endTime": "Masa Tamat",
+    "eventCategory": "Kategori Acara"
   },
   "table": {
     "date": "Tarikh",

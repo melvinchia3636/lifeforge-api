@@ -15,13 +15,12 @@ router.get(
         async (
             req: Request,
             res: Response<BaseResponse<IProjectsMTechnology[]>>
-        ) => list(req, res, 'projects_m_visibilities')
+        ) => list(req, res, 'projects_m_technologies')
     )
 )
 
 router.post(
     '/',
-    [body('name').isString(), body('icon').isString],
     asyncWrapper(
         async (
             req: Request,
@@ -31,6 +30,8 @@ router.post(
 
             const { pb } = req
             const { name, icon } = req.body
+
+            console.log(name, icon)
 
             const technology: IProjectsMTechnology = await pb
                 .collection('projects_m_technologies')

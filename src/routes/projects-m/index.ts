@@ -10,9 +10,9 @@ const router = express.Router()
 
 router.use('/entries', entriesRoutes)
 router.use('/kanban', kanbanRoutes)
-router.use('/category', categoryRoutes)
-router.use('/status', statusRoutes)
-router.use('/visibility', visibilityRoutes)
-router.use('/technology', technologyRoutes)
+router.use('/categories', categoryRoutes)
+router.use('/statuses', statusRoutes)
+router.use('/visibilities', visibilityRoutes)
+router.use('/technologies', technologyRoutes)
 
 export default router
