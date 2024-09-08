@@ -548,7 +548,8 @@
     "startTime": "Masa Mula",
     "endTime": "Masa Tamat",
     "eventCategory": "Kategori Acara",
-    "resourceType": "Jenis Sumber"
+    "resourceType": "Jenis Sumber",
+    "playlistUrl": "URL Senarai Main"
   },
   "table": {
     "date": "Tarikh",

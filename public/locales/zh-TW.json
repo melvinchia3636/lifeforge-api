@@ -549,7 +549,8 @@
     "startTime": "開始時間",
     "endTime": "結束時間",
     "eventCategory": "事件類別",
-    "resourceType": "資源類型"
+    "resourceType": "資源類型",
+    "playlistUrl": "播放清單 URL"
   },
   "table": {
     "date": "日期",

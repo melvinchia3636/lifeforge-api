@@ -14,7 +14,10 @@ import hasError from '../../utils/checkError.js'
 import fs from 'fs'
 import moment from 'moment'
 import { list } from '../../utils/CRUD.js'
-import { IYoutubeVidesStorageEntry } from '../../interfaces/youtube_video_storage_interfaces.js'
+import {
+    IYoutubePlaylistEntry,
+    IYoutubeVidesStorageEntry
+} from '../../interfaces/youtube_video_storage_interfaces.js'
 
 const router = express.Router()
 
@@ -61,6 +64,46 @@ function downloadVideo(
             console.log(`yt-dlp process exited with code ${code}`)
             resolve('done')
         })
+    })
+}
+
+function getPlaylist(url: string): Promise<IYoutubePlaylistEntry> {
+    return new Promise((resolve, reject) => {
+        exec(
+            `${process.cwd()}/src/bin/yt-dlp --flat-playlist --dump-single-json ${url}`,
+            (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`)
+                    reject(error)
+                }
+
+                try {
+                    const playlist = JSON.parse(stdout)
+                    const final = {
+                        title: playlist.title,
+                        total_videos: playlist.entries.length,
+                        thumbnail:
+                            playlist.thumbnails[playlist.thumbnails.length - 1]
+                                .url,
+                        views: playlist.view_count,
+                        channel: playlist.channel,
+                        entries: playlist.entries.map((e: any) => ({
+                            id: e.id,
+                            title: e.title,
+                            duration: e.duration,
+                            uploader: e.uploader,
+                            thumbnail:
+                                e.thumbnails[e.thumbnails.length - 1].url,
+                            viewCount: e.view_count
+                        }))
+                    }
+                    resolve(final)
+                } catch (err) {
+                    console.error(`Error parsing JSON: ${err}`)
+                    reject(err)
+                }
+            }
+        )
     })
 }
 
@@ -327,6 +370,22 @@ router.delete(
     })
 )
 
-router.get('/playlist/get-info')
+router.get(
+    '/playlist/get-info/:id',
+    param('id').isString(),
+    asyncWrapper(async (req: Request, res: Response) => {
+        if (hasError(req, res)) return
+
+        const { id } = req.params
+
+        await getPlaylist(`https://www.youtube.com/playlist?list=${id}`)
+            .then(playlist => {
+                successWithBaseResponse(res, playlist)
+            })
+            .catch(() => {
+                serverError(res, 'Error fetching playlist')
+            })
+    })
+)
 
 export default router

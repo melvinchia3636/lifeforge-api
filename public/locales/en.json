@@ -548,7 +548,8 @@
     "startTime": "Start Time",
     "endTime": "End Time",
     "eventCategory": "Event Category",
-    "resourceType": "Resource Type"
+    "resourceType": "Resource Type",
+    "playlistUrl": "Playlist URL"
   },
   "table": {
     "date": "Date",
