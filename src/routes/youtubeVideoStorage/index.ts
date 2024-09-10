@@ -8,7 +8,7 @@ import {
     serverError,
     successWithBaseResponse
 } from '../../utils/response.js'
-import { body, param } from 'express-validator'
+import { body, param, query } from 'express-validator'
 import { v4 } from 'uuid'
 import hasError from '../../utils/checkError.js'
 import fs from 'fs'
@@ -18,11 +18,20 @@ import {
     IYoutubePlaylistEntry,
     IYoutubeVidesStorageEntry
 } from '../../interfaces/youtube_video_storage_interfaces.js'
+//@ts-expect-error no type available
+import getDimensions from 'get-video-dimensions'
+
+const VIDEO_STORAGE_PATH = `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos`
 
 const router = express.Router()
 
-let downloading: 'empty' | 'in_progress' | 'completed' | 'failed' = 'empty'
-let progress = 0
+const processes = new Map<
+    string,
+    {
+        status: 'in_progress' | 'completed' | 'failed'
+        progress: number
+    }
+>()
 
 function downloadVideo(
     url: string,
@@ -253,55 +262,69 @@ router.post(
             const { id } = req.params
             const { metadata } = req.body
 
-            if (downloading === 'in_progress') {
-                clientError(res, 'Already downloading')
+            if (
+                processes.has(id) &&
+                processes.get(id)?.status === 'in_progress'
+            ) {
+                clientError(res, 'Download already in progress')
                 return
             }
 
-            downloading = 'in_progress'
+            // Remove any redundant processes that are either completed or failed
+            processes.forEach((value, key) => {
+                if (value.status !== 'in_progress') {
+                    processes.delete(key)
+                }
+            })
+
+            processes.set(id, {
+                status: 'in_progress',
+                progress: 0
+            })
+
             res.status(202).json({
                 state: 'accepted',
                 message: 'Download started'
             })
-            const downloadID = v4()
 
             if (!fs.existsSync('./downloads')) {
                 fs.mkdirSync('./downloads')
-            } else {
-                fs.readdirSync('./downloads').forEach(file => {
-                    fs.unlinkSync(`./downloads/${file}`)
-                })
             }
 
-            const output = `./downloads/${downloadID}.%(ext)s`
+            const output = `./downloads/${id}.%(ext)s`
 
             await downloadVideo(
                 `https://www.youtube.com/watch?v=${id}`,
                 output,
                 prog => {
-                    progress = prog
+                    processes.set(id, {
+                        status: 'in_progress',
+                        progress: prog
+                    })
                 }
             )
                 .then(async () => {
-                    if (
-                        !fs.existsSync(
-                            `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos`
-                        )
-                    ) {
-                        fs.mkdirSync(
-                            `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos`
-                        )
+                    if (!fs.existsSync(VIDEO_STORAGE_PATH)) {
+                        fs.mkdirSync(VIDEO_STORAGE_PATH)
                     }
 
                     fs.renameSync(
-                        `./downloads/${downloadID}.mp4`,
-                        `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos/${id}.mp4`
+                        `./downloads/${id}.mp4`,
+                        `${VIDEO_STORAGE_PATH}/${id}.mp4`
                     )
 
                     fs.renameSync(
-                        `./downloads/${downloadID}.webp`,
-                        `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos/${id}.webp`
+                        `./downloads/${id}.webp`,
+                        `${VIDEO_STORAGE_PATH}/${id}.webp`
                     )
+
+                    const { width, height } = await getDimensions(
+                        `${VIDEO_STORAGE_PATH}/${id}.mp4`
+                    )
+
+                    const fileSize = fs.statSync(
+                        `${VIDEO_STORAGE_PATH}/${id}.mp4`
+                    ).size
 
                     await pb.collection('youtube_video_storage_entry').create({
                         youtube_id: id,
@@ -311,31 +334,60 @@ router.post(
                             'YYYYMMDD'
                         ).toDate(),
                         uploader: metadata.uploader,
-                        duration: +metadata.duration
+                        duration: +metadata.duration,
+                        width,
+                        height,
+                        filesize: fileSize
                     })
 
-                    downloading = 'completed'
+                    processes.set(id, {
+                        status: 'completed',
+                        progress: 100
+                    })
                 })
                 .catch(() => {
-                    downloading = 'failed'
+                    processes.set(id, {
+                        status: 'failed',
+                        progress: 0
+                    })
                 })
         }
     )
 )
 
-router.get(
+router.post(
     '/video/download-status',
+    body('id').custom(id => {
+        return id.every((i: string) => i.match(/^[a-zA-Z0-9_-]{11}$/))
+    }),
     asyncWrapper(
         async (
-            _: Request,
+            req: Request,
             res: Response<
-                BaseResponse<{
-                    status: 'empty' | 'in_progress' | 'completed' | 'failed'
-                    progress: number
-                }>
+                BaseResponse<
+                    | {
+                          status: 'in_progress' | 'completed' | 'failed'
+                          progress: number
+                      }
+                    | Record<
+                          string,
+                          {
+                              status: 'in_progress' | 'completed' | 'failed'
+                              progress: number
+                          }
+                      >
+                >
             >
         ) => {
-            successWithBaseResponse(res, { status: downloading, progress })
+            if (hasError(req, res)) return
+
+            const { id } = req.body
+
+            const response = Object.entries(
+                Object.fromEntries(processes)
+            ).filter(([key]) => id.includes(key))
+
+            successWithBaseResponse(res, Object.fromEntries(response))
         }
     )
 )
