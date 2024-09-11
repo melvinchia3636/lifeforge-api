@@ -293,7 +293,8 @@
     "countries": "搜尋國家...",
     "regions": "搜尋地區...",
     "allAirports": "搜尋所有機場",
-    "passwords": "密碼"
+    "passwords": "密碼",
+    "videos": "搜尋影片..."
   },
   "button": {
     "create": "創建",

@@ -17,6 +17,7 @@ import fs from 'fs'
 import downloadVideo from '../functions/downloadVideo.js'
 // @ts-expect-error no types available
 import getDimensions from 'get-video-dimensions'
+import updateVideoChannelData from '../functions/updateVideoChannelData.js'
 
 const VIDEO_STORAGE_PATH = `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos`
 
@@ -87,7 +88,40 @@ router.get(
         async (
             req: Request,
             res: Response<BaseResponse<IYoutubeVidesStorageEntry[]>>
-        ) => list(req, res, 'youtube_video_storage_entry')
+        ) => {
+            const { pb } = req
+
+            const videos = await pb
+                .collection('youtube_video_storage_entry')
+                .getFullList<
+                    IYoutubeVidesStorageEntry & {
+                        expand?: {
+                            channel: {
+                                youtube_id: string
+                                name: string
+                                thumbnail: string
+                            }
+                        }
+                    }
+                >({
+                    sort: '-created',
+                    expand: 'channel'
+                })
+
+            videos.forEach(video => {
+                const channel = video.expand?.channel
+                if (!channel) return
+                video.channel = {
+                    id: channel.youtube_id,
+                    name: channel.name,
+                    thumbnail: pb
+                        .getFileUrl(channel, channel.thumbnail)
+                        .split('/files/')[1]
+                }
+            })
+
+            successWithBaseResponse(res, videos as IYoutubeVidesStorageEntry[])
+        }
     )
 )
 
@@ -103,7 +137,7 @@ router.get(
             }
 
             exec(
-                `${process.cwd()}/src/bin/yt-dlp --skip-download --print "title,upload_date,uploader,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
+                `${process.cwd()}/src/bin/yt-dlp --skip-download --print "title,upload_date,uploader,uploader_url,duration,view_count,like_count,thumbnail" "https://www.youtube.com/watch?v=${id}"`,
                 (err, stdout) => {
                     if (err) {
                         serverError(
@@ -120,6 +154,7 @@ router.get(
                         title,
                         uploadDate,
                         uploader,
+                        uploaderUrl,
                         duration,
                         viewCount,
                         likeCount,
@@ -130,6 +165,7 @@ router.get(
                         title,
                         uploadDate,
                         uploader,
+                        uploaderUrl,
                         duration,
                         viewCount: +viewCount,
                         likeCount: +likeCount,
@@ -257,6 +293,8 @@ router.post(
                         filesize: fileSize
                     })
 
+                    await updateVideoChannelData(id, metadata.uploaderUrl, pb)
+
                     processes.set(id, {
                         status: 'completed',
                         progress: 100,
@@ -330,7 +368,11 @@ router.delete(
 
         const record = await pb
             .collection('youtube_video_storage_entry')
-            .getOne<IYoutubeVidesStorageEntry>(id)
+            .getOne<
+                Omit<IYoutubeVidesStorageEntry, 'channel'> & {
+                    channel: string
+                }
+            >(id)
         if (!record) {
             clientError(res, 'Video not found')
             return
@@ -342,6 +384,22 @@ router.delete(
         fs.unlinkSync(
             `/home/pi/${process.env.DATABASE_OWNER}/youtubeVideos/${record.youtube_id}.webp`
         )
+
+        const channel = record.channel
+
+        if (channel) {
+            const { totalItems } = await pb
+                .collection('youtube_video_storage_entry')
+                .getList(1, 1, {
+                    filter: `channel = "${channel}"`
+                })
+
+            if (totalItems === 1) {
+                await pb
+                    .collection('youtube_video_storage_channel')
+                    .delete(channel)
+            }
+        }
 
         await pb.collection('youtube_video_storage_entry').delete(id)
 

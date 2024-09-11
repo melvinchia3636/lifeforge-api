@@ -293,7 +293,8 @@
     "countries": "搜索国家...",
     "regions": "搜索地区...",
     "allAirports": "搜索所有机场",
-    "passwords": "密码"
+    "passwords": "密码",
+    "videos": "搜索视频..."
   },
   "button": {
     "create": "创建",

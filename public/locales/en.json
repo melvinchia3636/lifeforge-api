@@ -292,7 +292,8 @@
     "countries": "Search Countries...",
     "regions": "Search Regions...",
     "allAirports": "Search All Airports...",
-    "passwords": "Passwords"
+    "passwords": "Passwords",
+    "videos": "Search Videos..."
   },
   "button": {
     "create": "Create",

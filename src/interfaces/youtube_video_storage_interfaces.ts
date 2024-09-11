@@ -4,7 +4,11 @@ interface IYoutubeVidesStorageEntry extends BasePBCollection {
     youtube_id: string
     title: string
     upload_date: string
-    uploader: string
+    channel?: {
+        id: string
+        name: string
+        thumbnail: string
+    }
     duration: number
     width: number
     height: number
@@ -16,6 +20,7 @@ interface IYoutubePlaylistVideoEntry {
     title: string
     duration: number
     uploader: string
+    uploaderUrl: string
     thumbnail: string
     viewCount: number
 }
