@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import Pocketbase from 'pocketbase'
 
 const NO_NEED_AUTH = [
+    '/status',
     '/user/passkey',
     '/user/auth/login',
     '/spotify',

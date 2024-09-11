@@ -444,7 +444,8 @@
       "manageTags": "Urus Tag",
       "renameTag": "Tukar Nama Tag",
       "addPhotosToAlbum": "Tambah {{amount}} Foto ke dalam Album",
-      "addVideos": "Tambah Video"
+      "addVideos": "Tambah Video",
+      "downloadProcess": "Proses Muat Turun"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",

@@ -444,7 +444,8 @@
       "manageTags": "Manage Tags",
       "renameTag": "Rename Tag",
       "addPhotosToAlbum": "Add {{amount}} Photos to Album",
-      "addVideos": "Add Videos"
+      "addVideos": "Add Videos",
+      "downloadProcess": "Download Processes"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",

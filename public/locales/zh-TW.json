@@ -445,7 +445,8 @@
       "manageTags": "管理標籤",
       "renameTag": "重新命名標籤",
       "addPhotosToAlbum": "新增{{amount}}照片张照片至相簿",
-      "addVideos": "新增影片"
+      "addVideos": "新增影片",
+      "downloadProcess": "下載流程"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",

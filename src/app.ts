@@ -64,7 +64,8 @@ const limiter = rateLimit({
                 '/user/passkey/login',
                 '/user/auth/verify',
                 '/user/auth/login',
-                '/books-library/cover'
+                '/books-library/cover',
+                '/status'
             ].some(route => req.path.startsWith(route))
         ) {
             return true
@@ -116,6 +117,12 @@ router.use(morganMiddleware)
 router.use(pocketbaseMiddleware)
 router.use(limiter)
 router.use(express.static('static'))
+
+router.get('/status', async (req: Request, res: Response) => {
+    res.json({
+        state: 'success'
+    })
+})
 
 router.get(
     '/',
