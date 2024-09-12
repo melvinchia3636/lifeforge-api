@@ -49,7 +49,7 @@
   },
   "scripts": {
     "dev": "tsx watch --env-file=.env.local ./src/index.ts",
-    "start": "tsc && pkgroll && forever start -c \"node --env-file=.env.local\" dist/index.js",
+    "start": "tsc && pkgroll --minify --clean-dist && forever start -c \"node --env-file=.env.local\" dist/index.mjs",
     "vercel-build": "echo sus"
   },
   "exports": "./dist/index.mjs",
