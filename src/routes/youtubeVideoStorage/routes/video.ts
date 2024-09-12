@@ -293,7 +293,13 @@ router.post(
                         filesize: fileSize
                     })
 
-                    await updateVideoChannelData(id, metadata.uploaderUrl, pb)
+                    if (metadata.uploaderUrl) {
+                        await updateVideoChannelData(
+                            id,
+                            metadata.uploaderUrl,
+                            pb
+                        )
+                    }
 
                     processes.set(id, {
                         status: 'completed',
