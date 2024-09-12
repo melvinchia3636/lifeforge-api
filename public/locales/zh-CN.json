@@ -385,7 +385,8 @@
     "editTags": "编辑标签",
     "bulkDelete": "批量删除",
     "newEntry": "新建条目",
-    "addVideo": "添加视频"
+    "addVideo": "添加视频",
+    "watchOnYoutube": "在 YouTube 上观看"
   },
   "modals": {
     "header": {

@@ -106,6 +106,8 @@ router.use(
 router.use(
     cors({
         origin: [
+            'http://localhost:5173',
+            'http://localhost:5174',
             'https://lifeforge.thecodeblog.net',
             'https://localization-manager.lifeforge.thecodeblog.net'
         ]
