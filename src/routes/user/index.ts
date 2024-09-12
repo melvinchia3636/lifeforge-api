@@ -149,6 +149,7 @@ router.patch(
         const toBeUpdated: { [key: string]: any } = {}
 
         for (let item of [
+            'fontFamily',
             'theme',
             'color',
             'bgTemp',
