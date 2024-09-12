@@ -171,6 +171,10 @@
       "desc": "Pilih suhu latar belakang yang sesuai dengan mood anda.",
       "cool": "Sejuk",
       "warm": "Hangat"
+    },
+    "fontFamily": {
+      "title": "Gaya Huruf",
+      "desc": "Pilih keluarga fon yang sepadan dengan pilihan anda"
     }
   },
   "dashboard": {

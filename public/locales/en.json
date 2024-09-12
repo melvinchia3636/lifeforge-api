@@ -171,6 +171,10 @@
       "desc": "Choose a background temperature that suits your mood.",
       "cool": "Cool",
       "warm": "Warm"
+    },
+    "fontFamily": {
+      "title": "Font Style",
+      "desc": "Choose a font family that matches your preference"
     }
   },
   "dashboard": {

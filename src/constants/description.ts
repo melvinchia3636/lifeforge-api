@@ -292,7 +292,48 @@ const DESCRIPTION = {
     'GET /airports/NOTAM/{NOTAMID}': 'Get NOTAM details by ID',
     'GET /airports/NOTAM/{NOTAMID}/summarize': 'Summarize NOTAM details by ID',
     'GET /airports/regions/{id}': 'Get region details by ID',
-    'GET /airports/search': 'Search for airports'
+    'GET /airports/search': 'Search for airports',
+    'GET /projects-m/categories': 'Get a list of project categories',
+    'POST /projects-m/categories': 'Create a new project category',
+    'PATCH /projects-m/categories/{id}': 'Update a project category by ID',
+    'DELETE /projects-m/categories/{id}': 'Delete a project category by ID',
+    'GET /projects-m/statuses': 'Get a list of project statuses',
+    'POST /projects-m/statuses': 'Create a new project status',
+    'PATCH /projects-m/statuses/{id}': 'Update a project status by ID',
+    'DELETE /projects-m/statuses/{id}': 'Delete a project status by ID',
+    'GET /projects-m/technologies': 'Get a list of project technologies',
+    'POST /projects-m/technologies': 'Create a new project technology',
+    'PATCH /projects-m/technologies/{id}': 'Update a project technology by ID',
+    'DELETE /projects-m/technologies/{id}': 'Delete a project technology by ID',
+    'GET /projects-m/visibilities': 'Get a list of project visibility options',
+    'POST /projects-m/visibilities': 'Create a new project visibility option',
+    'PATCH /projects-m/visibilities/{id}':
+        'Update a project visibility option by ID',
+    'DELETE /projects-m/visibilities/{id}':
+        'Delete a project visibility option by ID',
+    'GET /journal/auth/challenge': 'Get authentication challenge for journal',
+    'POST /journal/auth': 'Authenticate journal user',
+    'POST /journal/auth/verify': 'Verify journal user authentication',
+    'POST /journal/entries/ai/title':
+        'Generate a title for a journal entry using AI',
+    'POST /journal/entries/ai/cleanup': 'Clean up a journal entry using AI',
+    'POST /journal/entries/ai/summarize': 'Summarize a journal entry using AI',
+    'POST /journal/entries/ai/mood/':
+        'Analyze the mood of a journal entry using AI',
+    'PUT /journal/entries/update/{id}': 'Update a journal entry by ID',
+    'GET /youtube-video-storage/playlist/get-info/{id}':
+        'Get playlist information by ID',
+    'GET /youtube-video-storage/video/thumbnail/{id}':
+        'Get video thumbnail by ID',
+    'GET /youtube-video-storage/video/stream/{id}': 'Stream video by ID',
+    'GET /youtube-video-storage/video': 'List all videos',
+    'GET /youtube-video-storage/video/get-info/{id}':
+        'Get video information by ID',
+    'POST /youtube-video-storage/video/async-download/{id}':
+        'Asynchronously download video by ID',
+    'POST /youtube-video-storage/video/download-status':
+        'Get video download status',
+    'DELETE /youtube-video-storage/video/{id}': 'Delete video by ID'
 }
 
 export default DESCRIPTION

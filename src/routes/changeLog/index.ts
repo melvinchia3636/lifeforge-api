@@ -15,9 +15,7 @@ router.get(
             req: Request,
             res: Response<BaseResponse<IChangeLogVersion[]>>
         ) => {
-            const pb = new Pocketbase(
-                'http://dev.lifeforge.thecodeblog.net:8090'
-            )
+            const pb = new Pocketbase('http://192.168.0.117:8090')
             const entries = await pb
                 .collection('change_log_entries')
                 .getFullList()
