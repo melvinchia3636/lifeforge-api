@@ -123,7 +123,8 @@
     "header": {},
     "tipsAndTricks": "Tips & Tricks",
     "cfopAlgorithms": "CFOP Algorithms",
-    "youtubeVideoStorage": "Youtube Video Storage"
+    "youtubeVideoStorage": "Youtube Video Storage",
+    "loadingModule": "Loading Module..."
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -174,7 +175,9 @@
     },
     "fontFamily": {
       "title": "Font Style",
-      "desc": "Choose a font family that matches your preference"
+      "desc": "Choose a font family that matches your preference",
+      "tooltip": "For more detailed information on all the fonts, visit the Google Font website.",
+      "tooltipTitle": "Powered by Google Fonts"
     }
   },
   "dashboard": {
@@ -680,7 +683,13 @@
     "header": {
       "allTransactions": "All Transactions",
       "filteredTransactions": "Filtered Transactions"
-    }
+    },
+    "dashboard": {
+      "expensesBreakdown": {
+        "desc": "This Month's Spending"
+      }
+    },
+    "transactionCount": "transactions"
   },
   "emptyState": {
     "dashboard": {
@@ -695,6 +704,14 @@
       "transactions": {
         "title": "No Transactions Found",
         "description": "You have not made any transactions yet."
+      },
+      "assets": {
+        "title": "No Assets Found",
+        "description": "You haven't created any assets yet"
+      },
+      "ledger": {
+        "title": "No Ledger Found",
+        "description": "You haven't created any ledgers yet."
       }
     }
   },

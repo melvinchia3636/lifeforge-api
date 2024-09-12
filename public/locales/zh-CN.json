@@ -124,7 +124,8 @@
     "airports": "机场",
     "tipsAndTricks": "技巧与窍门",
     "cfopAlgorithms": "CFOP 公式表",
-    "youtubeVideoStorage": "YouTube 视频存储"
+    "youtubeVideoStorage": "YouTube 视频存储",
+    "loadingModule": "正在加载模块..."
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -175,7 +176,9 @@
     },
     "fontFamily": {
       "title": "字体样式",
-      "desc": "选择符合您偏好的字体系列"
+      "desc": "选择符合您偏好的字体系列",
+      "tooltip": "欲查看有关所有字体的更多详细信息，请访问 Google 字体网站。",
+      "tooltipTitle": "由 Google Fonts提供支持"
     }
   },
   "dashboard": {
@@ -680,7 +683,13 @@
     "header": {
       "allTransactions": "所有交易",
       "filteredTransactions": "已过滤的交易"
-    }
+    },
+    "dashboard": {
+      "expensesBreakdown": {
+        "desc": "本月支出"
+      }
+    },
+    "transactionCount": "笔交易"
   },
   "emptyState": {
     "dashboard": {
@@ -695,6 +704,14 @@
       "transactions": {
         "title": "没有交易记录",
         "description": "您尚未记录任何交易"
+      },
+      "assets": {
+        "title": "没有资产",
+        "description": "您还没有创建任何资产"
+      },
+      "ledger": {
+        "title": "没有账本",
+        "description": "您还没有创建任何账本。"
       }
     }
   },

@@ -123,7 +123,8 @@
     "airports": "Lapangan Terbang",
     "tipsAndTricks": "Petua & Trik",
     "cfopAlgorithms": "Algoritma CFOP",
-    "youtubeVideoStorage": "Penyimpanan Video YouTube"
+    "youtubeVideoStorage": "Penyimpanan Video YouTube",
+    "loadingModule": "Sedang Memuatkan Modul..."
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -174,7 +175,9 @@
     },
     "fontFamily": {
       "title": "Gaya Huruf",
-      "desc": "Pilih keluarga fon yang sepadan dengan pilihan anda"
+      "desc": "Pilih keluarga fon yang sepadan dengan pilihan anda",
+      "tooltip": "Untuk maklumat lebih terperinci tentang semua fon, lawati tapak web Google Font.",
+      "tooltipTitle": "Dikuasakan oleh Google Fonts"
     }
   },
   "dashboard": {
@@ -679,7 +682,13 @@
     "header": {
       "allTransactions": "Semua Transaksi",
       "filteredTransactions": "Transaksi Tertapis"
-    }
+    },
+    "dashboard": {
+      "expensesBreakdown": {
+        "desc": "Perbelanjaan Bulan Ini"
+      }
+    },
+    "transactionCount": "transaksi"
   },
   "emptyState": {
     "dashboard": {
@@ -694,6 +703,14 @@
       "transactions": {
         "title": "Tiada Transaksi",
         "description": "Anda belum merekodkan sebarang transaksi lagi."
+      },
+      "assets": {
+        "title": "Tiada Aset",
+        "description": "Anda belum mencipta aset"
+      },
+      "ledger": {
+        "title": "Tiada Buku Laman Ditemui",
+        "description": "Anda belum mencipta mana-mana buku besar."
       }
     }
   },
