@@ -12,7 +12,7 @@ interface IYoutubeData {
     title: string
     uploadDate: string
     uploader: string
-    uploaderUrl: string
+    uploaderUrl?: string
     duration: string
     viewCount: number
     likeCount: number

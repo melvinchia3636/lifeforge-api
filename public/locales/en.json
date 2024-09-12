@@ -621,10 +621,10 @@
   },
   "calendar": {
     "view": {
-      "day": "Day View",
-      "month": "Month View",
-      "week": "Week View",
-      "agenda": "Agenda View"
+      "day": "Day",
+      "month": "Month",
+      "week": "Week",
+      "agenda": "Agenda"
     }
   },
   "fetch": {

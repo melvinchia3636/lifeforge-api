@@ -108,6 +108,7 @@ router.use(
         origin: [
             'http://localhost:5173',
             'http://localhost:5174',
+            'https://improved-zebra-55ggwr697jvh47xr-5173.app.github.dev',
             'https://lifeforge.thecodeblog.net',
             'https://localization-manager.lifeforge.thecodeblog.net'
         ]
