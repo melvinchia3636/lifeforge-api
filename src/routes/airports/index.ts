@@ -11,6 +11,7 @@ import notamnDecoder from './notamdecoder.js'
 import FIRs from './data/FIRs.js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { IFlightDataEntry } from '../../interfaces/airports_interfaces.js'
+import PocketBase from 'pocketbase'
 
 if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is required')
 

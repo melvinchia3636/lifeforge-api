@@ -392,7 +392,8 @@
     "bulkDelete": "Padam Secara Pukal",
     "newEntry": "Entri Baru",
     "addVideo": "Tambah Video",
-    "watchOnYoutube": "Tonton di YouTube"
+    "watchOnYoutube": "Tonton di YouTube",
+    "pauseSession": "Jeda Sesi"
   },
   "modals": {
     "header": {

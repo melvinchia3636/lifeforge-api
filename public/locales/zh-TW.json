@@ -393,7 +393,8 @@
     "bulkDelete": "批量刪除",
     "newEntry": "新增項目",
     "addVideo": "新增影片",
-    "watchOnYoutube": "在 YouTube 上觀看"
+    "watchOnYoutube": "在 YouTube 上觀看",
+    "pauseSession": "暫停環節"
   },
   "modals": {
     "header": {

@@ -392,7 +392,8 @@
     "bulkDelete": "Bulk Delete",
     "newEntry": "New Entry",
     "addVideo": "Add Video",
-    "watchOnYoutube": "Watch on YouTube"
+    "watchOnYoutube": "Watch on YouTube",
+    "pauseSession": "Pause Session"
   },
   "modals": {
     "header": {

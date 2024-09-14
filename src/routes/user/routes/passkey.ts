@@ -7,7 +7,8 @@ import {
 import asyncWrapper from '../../../utils/asyncWrapper.js'
 
 if (!process.env.PB_EMAIL || !process.env.PB_PASSWORD) {
-    throw new Error('PB_EMAIL and PB_PASSWORD must be set')
+    console.error('ERROR: PB_EMAIL and PB_PASSWORD must be set')
+    process.exit(1)
 }
 
 const router = express.Router()

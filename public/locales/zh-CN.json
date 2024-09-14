@@ -393,7 +393,8 @@
     "bulkDelete": "批量删除",
     "newEntry": "新建条目",
     "addVideo": "添加视频",
-    "watchOnYoutube": "在 YouTube 上观看"
+    "watchOnYoutube": "在 YouTube 上观看",
+    "pauseSession": "暂停环节"
   },
   "modals": {
     "header": {
