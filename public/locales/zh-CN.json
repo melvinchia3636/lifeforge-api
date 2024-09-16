@@ -70,7 +70,8 @@
       "dateRange": "日期范围",
       "references": "参考",
       "statuses": "状态",
-      "visibilities": " 公开状态"
+      "visibilities": " 公开状态",
+      "authors": "作者"
     },
     "descriptions": {
       "dashboard": "您的任务控制中心，妙不可言！",
@@ -112,7 +113,7 @@
       "flightStatus": "实时跟踪樟宜机场的航班状态",
       "airports": "查看世界各地机场的各种信息",
       "cfopAlgorithms": "查看并训练速解魔方所需的所有公式。",
-      "youtubeVideoStorage": "下载、保存及管理您喜爱的YouTube视频"
+      "youtubeVideos": "下载、保存及管理您喜爱的YouTube视频"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
@@ -124,8 +125,8 @@
     "airports": "机场",
     "tipsAndTricks": "技巧与窍门",
     "cfopAlgorithms": "CFOP 公式表",
-    "youtubeVideoStorage": "YouTube 视频存储",
-    "loadingModule": "正在加载模块..."
+    "loadingModule": "正在加载模块...",
+    "youtubeVideos": "YouTube 视频"
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -301,7 +302,10 @@
     "regions": "搜索地区...",
     "allAirports": "搜索所有机场",
     "passwords": "密码",
-    "videos": "搜索视频..."
+    "videos": "搜索视频...",
+    "iconSets": "搜索图标集...",
+    "filterIconSets": "筛选图标集...",
+    "icons": "搜索图标..."
   },
   "button": {
     "create": "创建",
@@ -394,7 +398,8 @@
     "newEntry": "新建条目",
     "addVideo": "添加视频",
     "watchOnYoutube": "在 YouTube 上观看",
-    "pauseSession": "暂停环节"
+    "pauseSession": "暂停环节",
+    "search": "搜索"
   },
   "modals": {
     "header": {
@@ -456,7 +461,9 @@
       "renameTag": "重命名标签",
       "addPhotosToAlbum": "添加{{amount}}张照片至相册",
       "addVideos": "添加视频",
-      "downloadProcess": "下载流程"
+      "downloadProcess": "下载流程",
+      "pickAColor": "选择颜色",
+      "selectAnIcon": "选择图标"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -611,10 +618,6 @@
       "allAssets": "所有资产",
       "allCategories": "所有类别"
     },
-    "books-library": {
-      "starred": "已加星标",
-      "allBooks": "所有书籍"
-    },
     "photos": {
       "favourites": "收藏",
       "archive": "已归档照片",
@@ -623,7 +626,17 @@
       "allPhotos": "所有照片",
       "viewAllAlbum": "查看所有相册"
     },
-    "projects-m": {
+    "guitarTabs": {
+      "allScores": "所有乐谱",
+      "starred": "收藏的谱",
+      "singAlong": "弹唱",
+      "fingerStyle": "指弹"
+    },
+    "booksLibrary": {
+      "starred": "已加星标",
+      "allBooks": "所有书籍"
+    },
+    "projectsM": {
       "allProjects": "所有项目",
       "starred": "收藏的项目"
     }
@@ -746,5 +759,8 @@
     "lockedMessage": "日志已锁定",
     "passwordRequired": "需要密码才能解密您的日记条目",
     "failedToUnlock": "日记解锁失败"
+  },
+  "guitarTabs": {
+    "unknownAuthor": "未知作者"
   }
 }

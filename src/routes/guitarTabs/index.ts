@@ -11,7 +11,10 @@ import {
 } from '../../utils/response.js'
 import { uploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { BaseResponse } from '../../interfaces/base_response.js'
-import IGuitarTabsEntry from '../../interfaces/guitar_tabs_interfaces.js'
+import {
+    IGuitarTabsEntry,
+    IGuitarTabsSidebarData
+} from '../../interfaces/guitar_tabs_interfaces.js'
 import { ListResult } from 'pocketbase'
 import moment from 'moment'
 
@@ -20,6 +23,44 @@ const router = express.Router()
 let processing = 'empty'
 let left = 0
 let total = 0
+
+router.get(
+    '/sidebar-data',
+    asyncWrapper(
+        async (
+            req: Request,
+            res: Response<BaseResponse<IGuitarTabsSidebarData>>
+        ) => {
+            const { pb } = req
+
+            const allScores = await pb
+                .collection('guitar_tabs_entries')
+                .getFullList<IGuitarTabsEntry>()
+
+            const data: IGuitarTabsSidebarData = {
+                total: allScores.length,
+                favourites: allScores.filter(entry => entry.isFavourite).length,
+                fingerstyle: allScores.filter(
+                    entry => entry.type === 'fingerstyle'
+                ).length,
+                singalong: allScores.filter(entry => entry.type === 'singalong')
+                    .length,
+                authors: allScores.reduce(
+                    (acc, entry) => {
+                        if (!acc[entry.author]) {
+                            acc[entry.author] = 0
+                        }
+                        acc[entry.author]++
+                        return acc
+                    },
+                    {} as Record<string, number>
+                )
+            }
+
+            successWithBaseResponse(res, data)
+        }
+    )
+)
 
 router.get(
     '/list',
@@ -32,6 +73,9 @@ router.get(
                 {
                     query: string
                     page: number
+                    category: string
+                    author: string
+                    starred: boolean
                 }
             >,
             res: Response<BaseResponse<ListResult<IGuitarTabsEntry[]>>>
@@ -40,10 +84,15 @@ router.get(
             const page = req.query.page || 1
             const search = decodeURIComponent(req.query.query || '')
 
+            const category =
+                req.query.category === 'all' ? '' : req.query.category
+            const author = req.query.author === 'all' ? '' : req.query.author
+            const starred = req.query.starred
+
             const entries = await pb
                 .collection('guitar_tabs_entries')
                 .getList<IGuitarTabsEntry[]>(page, 20, {
-                    filter: `name~"${search}" || author~"${search}"`,
+                    filter: `(name~"${search}" || author~"${search}") && type~"${category}" && author~"${author}" && isFavourite=${starred}`,
                     sort: 'name'
                 })
 

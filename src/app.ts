@@ -32,7 +32,7 @@ import changeLogRoutes from './routes/changeLog/index.js'
 import DNSRecordsRoutes from './routes/dnsRecords/index.js'
 import mailInboxRoutes from './routes/mailInbox/index.js'
 import walletRoutes from './routes/wallet/index.js'
-import youtubeVideoStorageRoutes from './routes/youtubeVideoStorage/index.js'
+import youtubeVideosRoutes from './routes/youtubeVideos/index.js'
 
 import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
@@ -65,7 +65,8 @@ const limiter = rateLimit({
                 '/user/auth/verify',
                 '/user/auth/login',
                 '/books-library/cover',
-                '/status'
+                '/status',
+                '/youtube-videos/video/thumbnail'
             ].some(route => req.path.startsWith(route))
         ) {
             return true
@@ -239,7 +240,7 @@ router.use('/spotify', spotifyRoutes)
 router.use('/photos', photosRoutes)
 router.use('/music', musicRoutes)
 router.use('/guitar-tabs', guitarTabsRoutes)
-router.use('/youtube-video-storage', youtubeVideoStorageRoutes)
+router.use('/youtube-videos', youtubeVideosRoutes)
 router.use('/repositories', repositoriesRoutes)
 router.use('/passwords', passwordsRoutes)
 router.use('/airports', airportsRoutes)

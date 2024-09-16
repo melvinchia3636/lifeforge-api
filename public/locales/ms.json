@@ -69,7 +69,8 @@
       "dateRange": "Julat Tarikh",
       "references": "Rujukan",
       "statuses": "Status",
-      "visibilities": "Keterlihatan"
+      "visibilities": "Keterlihatan",
+      "authors": "Pengarang"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -111,7 +112,7 @@
       "flightStatus": "Menjejaki status penerbangan Lapangan Terbang Changi dalam masa nyata",
       "airports": "Lihat semua jenis maklumat tentang lapangan terbang di seluruh dunia",
       "cfopAlgorithms": "Lihat dan latih semua algoritma yang diperlukan untuk speedcubing.",
-      "youtubeVideoStorage": "Simpan Video YouTube Kegemaran Anda"
+      "youtubeVideos": "Simpan Video YouTube Kegemaran Anda"
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
@@ -123,8 +124,8 @@
     "airports": "Lapangan Terbang",
     "tipsAndTricks": "Petua & Trik",
     "cfopAlgorithms": "Algoritma CFOP",
-    "youtubeVideoStorage": "Penyimpanan Video YouTube",
-    "loadingModule": "Sedang Memuatkan Modul..."
+    "loadingModule": "Sedang Memuatkan Modul...",
+    "youtubeVideos": "Video YouTube"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -300,7 +301,10 @@
     "regions": "Cari Kawasan...",
     "allAirports": "Cari Semua Lapangan Terbang",
     "passwords": "Kata Kunci",
-    "videos": "Carian Video..."
+    "videos": "Carian Video...",
+    "iconSets": "Cari Icon Set...",
+    "filterIconSets": "Tetapan Ikon Penapis...",
+    "icons": "Cari Ikon..."
   },
   "button": {
     "create": "Cipta",
@@ -393,7 +397,8 @@
     "newEntry": "Entri Baru",
     "addVideo": "Tambah Video",
     "watchOnYoutube": "Tonton di YouTube",
-    "pauseSession": "Jeda Sesi"
+    "pauseSession": "Jeda Sesi",
+    "search": "Cari"
   },
   "modals": {
     "header": {
@@ -455,7 +460,9 @@
       "renameTag": "Tukar Nama Tag",
       "addPhotosToAlbum": "Tambah {{amount}} Foto ke dalam Album",
       "addVideos": "Tambah Video",
-      "downloadProcess": "Proses Muat Turun"
+      "downloadProcess": "Proses Muat Turun",
+      "pickAColor": "Pilih Warna",
+      "selectAnIcon": "Pilih Ikon"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -610,10 +617,6 @@
       "allAssets": "Semua Aset",
       "allCategories": "Semua Kategori"
     },
-    "books-library": {
-      "starred": "Berbintang",
-      "allBooks": "Semua Buku"
-    },
     "photos": {
       "favourites": "Kegemaran",
       "archive": "Diarkib",
@@ -622,7 +625,17 @@
       "allPhotos": "Semua Foto",
       "viewAllAlbum": "Lihat Semua Album"
     },
-    "projects-m": {
+    "guitarTabs": {
+      "allScores": "Semua Skor",
+      "starred": "Skor Gitar Berbintang",
+      "singAlong": "Nyanyikan Bersama",
+      "fingerStyle": "Gaya Jari"
+    },
+    "booksLibrary": {
+      "starred": "Berbintang",
+      "allBooks": "Semua Buku"
+    },
+    "projectsM": {
       "allProjects": "Semua Projek",
       "starred": "Projek Berbintang"
     }
@@ -745,5 +758,8 @@
     "lockedMessage": "Jurnal Dikunci",
     "passwordRequired": "Kata laluan diperlukan untuk menyahsulit entri jurnal anda",
     "failedToUnlock": "Gagal Buka Kunci"
+  },
+  "guitarTabs": {
+    "unknownAuthor": "Pengarang Tidak Diketahui"
   }
 }

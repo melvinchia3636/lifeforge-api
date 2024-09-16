@@ -70,7 +70,8 @@
       "dateRange": "日期範圍",
       "references": "參考",
       "statuses": "狀態",
-      "visibilities": "公開狀態"
+      "visibilities": "公開狀態",
+      "authors": "作者"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -112,20 +113,19 @@
       "flightStatus": "即時追蹤樟宜機場航班狀態",
       "airports": "查看有關世界各地機場的各種信息",
       "cfopAlgorithms": "查看並訓練速拧所需的所有公式。",
-      "youtubeVideoStorage": "下載、儲存及管理您喜歡的YouTube影片"
+      "youtubeVideos": "下載、儲存及管理您喜歡的YouTube影片"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
     "accountSettings": "帳戶設定",
     "documentation": "文件",
-    "header": {},
     "airlineInformation": "航空公司資訊",
     "changiFlightStatus": "樟宜機場航班狀態",
     "airports": "機場",
     "tipsAndTricks": "技巧與竅門",
     "cfopAlgorithms": "CFOP 公式表",
-    "youtubeVideoStorage": "YouTube 影片儲存",
-    "loadingModule": "正在載入模組..."
+    "loadingModule": "正在載入模組...",
+    "youtubeVideos": "YouTube 影片"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -301,7 +301,10 @@
     "regions": "搜尋地區...",
     "allAirports": "搜尋所有機場",
     "passwords": "密碼",
-    "videos": "搜尋影片..."
+    "videos": "搜尋影片...",
+    "iconSets": "搜尋圖示集...",
+    "filterIconSets": "篩選圖示集...",
+    "icons": "搜尋圖示..."
   },
   "button": {
     "create": "創建",
@@ -394,7 +397,8 @@
     "newEntry": "新增項目",
     "addVideo": "新增影片",
     "watchOnYoutube": "在 YouTube 上觀看",
-    "pauseSession": "暫停環節"
+    "pauseSession": "暫停環節",
+    "search": "搜尋"
   },
   "modals": {
     "header": {
@@ -456,7 +460,9 @@
       "renameTag": "重新命名標籤",
       "addPhotosToAlbum": "新增{{amount}}照片张照片至相簿",
       "addVideos": "新增影片",
-      "downloadProcess": "下載流程"
+      "downloadProcess": "下載流程",
+      "pickAColor": "選擇顏色",
+      "selectAnIcon": "選擇圖示"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -611,10 +617,6 @@
       "allAssets": "所有資產",
       "allCategories": "所有類別"
     },
-    "books-library": {
-      "starred": "已加星標",
-      "allBooks": "所有書籍"
-    },
     "photos": {
       "favourites": "收藏",
       "archive": "已歸檔照片",
@@ -623,7 +625,17 @@
       "allPhotos": "所有照片",
       "viewAllAlbum": "查看所有相簿"
     },
-    "projects-m": {
+    "guitarTabs": {
+      "allScores": "所有樂譜",
+      "starred": "收藏的譜",
+      "singAlong": "彈唱",
+      "fingerStyle": "指彈"
+    },
+    "booksLibrary": {
+      "starred": "已加星標",
+      "allBooks": "所有書籍"
+    },
+    "projectsM": {
       "allProjects": "所有專案",
       "starred": "收藏的專案"
     }
@@ -746,5 +758,8 @@
     "lockedMessage": "日誌已鎖定",
     "passwordRequired": "需要密碼才能解密您的日記條目",
     "failedToUnlock": "日誌解鎖失敗"
+  },
+  "guitarTabs": {
+    "unknownAuthor": "未知作者"
   }
 }

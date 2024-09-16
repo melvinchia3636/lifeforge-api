@@ -195,6 +195,14 @@ router.patch(
                     newCurrent = newCurrent[key]
                 })
 
+                if (newCurrent[newLastKey]) {
+                    res.status(400).json({
+                        state: 'error',
+                        message: 'Key already exists'
+                    })
+                    return
+                }
+
                 newCurrent[newLastKey] = oldContent
 
                 fs.writeFileSync(

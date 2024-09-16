@@ -69,7 +69,8 @@
       "dateRange": "Date Range",
       "references": "References",
       "statuses": "Statuses",
-      "visibilities": "Visibilities"
+      "visibilities": "Visibilities",
+      "authors": "Authors"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -111,7 +112,7 @@
       "flightStatus": "Tracks Changi Airport flight statuses in real-time",
       "airports": "View all sorts of information about airports around the world",
       "cfopAlgorithms": "View and train all the algorithms required for speedcubing.",
-      "youtubeVideoStorage": "Download, store, and organize all your favourite videos from YouTube"
+      "youtubeVideos": "Download, store, and organize all your favourite videos from YouTube"
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
@@ -123,8 +124,8 @@
     "header": {},
     "tipsAndTricks": "Tips & Tricks",
     "cfopAlgorithms": "CFOP Algorithms",
-    "youtubeVideoStorage": "Youtube Video Storage",
-    "loadingModule": "Loading Module..."
+    "loadingModule": "Loading Module...",
+    "youtubeVideos": "Youtube Videos"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -300,7 +301,10 @@
     "regions": "Search Regions...",
     "allAirports": "Search All Airports...",
     "passwords": "Passwords",
-    "videos": "Search Videos..."
+    "videos": "Search Videos...",
+    "iconSets": "Search Icons Sets...",
+    "filterIconSets": "Filter Icon Sets...",
+    "icons": "Search Icons..."
   },
   "button": {
     "create": "Create",
@@ -393,7 +397,8 @@
     "newEntry": "New Entry",
     "addVideo": "Add Video",
     "watchOnYoutube": "Watch on YouTube",
-    "pauseSession": "Pause Session"
+    "pauseSession": "Pause Session",
+    "search": "Search"
   },
   "modals": {
     "header": {
@@ -455,7 +460,9 @@
       "renameTag": "Rename Tag",
       "addPhotosToAlbum": "Add {{amount}} Photos to Album",
       "addVideos": "Add Videos",
-      "downloadProcess": "Download Processes"
+      "downloadProcess": "Download Processes",
+      "pickAColor": "Pick a Color",
+      "selectAnIcon": "Select an Icon"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -610,10 +617,6 @@
       "allAssets": "All Assets",
       "allCategories": "All Categories"
     },
-    "books-library": {
-      "starred": "Starred",
-      "allBooks": "All Books"
-    },
     "photos": {
       "favourites": "Favourites",
       "archive": "Archived",
@@ -622,7 +625,17 @@
       "allPhotos": "All Photos",
       "viewAllAlbum": "View All Albums"
     },
-    "projects-m": {
+    "guitarTabs": {
+      "allScores": "All Scores",
+      "starred": "Starred Scores",
+      "singAlong": "Sing Along",
+      "fingerStyle": "Fingerstyle"
+    },
+    "booksLibrary": {
+      "starred": "Starred",
+      "allBooks": "All Books"
+    },
+    "projectsM": {
       "allProjects": "All Projects",
       "starred": "Starred Projects"
     }
@@ -746,5 +759,8 @@
     "lockedMessage": "Journal Locked",
     "passwordRequired": "A password is required to decrypt your journal entries",
     "failedToUnlock": "Journal Unlock Failed"
+  },
+  "guitarTabs": {
+    "unknownAuthor": "Unknown Author"
   }
 }
