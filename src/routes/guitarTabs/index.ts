@@ -63,7 +63,7 @@ router.get(
 )
 
 router.get(
-    '/list',
+    '/',
     asyncWrapper(
         async (
             req: Request<
@@ -284,7 +284,7 @@ router.get(
 )
 
 router.put(
-    '/update/:id',
+    '/:id',
     asyncWrapper(
         async (req: Request, res: Response<BaseResponse<IGuitarTabsEntry>>) => {
             const { pb } = req
@@ -301,6 +301,18 @@ router.put(
             successWithBaseResponse(res, updatedentries)
         }
     )
+)
+
+router.delete(
+    '/:id',
+    asyncWrapper(async (req: Request, res: Response<BaseResponse>) => {
+        const { pb } = req
+        const { id } = req.params
+
+        await pb.collection('guitar_tabs_entries').delete(id)
+
+        success(res)
+    })
 )
 
 router.get(
