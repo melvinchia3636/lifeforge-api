@@ -5,6 +5,8 @@ const NO_NEED_AUTH = [
     '/status',
     '/user/passkey',
     '/user/auth/login',
+    '/user/auth/oauth-endpoint',
+    '/user/auth/oauth-verify',
     '/spotify',
     '/code-time/user/minutes',
     '/code-time/eventLog',

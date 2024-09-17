@@ -112,7 +112,8 @@
       "flightStatus": "Tracks Changi Airport flight statuses in real-time",
       "airports": "View all sorts of information about airports around the world",
       "cfopAlgorithms": "View and train all the algorithms required for speedcubing.",
-      "youtubeVideos": "Download, store, and organize all your favourite videos from YouTube"
+      "youtubeVideos": "Download, store, and organize all your favourite videos from YouTube",
+      "apiKeys": "Manage the required API keys for all your modules"
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
@@ -125,7 +126,8 @@
     "tipsAndTricks": "Tips & Tricks",
     "cfopAlgorithms": "CFOP Algorithms",
     "loadingModule": "Loading Module...",
-    "youtubeVideos": "Youtube Videos"
+    "youtubeVideos": "Youtube Videos",
+    "apiKeys": "API Keys"
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -398,7 +400,11 @@
     "addVideo": "Add Video",
     "watchOnYoutube": "Watch on YouTube",
     "pauseSession": "Pause Session",
-    "search": "Search"
+    "search": "Search",
+    "signInWithGithub": "Sign In with GitHub",
+    "requestOtp": "Request OTP",
+    "resendOtp": "Resend OTP",
+    "verifyOtp": "Verify OTP"
   },
   "modals": {
     "header": {
@@ -597,7 +603,8 @@
     },
     "passkey": {
       "createSuccess": "Passkey created successfully"
-    }
+    },
+    "orSignInWith": "Or sign in with"
   },
   "sidebar": {
     "todoList": {
@@ -677,7 +684,19 @@
       "NASFilesReady": " Files are now ready for download. Head to your NAS."
     },
     "redirected": "Redirected",
-    "redirecting": "Redirecting..."
+    "redirecting": "Redirecting...",
+    "otp": {
+      "success": "OTP Sent! Check your email.",
+      "failed": "Failed to request OTP",
+      "required": {
+        "title": "OTP Required to Unlock",
+        "desc": "For added security, an OTP is required to unlock this module. Please click the button below to request one."
+      },
+      "verify": {
+        "success": "OTP verification successful",
+        "failed": "OTP verification failed"
+      }
+    }
   },
   "vault": {
     "lockedMessage": "Your vault is locked",

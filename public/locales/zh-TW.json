@@ -113,7 +113,8 @@
       "flightStatus": "即時追蹤樟宜機場航班狀態",
       "airports": "查看有關世界各地機場的各種信息",
       "cfopAlgorithms": "查看並訓練速拧所需的所有公式。",
-      "youtubeVideos": "下載、儲存及管理您喜歡的YouTube影片"
+      "youtubeVideos": "下載、儲存及管理您喜歡的YouTube影片",
+      "apiKeys": "管理各種模組所需的API金鑰"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
@@ -125,7 +126,8 @@
     "tipsAndTricks": "技巧與竅門",
     "cfopAlgorithms": "CFOP 公式表",
     "loadingModule": "正在載入模組...",
-    "youtubeVideos": "YouTube 影片"
+    "youtubeVideos": "YouTube 影片",
+    "apiKeys": "API 金鑰"
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -398,7 +400,11 @@
     "addVideo": "新增影片",
     "watchOnYoutube": "在 YouTube 上觀看",
     "pauseSession": "暫停環節",
-    "search": "搜尋"
+    "search": "搜尋",
+    "signInWithGithub": "使用 GitHub 登入",
+    "requestOtp": "請求 OTP",
+    "resendOtp": "重新發送 OTP",
+    "verifyOtp": "驗證 OTP"
   },
   "modals": {
     "header": {
@@ -597,7 +603,8 @@
     },
     "passkey": {
       "createSuccess": "通行密鑰創建成功"
-    }
+    },
+    "orSignInWith": "或使用以下方式登入"
   },
   "sidebar": {
     "todoList": {
@@ -676,7 +683,19 @@
       "download": "下載",
       "NASFilesReady": "檔案已就緒，請前往您的NAS下載。"
     },
-    "redirected": "已重新導向"
+    "redirected": "已重新導向",
+    "otp": {
+      "success": "OTP 已發送！請查看您的電子郵件收件匣。",
+      "failed": "取得 OTP 失敗",
+      "required": {
+        "title": "需要 OTP 解鎖",
+        "desc": "為了提高安全性，需要 OTP 來解鎖此模組。請點擊下方按鈕申請一個。"
+      },
+      "verify": {
+        "success": "OTP 驗證成功",
+        "failed": "OTP 驗證失敗"
+      }
+    }
   },
   "vault": {
     "lockedMessage": "密碼庫已鎖定",

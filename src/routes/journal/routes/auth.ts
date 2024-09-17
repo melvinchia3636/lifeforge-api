@@ -40,8 +40,14 @@ router.post(
 router.post(
     '/verify',
     asyncWrapper(async (req: Request, res: Response<boolean>) => {
-        const { id, password } = req.body
         const { pb } = req
+        const { password } = req.body
+        const id = pb.authStore.model?.id
+
+        if (!id) {
+            success(res, false)
+            return
+        }
 
         const decryptedMaster = decrypt2(password, challenge)
 
@@ -54,6 +60,46 @@ router.post(
         )
 
         success(res, isMatch)
+    })
+)
+
+router.post(
+    '/otp',
+    [body('otp').exists().notEmpty()],
+    asyncWrapper(async (req: Request, res: Response<BaseResponse<boolean>>) => {
+        if (hasError(req, res)) return
+
+        const { otp } = req.body
+        const { pb } = req
+        const id = pb.authStore.model?.id
+
+        if (!id) {
+            successWithBaseResponse(res, false)
+            return
+        }
+
+        const decryptedOTP = decrypt2(otp, challenge)
+        const storedOTP = pb.authStore.model?.otp
+
+        if (!storedOTP) {
+            successWithBaseResponse(res, false)
+            return
+        }
+
+        const [OTPKey, OTPExpire] = storedOTP.split('.')
+        const expire = new Date(OTPExpire)
+        const now = new Date()
+
+        if (now > expire || decryptedOTP !== OTPKey) {
+            successWithBaseResponse(res, false)
+            return
+        }
+
+        await pb.collection('users').update(id, {
+            otp: ''
+        })
+
+        successWithBaseResponse(res, true)
     })
 )
 

@@ -112,7 +112,8 @@
       "flightStatus": "Menjejaki status penerbangan Lapangan Terbang Changi dalam masa nyata",
       "airports": "Lihat semua jenis maklumat tentang lapangan terbang di seluruh dunia",
       "cfopAlgorithms": "Lihat dan latih semua algoritma yang diperlukan untuk speedcubing.",
-      "youtubeVideos": "Simpan Video YouTube Kegemaran Anda"
+      "youtubeVideos": "Simpan Video YouTube Kegemaran Anda",
+      "apiKeys": "Urus kunci API yang diperlukan untuk pelbagai modul"
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
@@ -125,7 +126,8 @@
     "tipsAndTricks": "Petua & Trik",
     "cfopAlgorithms": "Algoritma CFOP",
     "loadingModule": "Sedang Memuatkan Modul...",
-    "youtubeVideos": "Video YouTube"
+    "youtubeVideos": "Video YouTube",
+    "apiKeys": "Kunci API"
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -398,7 +400,11 @@
     "addVideo": "Tambah Video",
     "watchOnYoutube": "Tonton di YouTube",
     "pauseSession": "Jeda Sesi",
-    "search": "Cari"
+    "search": "Cari",
+    "signInWithGithub": "Log Masuk dengan GitHub",
+    "requestOtp": "Minta OTP",
+    "resendOtp": "Hantar Semula OTP",
+    "verifyOtp": "Sahkan OTP"
   },
   "modals": {
     "header": {
@@ -597,7 +603,8 @@
     },
     "passkey": {
       "createSuccess": "Kunci laluan berjaya dibuat"
-    }
+    },
+    "orSignInWith": "Atau log masuk dengan"
   },
   "sidebar": {
     "todoList": {
@@ -676,7 +683,19 @@
       "download": "muat turun",
       "NASFilesReady": "Fail sedia untuk dimuat turunkan. Sila pergi ke NAS anda."
     },
-    "redirected": "Dilencongkan"
+    "redirected": "Dilencongkan",
+    "otp": {
+      "success": "OTP Telah Dihantar! Semak peti masuk emel anda.",
+      "failed": "Gagal meminta OTP",
+      "required": {
+        "title": "OTP Diperlukan untuk Membuka Kunci",
+        "desc": "Untuk keselamatan tambahan, OTP diperlukan untuk membuka kunci modul ini. Sila klik butang di bawah untuk meminta satu."
+      },
+      "verify": {
+        "success": "Pengesahan OTP berjaya",
+        "failed": "Pengesahan OTP gagal"
+      }
+    }
   },
   "vault": {
     "lockedMessage": "Peti deposit kamu telah dikunci",

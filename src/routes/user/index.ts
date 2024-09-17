@@ -1,16 +1,136 @@
 import fs from 'fs'
 import express, { Request, Response } from 'express'
-import passkey from './routes/passkey.js'
 import Pocketbase from 'pocketbase'
 import { clientError, successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
 import { singleUploadMiddleware } from '../../middleware/uploadMiddleware.js'
-import { body, validationResult } from 'express-validator'
+import { body } from 'express-validator'
 import hasError from '../../utils/checkError.js'
+import { query } from 'express-validator'
+import { v4 } from 'uuid'
 
 const router = express.Router()
 
-router.use('/passkey', passkey)
+let currentCodeVerifier: string | null = null
+
+function removeSensitiveData(userData: Record<string, any>): void {
+    for (let key in userData) {
+        if (key.includes('webauthn')) {
+            delete userData[key]
+        }
+    }
+
+    userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
+    userData.hasJournalMasterPassword = Boolean(
+        userData.journalMasterPasswordHash
+    )
+    delete userData['masterPasswordHash']
+    delete userData['journalMasterPasswordHash']
+    delete userData['otp']
+}
+
+router.get(
+    '/auth/oauth-endpoint',
+    [query('provider').isString()],
+    asyncWrapper(async (req: Request, res: Response) => {
+        if (hasError(req, res)) return
+
+        const { pb } = req
+
+        const { provider } = req.query
+
+        const oauthEndpoints = await pb.collection('users').listAuthMethods()
+
+        const endpoint = oauthEndpoints.authProviders.find(
+            item => item.name === provider
+        )
+
+        if (!endpoint) {
+            clientError(res, 'Invalid provider')
+            return
+        }
+
+        currentCodeVerifier = endpoint.codeVerifier
+
+        successWithBaseResponse(res, endpoint)
+    })
+)
+
+router.post(
+    '/auth/oauth-verify',
+    [body('provider').isString(), body('code').isString()],
+    asyncWrapper(async (req: Request, res: Response) => {
+        if (hasError(req, res)) return
+
+        const { pb } = req
+        const { provider: providerName, code } = req.body
+
+        const providers = await pb.collection('users').listAuthMethods()
+
+        const provider = providers.authProviders.find(
+            item => item.name === providerName
+        )
+
+        if (!provider || !currentCodeVerifier) {
+            clientError(res, 'Invalid login attempt')
+            return
+        }
+
+        pb.collection('users')
+            .authWithOAuth2Code(
+                provider.name,
+                code,
+                currentCodeVerifier,
+                `${req.headers.origin}/auth`,
+                // pass optional user create data
+                {
+                    emailVisibility: false
+                }
+            )
+            .then(authData => {
+                if (authData) {
+                    res.json({
+                        state: 'success',
+                        token: pb.authStore.token
+                    })
+                } else {
+                    res.status(401).send({
+                        state: 'error',
+                        message: 'Invalid credentials'
+                    })
+                }
+            })
+            .catch(() => {
+                res.status(401).send({
+                    state: 'error',
+                    message: 'Invalid credentials'
+                })
+            })
+            .finally(() => {
+                currentCodeVerifier = null
+            })
+    })
+)
+
+router.get('/auth/otp', async (req: Request, res: Response) => {
+    const { pb } = req
+
+    const response = await fetch(
+        `${process.env.PB_HOST}/auth/otp/${pb.authStore.model!.id}`,
+        {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${pb.authStore.token}`
+            }
+        }
+    ).then(res => res.json())
+
+    if (response.message === 'OTP sent') {
+        successWithBaseResponse(res)
+    } else {
+        clientError(res, response.error)
+    }
+})
 
 router.post(
     '/auth/login',
@@ -38,18 +158,7 @@ router.post(
                 return
             }
 
-            for (let key in userData) {
-                if (key.includes('webauthn')) {
-                    delete userData[key]
-                }
-            }
-
-            userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
-            userData.hasJournalMasterPassword = Boolean(
-                userData.journalMasterPasswordHash
-            )
-            delete userData['masterPasswordHash']
-            delete userData['journalMasterPasswordHash']
+            removeSensitiveData(userData)
 
             res.json({
                 state: 'success',
@@ -93,18 +202,7 @@ router.post(
                 return
             }
 
-            for (let key in userData) {
-                if (key.includes('webauthn')) {
-                    delete userData[key]
-                }
-            }
-
-            userData.hasMasterPassword = Boolean(userData.masterPasswordHash)
-            userData.hasJournalMasterPassword = Boolean(
-                userData.journalMasterPasswordHash
-            )
-            delete userData['masterPasswordHash']
-            delete userData['journalMasterPasswordHash']
+            removeSensitiveData(userData)
 
             res.json({
                 state: 'success',

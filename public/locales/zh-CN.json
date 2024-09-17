@@ -113,7 +113,8 @@
       "flightStatus": "实时跟踪樟宜机场的航班状态",
       "airports": "查看世界各地机场的各种信息",
       "cfopAlgorithms": "查看并训练速解魔方所需的所有公式。",
-      "youtubeVideos": "下载、保存及管理您喜爱的YouTube视频"
+      "youtubeVideos": "下载、保存及管理您喜爱的YouTube视频",
+      "apiKeys": "管理各种模组所需要的API密钥"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
@@ -126,7 +127,8 @@
     "tipsAndTricks": "技巧与窍门",
     "cfopAlgorithms": "CFOP 公式表",
     "loadingModule": "正在加载模块...",
-    "youtubeVideos": "YouTube 视频"
+    "youtubeVideos": "YouTube 视频",
+    "apiKeys": "API 密钥"
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -399,7 +401,11 @@
     "addVideo": "添加视频",
     "watchOnYoutube": "在 YouTube 上观看",
     "pauseSession": "暂停环节",
-    "search": "搜索"
+    "search": "搜索",
+    "signInWithGithub": "使用 GitHub 登录",
+    "requestOtp": "请求 OTP",
+    "resendOtp": "重新发送 OTP",
+    "verifyOtp": "验证 OTP"
   },
   "modals": {
     "header": {
@@ -598,7 +604,8 @@
     },
     "passkey": {
       "createSuccess": "通行密钥创建成功"
-    }
+    },
+    "orSignInWith": "或使用以下方式登录"
   },
   "sidebar": {
     "todoList": {
@@ -677,7 +684,19 @@
       "NASFilesReady": "文件已就绪，请前往您的NAS下载。"
     },
     "fetchError": "从服务器获取数据失败",
-    "redirected": "已重定向"
+    "redirected": "已重定向",
+    "otp": {
+      "success": "OTP 已发送！请查看您的电子邮件收件箱。",
+      "failed": "获取 OTP 失败",
+      "required": {
+        "title": "需要 OTP 解锁",
+        "desc": "为了提高安全性，需要 OTP 来解锁此模块。请点击下方按钮申请一个。"
+      },
+      "verify": {
+        "success": "OTP 验证成功",
+        "failed": "OTP 验证失败"
+      }
+    }
   },
   "vault": {
     "lockedMessage": "密码库已锁定",
