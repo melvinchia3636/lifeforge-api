@@ -404,7 +404,9 @@
     "signInWithGithub": "使用 GitHub 登入",
     "requestOtp": "請求 OTP",
     "resendOtp": "重新發送 OTP",
-    "verifyOtp": "驗證 OTP"
+    "verifyOtp": "驗證 OTP",
+    "addApiKey": "新增金鑰",
+    "configApiKeys": "設定 API 金鑰"
   },
   "modals": {
     "header": {
@@ -468,7 +470,9 @@
       "addVideos": "新增影片",
       "downloadProcess": "下載流程",
       "pickAColor": "選擇顏色",
-      "selectAnIcon": "選擇圖示"
+      "selectAnIcon": "選擇圖示",
+      "createApiKey": "建立 API 金鑰",
+      "updateApiKey": "更新 API 金鑰"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -573,7 +577,12 @@
     "endTime": "結束時間",
     "eventCategory": "事件類別",
     "resourceType": "資源類型",
-    "playlistUrl": "播放清單 URL"
+    "playlistUrl": "播放清單 URL",
+    "keyName": "金鑰名稱",
+    "keyDescription": "金鑰描述",
+    "keyIcon": "金鑰圖示",
+    "apiKey": "API 金鑰",
+    "keyId": "金鑰識別碼"
   },
   "table": {
     "date": "日期",
@@ -695,7 +704,8 @@
         "success": "OTP 驗證成功",
         "failed": "OTP 驗證失敗"
       }
-    }
+    },
+    "unlock": "解鎖"
   },
   "vault": {
     "lockedMessage": "密碼庫已鎖定",
@@ -780,5 +790,14 @@
   },
   "guitarTabs": {
     "unknownAuthor": "未知作者"
+  },
+  "apiKeys": {
+    "lockedMessage": "API 金鑰設定模組已被鎖定",
+    "passwordRequired": "需要密碼來解密API金鑰",
+    "missing": {
+      "title": "缺失 API 金鑰",
+      "description": "缺少一個或多個 API 金鑰。請前往 API 金鑰配置模組進行設定",
+      "requiredKeysAre": "缺少必需的 API 金鑰:"
+    }
   }
 }

@@ -7,7 +7,6 @@ import asyncWrapper from '../../../utils/asyncWrapper.js'
 import { decrypt, decrypt2, encrypt } from '../../../utils/encryption.js'
 import { challenge } from '../index.js'
 import bcrypt from 'bcrypt'
-import Groq from 'groq-sdk'
 import { uploadMiddleware } from '../../../middleware/uploadMiddleware.js'
 import fs from 'fs'
 import moment from 'moment/moment.js'
@@ -17,6 +16,8 @@ import hasError from '../../../utils/checkError.js'
 import { IJournalEntry } from '../../../interfaces/journal_interfaces.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
 import { WithoutPBDefault } from '../../../interfaces/pocketbase_interfaces.js'
+import { getAPIKey } from '../../../utils/getAPIKey.js'
+import { fetchGroq } from '../../../utils/fetchGroq.js'
 
 const router = express.Router()
 
@@ -361,6 +362,12 @@ router.post(
     [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
         if (hasError(req, res)) return
+        const key = await getAPIKey('groq', req.pb)
+
+        if (!key) {
+            clientError(res, 'API key not found')
+            return
+        }
 
         const { text } = req.body
 
@@ -369,27 +376,12 @@ router.post(
 
         const rawText = decrypt2(text, decryptedMaster)
 
-        const groq = new Groq({
-            apiKey: process.env.GROQ_API_KEY
-        })
-
         const prompt = `This text is a journal entries. Please give me a suitable title for this journal, highlighting the stuff that happended that day. The title should not be longer than 10 words. Give the title in title case, which means the first letter of each word should be in uppercase, and lowercase otherwise. The response should contains ONLY the title, without any other unrelated text, especially those that are in the beginning of the response, like "Here is the..." or "The title is...".
         
         ${rawText}
         `
 
-        const response = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            model: 'llama-3.1-70b-versatile'
-        })
-
-        const title = response.choices[0]?.message?.content
-
+        const title = await fetchGroq(key, prompt)
         successWithBaseResponse(res, title)
     })
 )
@@ -399,6 +391,12 @@ router.post(
     [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
         if (hasError(req, res)) return
+        const key = await getAPIKey('groq', req.pb)
+
+        if (!key) {
+            clientError(res, 'API key not found')
+            return
+        }
 
         const { text } = req.body
 
@@ -407,27 +405,12 @@ router.post(
 
         const rawText = decrypt2(text, decryptedMaster)
 
-        const groq = new Groq({
-            apiKey: process.env.GROQ_API_KEY
-        })
-
         const prompt = `This text is a diary entries. Translate it into grammatically correct and well-punctuated English, maintaining a natural flow with proper paragraph breaks. The diary content should be all normal paragraphs WITHOUT any headings or titles. Focus solely on the diary content itself. Omit any text like "Here is the...", headings like "Diary entries", or closing remarks.
         
         ${rawText}
         `
 
-        const response = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            model: 'llama-3.1-70b-versatile'
-        })
-
-        const cleanedup = response.choices[0]?.message?.content
-
+        const cleanedup = await fetchGroq(key, prompt)
         successWithBaseResponse(res, cleanedup)
     })
 )
@@ -437,6 +420,12 @@ router.post(
     [body('text').exists().notEmpty(), body('master').exists().notEmpty()],
     asyncWrapper(async (req: Request, res: Response) => {
         if (hasError(req, res)) return
+        const key = await getAPIKey('groq', req.pb)
+
+        if (!key) {
+            clientError(res, 'API key not found')
+            return
+        }
 
         const { text } = req.body
 
@@ -445,27 +434,12 @@ router.post(
 
         const rawText = decrypt2(text, decryptedMaster)
 
-        const groq = new Groq({
-            apiKey: process.env.GROQ_API_KEY
-        })
-
         const prompt = `Below is a diary entries. Summarize the diary in first person perspective into a single paragraph, not more than three sentences and 50 words, capturing the main idea and key details. All the pronounces should be "I". The response should be just the summarized paragraph itself. Omit any greetings like "Here is the...", headings like "Diary entries", or closing remarks.
         
         ${rawText}
         `
 
-        const response = await groq.chat.completions.create({
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            ],
-            model: 'llama-3.1-70b-versatile'
-        })
-
-        const summarized = response.choices[0]?.message?.content
-
+        const summarized = fetchGroq(key, prompt)
         successWithBaseResponse(res, summarized)
     })
 )
@@ -479,6 +453,12 @@ router.post(
             res: Response<BaseResponse<IJournalEntry['mood']>>
         ) => {
             if (hasError(req, res)) return
+            const key = await getAPIKey('groq', req.pb)
+
+            if (!key) {
+                clientError(res, 'API key not found')
+                return
+            }
 
             const { text } = req.body
 
@@ -486,10 +466,6 @@ router.post(
             if (!decryptedMaster) return
 
             const rawText = decrypt2(text, decryptedMaster)
-
-            const groq = new Groq({
-                apiKey: process.env.GROQ_API_KEY
-            })
 
             const prompt = `Below is a diary entries. Use a word to describe the mood of the author, and give a suitable unicode emoji icon for the mood. The word should be in full lowercase, and do not use the word "reflective". The emoji icon should be those in the emoji keyboard of modern phone. The response should be a JSON object, with the key being "text" and "emoji". Make sure to wrap the emoji icon in double quote. Do not wrap the JSON in a markdown code environment, and make sure that the response can be parsed straightaway by javascript's JSON.parse() function.
         
@@ -501,20 +477,9 @@ router.post(
 
             while (tries < MAX_RETRY) {
                 try {
-                    const response = await groq.chat.completions.create({
-                        messages: [
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
-                        ],
-                        model: 'llama-3.1-70b-versatile'
-                    })
+                    const response = await fetchGroq(key, prompt)
 
-                    const mood: IJournalEntry['mood'] = JSON.parse(
-                        response.choices[0]?.message?.content ?? '{}'
-                    )
-
+                    const mood: IJournalEntry['mood'] = JSON.parse(response)
                     successWithBaseResponse(res, mood)
 
                     break

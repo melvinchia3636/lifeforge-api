@@ -33,6 +33,7 @@ import DNSRecordsRoutes from './routes/dnsRecords/index.js'
 import mailInboxRoutes from './routes/mailInbox/index.js'
 import walletRoutes from './routes/wallet/index.js'
 import youtubeVideosRoutes from './routes/youtubeVideos/index.js'
+import apiKeysRoutes from './routes/apiKeys/index.js'
 
 import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
@@ -225,6 +226,7 @@ router.get(
 )
 router.use('/locales', localesRoutes)
 router.use('/user', userRoutes)
+router.use('/api-keys', apiKeysRoutes)
 router.use('/projects-m', projectsMRoutes)
 // router.use('/projects-k', projectsKRoutes)
 router.use('/todo-list', todoListRoutes)

@@ -3,28 +3,35 @@ import _ from 'underscore'
 import express, { Request, Response } from 'express'
 import { successWithBaseResponse } from '../../utils/response.js'
 import asyncWrapper from '../../utils/asyncWrapper.js'
-
-if (!process.env.GMAIL_APP_PASSWORD) {
-    throw new Error('GMAIL_APP_PASSWORD not set')
-}
+import { getAPIKey } from '../../utils/getAPIKey.js'
 
 const router = express.Router()
 
-const config = {
-    imap: {
-        user: 'melvinchia623600@gmail.com',
-        password: process.env.GMAIL_APP_PASSWORD!,
-        host: 'imap.gmail.com',
-        port: 993,
-        tls: true,
-        authTimeout: 3000,
-        tlsOptions: { rejectUnauthorized: false }
-    }
-}
-
 router.get(
     '/list',
-    asyncWrapper(async (_: Request, res: Response) => {
+    asyncWrapper(async (req: Request, res: Response) => {
+        const key = await getAPIKey('gmail', req.pb)
+
+        if (!key) {
+            res.status(500).json({
+                state: 'error',
+                message: 'API key not found'
+            })
+            return
+        }
+
+        const config = {
+            imap: {
+                user: 'melvinchia623600@gmail.com',
+                password: key,
+                host: 'imap.gmail.com',
+                port: 993,
+                tls: true,
+                authTimeout: 3000,
+                tlsOptions: { rejectUnauthorized: false }
+            }
+        }
+
         imaps
             .connect(config)
             .then(async connection => {

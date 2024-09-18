@@ -11,9 +11,8 @@ import notamnDecoder from './notamdecoder.js'
 import FIRs from './data/FIRs.js'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { IFlightDataEntry } from '../../interfaces/airports_interfaces.js'
-import PocketBase from 'pocketbase'
-
-if (!process.env.GEMINI_API_KEY) throw new Error('GEMINI_API_KEY is required')
+import { fetchGroq } from '../../utils/fetchGroq.js'
+import { getAPIKey } from '../../utils/getAPIKey.js'
 
 const AIRPORT_DATA: string[][] = JSON.parse(
     fs.readFileSync('src/routes/airports/data/airports.json').toString()
@@ -560,6 +559,13 @@ router.get(
 router.get(
     '/NOTAM/:NOTAMID/summarize',
     asyncWrapper(async (req: Request, res: Response) => {
+        const key = await getAPIKey('groq', req.pb)
+
+        if (!key) {
+            clientError(res, 'API key not found')
+            return
+        }
+
         const { NOTAMID } = req.params
 
         const response = await fetch(
@@ -569,12 +575,6 @@ router.get(
         const dom = new JSDOM.JSDOM(response)
 
         const NOTAM = dom.window.document.querySelector('pre')?.innerHTML
-
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-
-        const model = genAI.getGenerativeModel({
-            model: 'gemini-1.5-flash'
-        })
 
         const prompt = `
             Please summarize the following NOTAM (Notice to Airmen) data into a concise and easy-to-understand format, including:
@@ -595,9 +595,8 @@ router.get(
 
         while (MAX_RETRY > 0) {
             try {
-                const result = await model.generateContent(prompt)
-                const final = result.response
-                const text = final.text()
+                const text = await fetchGroq(key, prompt)
+                if (!text) throw new Error('No response')
 
                 successWithBaseResponse(res, text)
                 return

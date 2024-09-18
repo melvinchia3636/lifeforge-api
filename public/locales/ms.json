@@ -404,7 +404,9 @@
     "signInWithGithub": "Log Masuk dengan GitHub",
     "requestOtp": "Minta OTP",
     "resendOtp": "Hantar Semula OTP",
-    "verifyOtp": "Sahkan OTP"
+    "verifyOtp": "Sahkan OTP",
+    "addApiKey": "Tambah Kunci",
+    "configApiKeys": "Tetapkan Kunci API"
   },
   "modals": {
     "header": {
@@ -468,7 +470,9 @@
       "addVideos": "Tambah Video",
       "downloadProcess": "Proses Muat Turun",
       "pickAColor": "Pilih Warna",
-      "selectAnIcon": "Pilih Ikon"
+      "selectAnIcon": "Pilih Ikon",
+      "createApiKey": "Buat Kunci API",
+      "updateApiKey": "Kemaskini Kunci API"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -573,7 +577,12 @@
     "endTime": "Masa Tamat",
     "eventCategory": "Kategori Acara",
     "resourceType": "Jenis Sumber",
-    "playlistUrl": "URL Senarai Main"
+    "playlistUrl": "URL Senarai Main",
+    "keyName": "Nama Kunci",
+    "keyDescription": "Huraian Kunci",
+    "keyIcon": "Ikon Kunci",
+    "apiKey": "Kunci API",
+    "keyId": "ID Kunci"
   },
   "table": {
     "date": "Tarikh",
@@ -695,7 +704,8 @@
         "success": "Pengesahan OTP berjaya",
         "failed": "Pengesahan OTP gagal"
       }
-    }
+    },
+    "unlock": "Buka kunci"
   },
   "vault": {
     "lockedMessage": "Peti deposit kamu telah dikunci",
@@ -780,5 +790,14 @@
   },
   "guitarTabs": {
     "unknownAuthor": "Pengarang Tidak Diketahui"
+  },
+  "apiKeys": {
+    "lockedMessage": "Modul Konfigurasi Kunci API ini telah dikunci",
+    "passwordRequired": "Kata laluan diperlukan untuk mendekripsi kunci API",
+    "missing": {
+      "title": "Kunci API Tidak Dijumpai",
+      "description": "Satu atau lebih kunci API tiada. Sila pergi ke modul konfigurasi kunci API untuk menyediakannya",
+      "requiredKeysAre": "Kunci API utama tidak ditemui:"
+    }
   }
 }

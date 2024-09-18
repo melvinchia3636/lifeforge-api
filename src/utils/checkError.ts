@@ -7,9 +7,8 @@ export default function hasError(req: Request, res: Response) {
     if (!result.isEmpty()) {
         clientError(
             res,
-            result
-                .array()
-                .map(i => `invalid ${i.type}: ${i.msg}`)
+            Object.values(result.mapped())
+                .map(item => `${item.path}: ${item.msg}`)
                 .join(', ')
         )
         return true

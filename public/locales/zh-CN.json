@@ -405,7 +405,9 @@
     "signInWithGithub": "使用 GitHub 登录",
     "requestOtp": "请求 OTP",
     "resendOtp": "重新发送 OTP",
-    "verifyOtp": "验证 OTP"
+    "verifyOtp": "验证 OTP",
+    "addApiKey": "添加密钥",
+    "configApiKeys": "配置 API 密钥"
   },
   "modals": {
     "header": {
@@ -469,7 +471,9 @@
       "addVideos": "添加视频",
       "downloadProcess": "下载流程",
       "pickAColor": "选择颜色",
-      "selectAnIcon": "选择图标"
+      "selectAnIcon": "选择图标",
+      "createApiKey": "创建 API 密钥",
+      "updateApiKey": "更新 API 密钥"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -574,7 +578,12 @@
     "endTime": "结束时间",
     "eventCategory": "事件类别",
     "resourceType": "资源类型",
-    "playlistUrl": "播放列表 URL"
+    "playlistUrl": "播放列表 URL",
+    "keyName": "密钥名称",
+    "keyDescription": "密钥描述",
+    "keyIcon": "密钥图标",
+    "apiKey": "API 密钥",
+    "keyId": "密钥ID"
   },
   "table": {
     "date": "日期",
@@ -696,7 +705,8 @@
         "success": "OTP 验证成功",
         "failed": "OTP 验证失败"
       }
-    }
+    },
+    "unlock": "解锁"
   },
   "vault": {
     "lockedMessage": "密码库已锁定",
@@ -781,5 +791,14 @@
   },
   "guitarTabs": {
     "unknownAuthor": "未知作者"
+  },
+  "apiKeys": {
+    "lockedMessage": "API 密钥设定模组已被锁定",
+    "passwordRequired": "需要密码来解密API密钥",
+    "missing": {
+      "title": "缺失 API 密钥",
+      "description": "缺少一个或多个 API 密钥。请前往 API 密钥配置模块进行设置",
+      "requiredKeysAre": "缺少必需的 API 密钥:"
+    }
   }
 }

@@ -12,19 +12,17 @@ import {
     ITodoListEntry,
     ITodoSubtask
 } from '../../../interfaces/todo_list_interfaces.js'
-
-if (!process.env.GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY must be set')
-}
+import { fetchGroq } from '../../../utils/fetchGroq.js'
+import { getAPIKey } from '../../../utils/getAPIKey.js'
 
 const router = express.Router()
 
 const BREAKDOWN_LEVELS = [
-    'Very Brief - High-level steps, only the main tasks',
-    'Somewhat detailed - More steps, but still broad',
-    'Detailed - Includes most steps, clear and comprehensive',
-    'Very detailed - Thorough, covers almost every step',
-    'Exhaustive - Every single step, extremely detailed'
+    'Very Brief - High-level steps, only the main tasks. Number of steps should not exceed 5',
+    'Somewhat detailed - More steps, but still broad. Number of steps should not exceed 10',
+    'Detailed - Includes most steps, clear and comprehensive. Number of steps should not exceed 20',
+    'Very detailed - Thorough, covers almost every step. Number of steps should not exceed 30',
+    'Exhaustive - Every single step, extremely detailed. Number of steps should not exceed 50'
 ]
 
 router.get(
@@ -59,21 +57,26 @@ router.post(
         async (req: Request, res: Response<BaseResponse<string[]>>) => {
             if (hasError(req, res)) return
 
+            const key = await getAPIKey('groq', req.pb)
+
+            if (!key) {
+                clientError(res, 'API key not found')
+                return
+            }
+
             const { summary, notes, level } = req.body
-
-            const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
-
-            const model = genAI.getGenerativeModel({
-                model: 'gemini-1.5-flash'
-            })
 
             const prompt = `Generate a detailed list of subtasks for completing the following task: "${summary.trim()}".${notes.trim() ? `Also, take into consideration that there is notes to the task being "${notes.trim()}".` : ''} The list should be organized in a logical sequence. The level of breakdown should be ${
                 BREAKDOWN_LEVELS[level]
-            }. The amount and the level of details of subtasks generated should correspond to the breakdown level. Ensure the output is in the form of a single-level flat JavaScript array, with each element containing only the task content, written in the same language as the given task, and without any additional details, comments, explanations, or nested subtasks or details of the subtask. Make sure not to wrap the output array in any code environment, and the output array should be plain text that can be parsed by javascript JSON.parse() function.`
+            }. Ensure the output is in the form of a single-level flat JavaScript array, with each element containing only the task content, written in the same language as the given task, and without any additional details, comments, explanations, or nested subtasks or details of the subtask. Make sure not to wrap the output array in any code environment, and the output array should be plain text that can be parsed by javascript JSON.parse() function. Keep in mind that there SHOULD NOT be a comma at the end of the last element in the array.`
 
-            const result = await model.generateContent(prompt)
-            const response = await result.response
-            const text = JSON.parse(response.text())
+            const response = await fetchGroq(key, prompt)
+            if (!response) {
+                clientError(res, 'Error fetching data')
+                return
+            }
+
+            const text = JSON.parse(response)
 
             successWithBaseResponse(res, text)
         }

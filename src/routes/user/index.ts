@@ -7,7 +7,6 @@ import { singleUploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { body } from 'express-validator'
 import hasError from '../../utils/checkError.js'
 import { query } from 'express-validator'
-import { v4 } from 'uuid'
 
 const router = express.Router()
 
@@ -24,8 +23,12 @@ function removeSensitiveData(userData: Record<string, any>): void {
     userData.hasJournalMasterPassword = Boolean(
         userData.journalMasterPasswordHash
     )
+    userData.hasAPIKeysMasterPassword = Boolean(
+        userData.APIKeysMasterPasswordHash
+    )
     delete userData['masterPasswordHash']
     delete userData['journalMasterPasswordHash']
+    delete userData['APIKeysMasterPasswordHash']
     delete userData['otp']
 }
 

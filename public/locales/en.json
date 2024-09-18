@@ -404,7 +404,9 @@
     "signInWithGithub": "Sign In with GitHub",
     "requestOtp": "Request OTP",
     "resendOtp": "Resend OTP",
-    "verifyOtp": "Verify OTP"
+    "verifyOtp": "Verify OTP",
+    "addApiKey": "New Key",
+    "configApiKeys": "Configure API Keys"
   },
   "modals": {
     "header": {
@@ -468,7 +470,9 @@
       "addVideos": "Add Videos",
       "downloadProcess": "Download Processes",
       "pickAColor": "Pick a Color",
-      "selectAnIcon": "Select an Icon"
+      "selectAnIcon": "Select an Icon",
+      "createApiKey": "Create API Key",
+      "updateApiKey": "Update API Key"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -573,7 +577,12 @@
     "endTime": "End Time",
     "eventCategory": "Event Category",
     "resourceType": "Resource Type",
-    "playlistUrl": "Playlist URL"
+    "playlistUrl": "Playlist URL",
+    "keyName": "Key Name",
+    "keyDescription": "Key Description",
+    "keyIcon": "Key Icon",
+    "apiKey": "API Key",
+    "keyId": "Key ID"
   },
   "table": {
     "date": "Date",
@@ -696,7 +705,8 @@
         "success": "OTP verification successful",
         "failed": "OTP verification failed"
       }
-    }
+    },
+    "unlock": "Unlock"
   },
   "vault": {
     "lockedMessage": "Your vault is locked",
@@ -781,5 +791,14 @@
   },
   "guitarTabs": {
     "unknownAuthor": "Unknown Author"
+  },
+  "apiKeys": {
+    "lockedMessage": "The API Keys Configuration Module is locked",
+    "passwordRequired": "Password is required to decrypt API keys",
+    "missing": {
+      "title": "Missing API Keys",
+      "description": "One or more API keys are missing. Please head to the API keys configuration module to set them up",
+      "requiredKeysAre": "Missing required API keys:"
+    }
   }
 }
