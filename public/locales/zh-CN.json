@@ -583,7 +583,10 @@
     "keyDescription": "密钥描述",
     "keyIcon": "密钥图标",
     "apiKey": "API 密钥",
-    "keyId": "密钥ID"
+    "keyId": "密钥ID",
+    "error": {
+      "fieldEmpty": "请填写所有必填项"
+    }
   },
   "table": {
     "date": "日期",

@@ -582,7 +582,10 @@
     "keyDescription": "Key Description",
     "keyIcon": "Key Icon",
     "apiKey": "API Key",
-    "keyId": "Key ID"
+    "keyId": "Key ID",
+    "error": {
+      "fieldEmpty": "Please fill in all required fields"
+    }
   },
   "table": {
     "date": "Date",

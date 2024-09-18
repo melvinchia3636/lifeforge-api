@@ -582,7 +582,10 @@
     "keyDescription": "金鑰描述",
     "keyIcon": "金鑰圖示",
     "apiKey": "API 金鑰",
-    "keyId": "金鑰識別碼"
+    "keyId": "金鑰識別碼",
+    "error": {
+      "fieldEmpty": "請填寫所有必填欄位"
+    }
   },
   "table": {
     "date": "日期",

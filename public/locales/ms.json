@@ -582,7 +582,10 @@
     "keyDescription": "Huraian Kunci",
     "keyIcon": "Ikon Kunci",
     "apiKey": "Kunci API",
-    "keyId": "ID Kunci"
+    "keyId": "ID Kunci",
+    "error": {
+      "fieldEmpty": "Sila isi semua medan yang diperlukan"
+    }
   },
   "table": {
     "date": "Tarikh",
