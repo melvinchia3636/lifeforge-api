@@ -68,7 +68,7 @@ router.patch(
     [
         body('name').isString(),
         body('icon').isString(),
-        body('starting_balance').isNumeric
+        body('starting_balance').isNumeric()
     ],
     asyncWrapper(
         async (req: Request, res: Response<BaseResponse<IWalletAsset>>) => {

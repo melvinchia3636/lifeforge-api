@@ -648,7 +648,8 @@
       "allScores": "All Scores",
       "starred": "Starred Scores",
       "singAlong": "Sing Along",
-      "fingerStyle": "Fingerstyle"
+      "fingerStyle": "Fingerstyle",
+      "uncategorized": "Uncategorized"
     },
     "booksLibrary": {
       "starred": "Starred",
@@ -759,6 +760,25 @@
         "title": "No Ledger Found",
         "description": "You haven't created any ledgers yet."
       }
+    },
+    "achievements": {
+      "title": "No achievements available",
+      "description": "You haven't added any achievements yet. Click the button below to add one."
+    },
+    "projects": {
+      "title": "No projects for now",
+      "description": "No projects available. Create a new one to get started."
+    },
+    "statuses": "No status found",
+    "visibilities": "No visibility found",
+    "technologies": "No technology found",
+    "ideaBox": {
+      "title": "No Idea Box Found",
+      "description": "No idea box available for now. Click the button below to create one."
+    },
+    "journal": {
+      "title": "No Journal Entries",
+      "description": "No journal entries yet. Start writing your first entry."
     }
   },
   "todoList": {
@@ -802,6 +822,14 @@
       "title": "Missing API Keys",
       "description": "One or more API keys are missing. Please head to the API keys configuration module to set them up",
       "requiredKeysAre": "Missing required API keys:"
+    }
+  },
+  "achievements": {
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "impossible": "Impossible"
     }
   }
 }

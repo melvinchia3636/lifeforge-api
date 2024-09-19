@@ -479,6 +479,8 @@ router.post(
                 try {
                     const response = await fetchGroq(key, prompt)
 
+                    if (response === null) throw new Error('null')
+
                     const mood: IJournalEntry['mood'] = JSON.parse(response)
                     successWithBaseResponse(res, mood)
 

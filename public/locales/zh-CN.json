@@ -649,7 +649,8 @@
       "allScores": "所有乐谱",
       "starred": "收藏的谱",
       "singAlong": "弹唱",
-      "fingerStyle": "指弹"
+      "fingerStyle": "指弹",
+      "uncategorized": "未分类"
     },
     "booksLibrary": {
       "starred": "已加星标",
@@ -759,6 +760,25 @@
         "title": "没有账本",
         "description": "您还没有创建任何账本。"
       }
+    },
+    "achievements": {
+      "title": "暂无成就",
+      "description": "您还没有添加任何成就。请点击下方按钮添加。"
+    },
+    "projects": {
+      "title": "目前没有项目",
+      "description": "尚无项目可用。创建一个新项目来开始。"
+    },
+    "statuses": "没有找到状态",
+    "visibilities": "没有找到可见性",
+    "technologies": "没有找到技术",
+    "ideaBox": {
+      "title": "未找到想法盒",
+      "description": "暂时没有想法盒子。点击下面的按钮创建一个。"
+    },
+    "journal": {
+      "title": "暂无日志记录",
+      "description": "暂未有日记条目。开始撰写第一篇日记吧。"
     }
   },
   "todoList": {
@@ -802,6 +822,14 @@
       "title": "缺失 API 密钥",
       "description": "缺少一个或多个 API 密钥。请前往 API 密钥配置模块进行设置",
       "requiredKeysAre": "缺少必需的 API 密钥:"
+    }
+  },
+  "achievements": {
+    "difficulties": {
+      "easy": "简单",
+      "medium": "中等",
+      "hard": "困难",
+      "impossible": "极限"
     }
   }
 }

@@ -17,6 +17,7 @@ import {
 } from '../../interfaces/guitar_tabs_interfaces.js'
 import { ListResult } from 'pocketbase'
 import moment from 'moment'
+import { body } from 'express-validator'
 
 const router = express.Router()
 
@@ -40,11 +41,16 @@ router.get(
             const data: IGuitarTabsSidebarData = {
                 total: allScores.length,
                 favourites: allScores.filter(entry => entry.isFavourite).length,
-                fingerstyle: allScores.filter(
-                    entry => entry.type === 'fingerstyle'
-                ).length,
-                singalong: allScores.filter(entry => entry.type === 'singalong')
-                    .length,
+                categories: {
+                    fingerstyle: allScores.filter(
+                        entry => entry.type === 'fingerstyle'
+                    ).length,
+                    singalong: allScores.filter(
+                        entry => entry.type === 'singalong'
+                    ).length,
+                    uncategorized: allScores.filter(entry => entry.type === '')
+                        .length
+                },
                 authors: allScores.reduce(
                     (acc, entry) => {
                         if (!acc[entry.author]) {
@@ -92,7 +98,11 @@ router.get(
             const entries = await pb
                 .collection('guitar_tabs_entries')
                 .getList<IGuitarTabsEntry[]>(page, 20, {
-                    filter: `(name~"${search}" || author~"${search}") && type~"${category}" && author~"${author}" && isFavourite=${starred}`,
+                    filter: `(name~"${search}" || author~"${search}") && ${
+                        category === 'uncategorized'
+                            ? "type=''"
+                            : `type~"${category}"`
+                    } && author~"${author}" && isFavourite=${starred}`,
                     sort: 'name'
                 })
 
@@ -285,17 +295,19 @@ router.get(
 
 router.put(
     '/:id',
+    [body('name').isString(), body('author').isString(), body('type').exists()],
     asyncWrapper(
         async (req: Request, res: Response<BaseResponse<IGuitarTabsEntry>>) => {
             const { pb } = req
             const { id } = req.params
-            const { name, author } = req.body
+            const { name, author, type } = req.body
 
             const updatedentries: IGuitarTabsEntry = await pb
                 .collection('guitar_tabs_entries')
                 .update(id, {
                     name,
-                    author
+                    author,
+                    type
                 })
 
             successWithBaseResponse(res, updatedentries)

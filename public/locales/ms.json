@@ -648,7 +648,8 @@
       "allScores": "Semua Skor",
       "starred": "Skor Gitar Berbintang",
       "singAlong": "Nyanyikan Bersama",
-      "fingerStyle": "Gaya Jari"
+      "fingerStyle": "Gaya Jari",
+      "uncategorized": "Tanpa Kategori"
     },
     "booksLibrary": {
       "starred": "Berbintang",
@@ -758,6 +759,25 @@
         "title": "Tiada Buku Laman Ditemui",
         "description": "Anda belum mencipta mana-mana buku besar."
       }
+    },
+    "achievements": {
+      "title": "Tiada pencapaian tersedia",
+      "description": "Anda belum menambah apa-apa kejayaan lagi. Klik butang di bawah untuk menambah satu."
+    },
+    "projects": {
+      "title": "Tiada projek buat masa ini",
+      "description": "Tiada projek yang tersedia. Buat yang baharu untuk memulakan."
+    },
+    "statuses": "Tiada status ditemui",
+    "visibilities": "Tiada VIS yang dikesan",
+    "technologies": "Tiada teknologi ditemui",
+    "ideaBox": {
+      "title": "Tiada Kotak Idea Dijumpai",
+      "description": "Tiada kotak idea untuk sementara waktu. Klik butang di bawah untuk membuat satu."
+    },
+    "journal": {
+      "title": "Tiada Catatan Jurnal",
+      "description": "Tiada catatan jurnal lagi. Mulakan tulis catatan jurnal pertama anda."
     }
   },
   "todoList": {
@@ -801,6 +821,14 @@
       "title": "Kunci API Tidak Dijumpai",
       "description": "Satu atau lebih kunci API tiada. Sila pergi ke modul konfigurasi kunci API untuk menyediakannya",
       "requiredKeysAre": "Kunci API utama tidak ditemui:"
+    }
+  },
+  "achievements": {
+    "difficulties": {
+      "easy": "Mudah",
+      "medium": "Sederhana",
+      "hard": "Keras",
+      "impossible": "Mustahil"
     }
   }
 }

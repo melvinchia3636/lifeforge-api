@@ -8,6 +8,7 @@ export default function hasError(req: Request, res: Response) {
         clientError(
             res,
             Object.values(result.mapped())
+                // @ts-expect-error
                 .map(item => `${item.path}: ${item.msg}`)
                 .join(', ')
         )
