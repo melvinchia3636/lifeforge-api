@@ -7,6 +7,7 @@ import { singleUploadMiddleware } from '../../middleware/uploadMiddleware.js'
 import { body } from 'express-validator'
 import hasError from '../../utils/checkError.js'
 import { query } from 'express-validator'
+import moment from 'moment'
 
 const router = express.Router()
 
@@ -320,7 +321,8 @@ router.patch(
     [
         body('data.username').optional().isAlphanumeric(),
         body('data.email').optional().isEmail(),
-        body('data.name').optional().isString()
+        body('data.name').optional().isString(),
+        body('data.dateOfBirth').optional().isString()
     ],
     asyncWrapper(async (req: Request, res: Response) => {
         if (hasError(req, res)) return
@@ -336,10 +338,13 @@ router.patch(
         const newData: {
             username?: string
             name?: string
+            dateOfBirth?: string
         } = {}
 
         if (data.username) newData.username = data.username
         if (data.name) newData.name = data.name
+        if (data.dateOfBirth)
+            newData.dateOfBirth = `${moment(data.dateOfBirth).add(1, 'day').format('YYYY-MM-DD')}T00:00:00.000Z`
 
         await pb.collection('users').update(id, newData)
 

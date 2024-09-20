@@ -38,7 +38,9 @@
       "dashboard": "儀表板",
       "transactions": "交易",
       "assets": "資產",
-      "ledgers": "帳簿"
+      "ledgers": "帳簿",
+      "flightStatus": "航班狀態",
+      "airlineInformation": "航空公司資訊"
     },
     "title": {
       "productivity": "生產力",
@@ -71,7 +73,8 @@
       "references": "參考",
       "statuses": "狀態",
       "visibilities": "公開狀態",
-      "authors": "作者"
+      "authors": "作者",
+      "information": "資訊"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -114,7 +117,8 @@
       "airports": "查看有關世界各地機場的各種信息",
       "cfopAlgorithms": "查看並訓練速拧所需的所有公式。",
       "youtubeVideos": "下載、儲存及管理您喜歡的YouTube影片",
-      "apiKeys": "管理各種模組所需的API金鑰"
+      "apiKeys": "管理各種模組所需的API金鑰",
+      "parcelTracking": "追蹤您在線上訂購的所有商品的交付狀態。"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他譜",
@@ -127,7 +131,11 @@
     "cfopAlgorithms": "CFOP 公式表",
     "loadingModule": "正在載入模組...",
     "youtubeVideos": "YouTube 影片",
-    "apiKeys": "API 金鑰"
+    "apiKeys": "API 金鑰",
+    "parcelTracking": "追蹤包裹",
+    "changiAirlineInformation": "樟宜機場航空公司資訊",
+    "changiAirport": "樟宜機場",
+    "subsection": {}
   },
   "header": {
     "searchBarPlaceholder": "快速導航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -140,7 +148,8 @@
         "system": "系統",
         "light": "亮色",
         "dark": "暗色"
-      }
+      },
+      "customBgColor": "自訂背景顏色"
     },
     "themeColorSelector": {
       "title": "主題顏色",
@@ -163,7 +172,8 @@
         "orange": "橙色",
         "deepOrange": "深橙色",
         "brown": "棕色",
-        "grey": "灰色"
+        "grey": "灰色",
+        "custom": "自訂顏色"
       }
     },
     "languageSelector": {
@@ -472,7 +482,8 @@
       "pickAColor": "選擇顏色",
       "selectAnIcon": "選擇圖示",
       "createApiKey": "建立 API 金鑰",
-      "updateApiKey": "更新 API 金鑰"
+      "updateApiKey": "更新 API 金鑰",
+      "updateDateOfBirth": "更新生日"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -585,7 +596,10 @@
     "keyId": "金鑰識別碼",
     "error": {
       "fieldEmpty": "請填寫所有必填欄位"
-    }
+    },
+    "customThemeColor": "自訂主題顏色",
+    "colorHex": "顏色（十六進制代碼）",
+    "dateOfBirth": "出生日期"
   },
   "table": {
     "date": "日期",
@@ -796,15 +810,18 @@
       "username": "使用者名稱",
       "displayName": "顯示名稱",
       "email": "電子郵件地址",
-      "password": "密碼"
+      "password": "密碼",
+      "dateOfBirth": "出生日期"
     },
     "desc": {
       "profilePicture": "上傳頭像以個人化您的帳戶。",
       "username": "在平台上識別您身分的名稱。",
       "displayName": "顯示給其他使用者的名稱。",
       "email": "您用於登入帳戶的電子郵件地址。",
-      "password": "設定強密碼來保護您的帳戶。"
-    }
+      "password": "設定強密碼來保護您的帳戶。",
+      "dateOfBirth": "設定您的生日，我們將為您帶來一份小驚喜！"
+    },
+    "empty": "尚未設定"
   },
   "journal": {
     "lockedMessage": "日誌已鎖定",

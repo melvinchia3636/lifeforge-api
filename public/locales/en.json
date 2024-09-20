@@ -38,7 +38,9 @@
       "dashboard": "Dashboard",
       "transactions": "Transactions",
       "assets": "Assets",
-      "ledgers": "Ledgers"
+      "ledgers": "Ledgers",
+      "flightStatus": "Flight Status",
+      "airlineInformation": "Airline Information"
     },
     "title": {
       "productivity": "Productivity",
@@ -70,7 +72,8 @@
       "references": "References",
       "statuses": "Statuses",
       "visibilities": "Visibilities",
-      "authors": "Authors"
+      "authors": "Authors",
+      "information": "Information"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -113,7 +116,8 @@
       "airports": "View all sorts of information about airports around the world",
       "cfopAlgorithms": "View and train all the algorithms required for speedcubing.",
       "youtubeVideos": "Download, store, and organize all your favourite videos from YouTube",
-      "apiKeys": "Manage the required API keys for all your modules"
+      "apiKeys": "Manage the required API keys for all your modules",
+      "parcelTracking": "Track the delivery status of all the goods that you've ordered online."
     },
     "localizationManager": "Localization Manager",
     "guitarTabs": "Guitar Tabs",
@@ -127,7 +131,11 @@
     "cfopAlgorithms": "CFOP Algorithms",
     "loadingModule": "Loading Module...",
     "youtubeVideos": "Youtube Videos",
-    "apiKeys": "API Keys"
+    "apiKeys": "API Keys",
+    "parcelTracking": "Parcel Tracking",
+    "changiAirlineInformation": "Changi Airport Airline Information",
+    "changiAirport": "Changi Airport",
+    "subsection": {}
   },
   "header": {
     "searchBarPlaceholder": "Quick navigate & search ... (Press Ctrl or ⌘ + / to focus)"
@@ -140,7 +148,8 @@
         "system": "System",
         "light": "Light",
         "dark": "Dark"
-      }
+      },
+      "customBgColor": "Custom Background Color"
     },
     "themeColorSelector": {
       "title": "Theme Color",
@@ -163,7 +172,8 @@
         "orange": "Orange",
         "deepOrange": "Deep Orange",
         "brown": "Brown",
-        "grey": "Grey"
+        "grey": "Grey",
+        "custom": "Custom Color"
       }
     },
     "languageSelector": {
@@ -472,7 +482,8 @@
       "pickAColor": "Pick a Color",
       "selectAnIcon": "Select an Icon",
       "createApiKey": "Create API Key",
-      "updateApiKey": "Update API Key"
+      "updateApiKey": "Update API Key",
+      "updateDateOfBirth": "Update Date of Birth"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -585,7 +596,10 @@
     "keyId": "Key ID",
     "error": {
       "fieldEmpty": "Please fill in all required fields"
-    }
+    },
+    "customThemeColor": "Custom Theme Color",
+    "colorHex": "Color (Hex Code)",
+    "dateOfBirth": "Date of Birth"
   },
   "table": {
     "date": "Date",
@@ -797,15 +811,18 @@
       "username": "Username",
       "displayName": "Display Name",
       "email": "Email Address",
-      "password": "Password"
+      "password": "Password",
+      "dateOfBirth": "Birthdate"
     },
     "desc": {
       "profilePicture": " Upload a profile picture to personalize your account.",
       "username": "The name that identifies you on the platform.",
       "displayName": "The name that is displayed to other users.",
       "email": "The email address you use to sign in to your account.",
-      "password": "Set a strong password to protect your account."
-    }
+      "password": "Set a strong password to protect your account.",
+      "dateOfBirth": "Set your birthdate and we will give you a surprise!"
+    },
+    "empty": "Not set"
   },
   "journal": {
     "lockedMessage": "Journal Locked",

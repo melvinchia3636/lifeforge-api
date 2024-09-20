@@ -38,7 +38,9 @@
       "dashboard": "Papan Pemuka",
       "transactions": "Transaksi",
       "assets": "Aset",
-      "ledgers": "Lejar"
+      "ledgers": "Lejar",
+      "flightStatus": "Status Penerbangan",
+      "airlineInformation": "Maklumat Penerbangan"
     },
     "title": {
       "productivity": "Produktiviti",
@@ -70,7 +72,8 @@
       "references": "Rujukan",
       "statuses": "Status",
       "visibilities": "Keterlihatan",
-      "authors": "Pengarang"
+      "authors": "Pengarang",
+      "information": "Maklumat"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -113,7 +116,8 @@
       "airports": "Lihat semua jenis maklumat tentang lapangan terbang di seluruh dunia",
       "cfopAlgorithms": "Lihat dan latih semua algoritma yang diperlukan untuk speedcubing.",
       "youtubeVideos": "Simpan Video YouTube Kegemaran Anda",
-      "apiKeys": "Urus kunci API yang diperlukan untuk pelbagai modul"
+      "apiKeys": "Urus kunci API yang diperlukan untuk pelbagai modul",
+      "parcelTracking": "Jejaki status penghantaran semua barangan yang anda pesan dalam talian."
     },
     "localizationManager": "Pengurus Penyetempatan",
     "guitarTabs": "Tab Gitar",
@@ -127,7 +131,11 @@
     "cfopAlgorithms": "Algoritma CFOP",
     "loadingModule": "Sedang Memuatkan Modul...",
     "youtubeVideos": "Video YouTube",
-    "apiKeys": "Kunci API"
+    "apiKeys": "Kunci API",
+    "parcelTracking": "Lacak Penghantaran",
+    "changiAirlineInformation": "Maklumat Syarikat Penerbangan di Lapangan Terbang Changi",
+    "changiAirport": "Lapangan Terbang Changi",
+    "subsection": {}
   },
   "header": {
     "searchBarPlaceholder": "Navigasi cepat & carian ... (Tekan Ctrl atau ⌘ + / untuk fokus)"
@@ -140,7 +148,8 @@
         "system": "Sistem",
         "light": "Terang",
         "dark": "Gelap"
-      }
+      },
+      "customBgColor": "Warna Latar Belakang Tersuai"
     },
     "themeColorSelector": {
       "title": "Warna Tema",
@@ -163,7 +172,8 @@
         "orange": "Oren",
         "deepOrange": "Oren Gelap",
         "brown": "Coklat",
-        "grey": "Kelabu"
+        "grey": "Kelabu",
+        "custom": "Warna Kastam"
       }
     },
     "languageSelector": {
@@ -472,7 +482,8 @@
       "pickAColor": "Pilih Warna",
       "selectAnIcon": "Pilih Ikon",
       "createApiKey": "Buat Kunci API",
-      "updateApiKey": "Kemaskini Kunci API"
+      "updateApiKey": "Kemaskini Kunci API",
+      "updateDateOfBirth": "Kemaskini Tarikh Lahir"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -585,7 +596,10 @@
     "keyId": "ID Kunci",
     "error": {
       "fieldEmpty": "Sila isi semua medan yang diperlukan"
-    }
+    },
+    "customThemeColor": "Warna Tema Khas",
+    "colorHex": "Warna (Kod Hex)",
+    "dateOfBirth": "Tarikh Lahir"
   },
   "table": {
     "date": "Tarikh",
@@ -796,15 +810,18 @@
       "username": "Nama Pengguna",
       "displayName": "Nama Paparan",
       "email": "Alamat Emel",
-      "password": "Kata Laluan"
+      "password": "Kata Laluan",
+      "dateOfBirth": "Tarikh Lahir"
     },
     "desc": {
       "profilePicture": "Muat naik gambar profil untuk memperibadikan akaun anda.",
       "username": "Nama yang mengenal pasti anda pada platform.",
       "displayName": "Nama yang dipaparkan kepada pengguna lain.",
       "email": "Alamat e-mel yang anda gunakan untuk log masuk ke akaun anda.",
-      "password": "Tetapkan kata laluan yang kukuh untuk melindungi akaun anda."
-    }
+      "password": "Tetapkan kata laluan yang kukuh untuk melindungi akaun anda.",
+      "dateOfBirth": "Tetapkan tarikh lahir anda dan dapatkan kejutan!"
+    },
+    "empty": "Tidak ditetapkan"
   },
   "journal": {
     "lockedMessage": "Jurnal Dikunci",

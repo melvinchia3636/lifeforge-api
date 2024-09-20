@@ -38,7 +38,9 @@
       "dashboard": "仪表板",
       "transactions": "交易",
       "assets": "资产",
-      "ledgers": "账簿"
+      "ledgers": "账簿",
+      "flightStatus": "航班状态",
+      "airlineInformation": "航空公司信息"
     },
     "title": {
       "productivity": "生产力",
@@ -71,7 +73,8 @@
       "references": "参考",
       "statuses": "状态",
       "visibilities": " 公开状态",
-      "authors": "作者"
+      "authors": "作者",
+      "information": "信息"
     },
     "descriptions": {
       "dashboard": "您的任务控制中心，妙不可言！",
@@ -114,7 +117,8 @@
       "airports": "查看世界各地机场的各种信息",
       "cfopAlgorithms": "查看并训练速解魔方所需的所有公式。",
       "youtubeVideos": "下载、保存及管理您喜爱的YouTube视频",
-      "apiKeys": "管理各种模组所需要的API密钥"
+      "apiKeys": "管理各种模组所需要的API密钥",
+      "parcelTracking": "跟踪您在线订购的所有商品的运送状态。"
     },
     "localizationManager": "本地化管理器",
     "guitarTabs": "吉他谱",
@@ -128,7 +132,11 @@
     "cfopAlgorithms": "CFOP 公式表",
     "loadingModule": "正在加载模块...",
     "youtubeVideos": "YouTube 视频",
-    "apiKeys": "API 密钥"
+    "apiKeys": "API 密钥",
+    "parcelTracking": "追踪包裹",
+    "changiAirlineInformation": "樟宜机场航线信息",
+    "changiAirport": "樟宜机场",
+    "subsection": {}
   },
   "header": {
     "searchBarPlaceholder": "快速导航和搜索...（按 Ctrl 或 ⌘ + / 聚焦）"
@@ -141,7 +149,8 @@
         "system": "系统",
         "light": "亮色",
         "dark": "暗色"
-      }
+      },
+      "customBgColor": "自定义背景颜色"
     },
     "themeColorSelector": {
       "title": "主题颜色",
@@ -164,7 +173,8 @@
         "orange": "橙色",
         "deepOrange": "深橙色",
         "brown": "棕色",
-        "grey": "灰色"
+        "grey": "灰色",
+        "custom": "自定义颜色"
       }
     },
     "languageSelector": {
@@ -473,7 +483,8 @@
       "pickAColor": "选择颜色",
       "selectAnIcon": "选择图标",
       "createApiKey": "创建 API 密钥",
-      "updateApiKey": "更新 API 密钥"
+      "updateApiKey": "更新 API 密钥",
+      "updateDateOfBirth": "更新出生日期"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -586,7 +597,10 @@
     "keyId": "密钥ID",
     "error": {
       "fieldEmpty": "请填写所有必填项"
-    }
+    },
+    "customThemeColor": "自定义主题颜色",
+    "colorHex": "颜色（十六进制代码）",
+    "dateOfBirth": "出生日期"
   },
   "table": {
     "date": "日期",
@@ -797,15 +811,18 @@
       "username": "用户名",
       "displayName": "显示名称",
       "email": "邮箱地址",
-      "password": "密码"
+      "password": "密码",
+      "dateOfBirth": "出生日期"
     },
     "desc": {
       "profilePicture": "上传头像来个性化您的帐户。",
       "username": "在平台上识别您的名称。",
       "displayName": "向其他用户显示的名称。",
       "email": "您用于登录帐户的电子邮件地址。",
-      "password": "设置强密码来保护您的帐户。"
-    }
+      "password": "设置强密码来保护您的帐户。",
+      "dateOfBirth": "设置您的生日，我们将为您带来一份小惊喜！"
+    },
+    "empty": "未设置"
   },
   "journal": {
     "lockedMessage": "日志已锁定",
