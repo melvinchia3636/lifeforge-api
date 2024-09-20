@@ -416,7 +416,8 @@
     "resendOtp": "Resend OTP",
     "verifyOtp": "Verify OTP",
     "addApiKey": "New Key",
-    "configApiKeys": "Configure API Keys"
+    "configApiKeys": "Configure API Keys",
+    "morandiColorPalette": "Morandi Color Palette"
   },
   "modals": {
     "header": {
@@ -483,7 +484,8 @@
       "selectAnIcon": "Select an Icon",
       "createApiKey": "Create API Key",
       "updateApiKey": "Update API Key",
-      "updateDateOfBirth": "Update Date of Birth"
+      "updateDateOfBirth": "Update Date of Birth",
+      "morandiColorPalette": "Morandi Color Palette"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -793,6 +795,12 @@
     "journal": {
       "title": "No Journal Entries",
       "description": "No journal entries yet. Start writing your first entry."
+    },
+    "todoList": {
+      "todaysTask": {
+        "title": "No tasks for today",
+        "desc": "Today's tasks are empty. Add a new task to get started!"
+      }
     }
   },
   "todoList": {

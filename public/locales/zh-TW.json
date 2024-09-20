@@ -416,7 +416,8 @@
     "resendOtp": "重新發送 OTP",
     "verifyOtp": "驗證 OTP",
     "addApiKey": "新增金鑰",
-    "configApiKeys": "設定 API 金鑰"
+    "configApiKeys": "設定 API 金鑰",
+    "morandiColorPalette": "莫蘭迪色板"
   },
   "modals": {
     "header": {
@@ -483,7 +484,8 @@
       "selectAnIcon": "選擇圖示",
       "createApiKey": "建立 API 金鑰",
       "updateApiKey": "更新 API 金鑰",
-      "updateDateOfBirth": "更新生日"
+      "updateDateOfBirth": "更新生日",
+      "morandiColorPalette": "莫蘭迪色版"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -792,6 +794,12 @@
     "journal": {
       "title": "目前沒有日誌記錄",
       "description": "尚無日誌條目，來寫第一篇日誌吧。"
+    },
+    "todoList": {
+      "todaysTask": {
+        "title": "今天沒有任務",
+        "desc": "今日任務列表空白，新增任務即可開始！"
+      }
     }
   },
   "todoList": {

@@ -416,7 +416,8 @@
     "resendOtp": "Hantar Semula OTP",
     "verifyOtp": "Sahkan OTP",
     "addApiKey": "Tambah Kunci",
-    "configApiKeys": "Tetapkan Kunci API"
+    "configApiKeys": "Tetapkan Kunci API",
+    "morandiColorPalette": "Palet Warna Morandi"
   },
   "modals": {
     "header": {
@@ -483,7 +484,8 @@
       "selectAnIcon": "Pilih Ikon",
       "createApiKey": "Buat Kunci API",
       "updateApiKey": "Kemaskini Kunci API",
-      "updateDateOfBirth": "Kemaskini Tarikh Lahir"
+      "updateDateOfBirth": "Kemaskini Tarikh Lahir",
+      "morandiColorPalette": "Palet Warna Morandi"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -792,6 +794,12 @@
     "journal": {
       "title": "Tiada Catatan Jurnal",
       "description": "Tiada catatan jurnal lagi. Mulakan tulis catatan jurnal pertama anda."
+    },
+    "todoList": {
+      "todaysTask": {
+        "title": "Tiada tugasan untuk hari ini",
+        "desc": "Tugas hari ini kosong. Tambah tugas baru untuk memulakan!"
+      }
     }
   },
   "todoList": {
