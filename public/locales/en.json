@@ -601,7 +601,9 @@
     },
     "customThemeColor": "Custom Theme Color",
     "colorHex": "Color (Hex Code)",
-    "dateOfBirth": "Date of Birth"
+    "dateOfBirth": "Date of Birth",
+    "scoreType": "Score Type",
+    "channelUrl": "Channel URL"
   },
   "table": {
     "date": "Date",

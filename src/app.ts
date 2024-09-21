@@ -6,34 +6,7 @@ import all_routes from 'express-list-endpoints'
 import { exec } from 'child_process'
 import { rateLimit } from 'express-rate-limit'
 import Pocketbase from 'pocketbase'
-
-import localesRoutes from './routes/locales/index.js'
-import userRoutes from './routes/user/index.js'
-import projectsMRoutes from './routes/projectsM/index.js'
-// import projectsKRoutes from './routes/projects-k/index.js'
-import todoListRoutes from './routes/todoList/index.js'
-import calendarRoutes from './routes/calendar/index.js'
-import ideaBoxRoutes from './routes/ideaBox/index.js'
-import codeTimeRoutes from './routes/codeTime/index.js'
-import notesRoutes from './routes/notes/index.js'
-import flashcardsRoutes from './routes/flashcards/index.js'
-import achievementsRoutes from './routes/achievements/index.js'
-import spotifyRoutes from './routes/spotify/index.js'
-import photosRoutes from './routes/photos/index.js'
-import musicRoutes from './routes/music/index.js'
-import guitarTabsRoutes from './routes/guitarTabs/index.js'
-import repositoriesRoutes from './routes/repositories/index.js'
-import passwordsRoutes from './routes/passwords/index.js'
-import airportsRoutes from './routes/airports/index.js'
-import changiRoutes from './routes/changi/index.js'
-import journalRoutes from './routes/journal/index.js'
-import serverRoutes from './routes/server/index.js'
-import changeLogRoutes from './routes/changeLog/index.js'
-import DNSRecordsRoutes from './routes/dnsRecords/index.js'
-import mailInboxRoutes from './routes/mailInbox/index.js'
-import walletRoutes from './routes/wallet/index.js'
-import youtubeVideosRoutes from './routes/youtubeVideos/index.js'
-import apiKeysRoutes from './routes/apiKeys/index.js'
+import { createLazyRouter } from 'express-lazy-router'
 
 import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
@@ -44,7 +17,40 @@ import asyncWrapper from './utils/asyncWrapper.js'
 import { query } from 'express-validator'
 import hasError from './utils/checkError.js'
 
-// const __dirname = dirname(fileURLToPath(import.meta.url));
+const lazyLoad = createLazyRouter()
+
+const localesRoutes = lazyLoad(() => import('./routes/locales/index.js'))
+const userRoutes = lazyLoad(() => import('./routes/user/index.js'))
+const projectsMRoutes = lazyLoad(() => import('./routes/projectsM/index.js'))
+const todoListRoutes = lazyLoad(() => import('./routes/todoList/index.js'))
+const calendarRoutes = lazyLoad(() => import('./routes/calendar/index.js'))
+const ideaBoxRoutes = lazyLoad(() => import('./routes/ideaBox/index.js'))
+const codeTimeRoutes = lazyLoad(() => import('./routes/codeTime/index.js'))
+const notesRoutes = lazyLoad(() => import('./routes/notes/index.js'))
+const flashcardsRoutes = lazyLoad(() => import('./routes/flashcards/index.js'))
+const achievementsRoutes = lazyLoad(
+    () => import('./routes/achievements/index.js')
+)
+const spotifyRoutes = lazyLoad(() => import('./routes/spotify/index.js'))
+const photosRoutes = lazyLoad(() => import('./routes/photos/index.js'))
+const musicRoutes = lazyLoad(() => import('./routes/music/index.js'))
+const guitarTabsRoutes = lazyLoad(() => import('./routes/guitarTabs/index.js'))
+const repositoriesRoutes = lazyLoad(
+    () => import('./routes/repositories/index.js')
+)
+const passwordsRoutes = lazyLoad(() => import('./routes/passwords/index.js'))
+const airportsRoutes = lazyLoad(() => import('./routes/airports/index.js'))
+const changiRoutes = lazyLoad(() => import('./routes/changi/index.js'))
+const journalRoutes = lazyLoad(() => import('./routes/journal/index.js'))
+const serverRoutes = lazyLoad(() => import('./routes/server/index.js'))
+const changeLogRoutes = lazyLoad(() => import('./routes/changeLog/index.js'))
+const DNSRecordsRoutes = lazyLoad(() => import('./routes/dnsRecords/index.js'))
+const mailInboxRoutes = lazyLoad(() => import('./routes/mailInbox/index.js'))
+const walletRoutes = lazyLoad(() => import('./routes/wallet/index.js'))
+const youtubeVideosRoutes = lazyLoad(
+    () => import('./routes/youtubeVideos/index.js')
+)
+const apiKeysRoutes = lazyLoad(() => import('./routes/apiKeys/index.js'))
 
 const app = express()
 app.disable('x-powered-by')

@@ -602,7 +602,9 @@
     },
     "customThemeColor": "自定义主题颜色",
     "colorHex": "颜色（十六进制代码）",
-    "dateOfBirth": "出生日期"
+    "dateOfBirth": "出生日期",
+    "scoreType": "乐谱类型",
+    "channelUrl": "频道网址"
   },
   "table": {
     "date": "日期",

@@ -59,14 +59,19 @@ router.get(
                                     part.which.startsWith('HEADER')
                                 )
 
-                                return Object.fromEntries(
-                                    Object.entries(header?.body).map(
-                                        ([key, value]) => {
-                                            // @ts-ignore
-                                            return [key, value[0]]
-                                        }
+                                return {
+                                    ...Object.fromEntries(
+                                        Object.entries(header?.body).map(
+                                            ([key, value]) => {
+                                                // @ts-ignore
+                                                return [key, value[0]]
+                                            }
+                                        )
+                                    ),
+                                    seen: message.attributes.flags.includes(
+                                        '\\Seen'
                                     )
-                                )
+                                }
                             }
                         )
 

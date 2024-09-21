@@ -601,7 +601,9 @@
     },
     "customThemeColor": "自訂主題顏色",
     "colorHex": "顏色（十六進制代碼）",
-    "dateOfBirth": "出生日期"
+    "dateOfBirth": "出生日期",
+    "scoreType": "樂譜類型",
+    "channelUrl": "頻道網址"
   },
   "table": {
     "date": "日期",

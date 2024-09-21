@@ -601,7 +601,9 @@
     },
     "customThemeColor": "Warna Tema Khas",
     "colorHex": "Warna (Kod Hex)",
-    "dateOfBirth": "Tarikh Lahir"
+    "dateOfBirth": "Tarikh Lahir",
+    "scoreType": "Jenis Skor Muzik",
+    "channelUrl": "URL Saluran"
   },
   "table": {
     "date": "Tarikh",
