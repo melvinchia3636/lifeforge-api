@@ -15,7 +15,10 @@ router.get(
         async (
             req: Request,
             res: Response<BaseResponse<IProjectsMTechnology[]>>
-        ) => list(req, res, 'projects_m_technologies')
+        ) =>
+            list(req, res, 'projects_m_technologies', {
+                sort: 'name'
+            })
     )
 )
 

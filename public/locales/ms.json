@@ -73,7 +73,8 @@
       "statuses": "Status",
       "visibilities": "Keterlihatan",
       "authors": "Pengarang",
-      "information": "Maklumat"
+      "information": "Maklumat",
+      "priorities": "Keutamaan"
     },
     "descriptions": {
       "dashboard": "Pusat kawalan misi anda untuk yang mengagumkan. 🚀",
@@ -485,7 +486,9 @@
       "createApiKey": "Buat Kunci API",
       "updateApiKey": "Kemaskini Kunci API",
       "updateDateOfBirth": "Kemaskini Tarikh Lahir",
-      "morandiColorPalette": "Palet Warna Morandi"
+      "morandiColorPalette": "Palet Warna Morandi",
+      "createPriority": "Cipta Kepentingan",
+      "updatePriority": "Kemaskini Kepentingan"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -603,7 +606,10 @@
     "colorHex": "Warna (Kod Hex)",
     "dateOfBirth": "Tarikh Lahir",
     "scoreType": "Jenis Skor Muzik",
-    "channelUrl": "URL Saluran"
+    "channelUrl": "URL Saluran",
+    "priorityName": "Nama Kepentingan",
+    "priorityIcon": "Ikons Keutamaan",
+    "priorityColor": "Warna Keutamaan"
   },
   "table": {
     "date": "Tarikh",
@@ -802,7 +808,10 @@
         "title": "Tiada tugasan untuk hari ini",
         "desc": "Tugas hari ini kosong. Tambah tugas baru untuk memulakan!"
       }
-    }
+    },
+    "priority": "Tiada Kepentingan Ditemui",
+    "lists": "Tiada senarai dijumpai",
+    "tags": "Tiada tag dijumpai"
   },
   "todoList": {
     "header": {

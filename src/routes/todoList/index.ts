@@ -1,14 +1,16 @@
-import express, { Request, Response } from 'express'
-import entries from './routes/entries.js'
-import subtask from './routes/subtasks.js'
-import list from './routes/lists.js'
-import tag from './routes/tags.js'
+import express from 'express'
+import entriesRoutes from './routes/entries.js'
+import subtasksRoutes from './routes/subtasks.js'
+import prioritiesRoutes from './routes/priorities.js'
+import listsRoutes from './routes/lists.js'
+import tagsRoutes from './routes/tags.js'
 
 const router = express.Router()
 
-router.use('/entries', entries)
-router.use('/subtask', subtask)
-router.use('/list', list)
-router.use('/tag', tag)
+router.use('/entries', entriesRoutes)
+router.use('/subtasks', subtasksRoutes)
+router.use('/priorities', prioritiesRoutes)
+router.use('/lists', listsRoutes)
+router.use('/tags', tagsRoutes)
 
 export default router

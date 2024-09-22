@@ -21,7 +21,7 @@ router.get(
 
 router.post(
     '/',
-    [body('name').isString(), body('icon').isString],
+    [body('name').isString(), body('icon').isString()],
     asyncWrapper(
         async (
             req: Request,

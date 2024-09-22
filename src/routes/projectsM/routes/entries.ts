@@ -46,7 +46,7 @@ router.post(
         body('name').isString(),
         body('icon').isString(),
         body('color').isHexColor(),
-        body('visibility').isBoolean(),
+        body('visibility').isString(),
         body('status').isString(),
         body('category').isString(),
         body('technologies').isArray()

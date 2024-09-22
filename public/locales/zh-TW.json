@@ -74,7 +74,8 @@
       "statuses": "狀態",
       "visibilities": "公開狀態",
       "authors": "作者",
-      "information": "資訊"
+      "information": "資訊",
+      "priorities": "優先順序"
     },
     "descriptions": {
       "dashboard": "您的任務控制中心，妙不可言！",
@@ -485,7 +486,9 @@
       "createApiKey": "建立 API 金鑰",
       "updateApiKey": "更新 API 金鑰",
       "updateDateOfBirth": "更新生日",
-      "morandiColorPalette": "莫蘭迪色版"
+      "morandiColorPalette": "莫蘭迪色版",
+      "createPriority": "新增優先級",
+      "updatePriority": "更新優先順序"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -603,7 +606,10 @@
     "colorHex": "顏色（十六進制代碼）",
     "dateOfBirth": "出生日期",
     "scoreType": "樂譜類型",
-    "channelUrl": "頻道網址"
+    "channelUrl": "頻道網址",
+    "priorityName": "優先級名稱",
+    "priorityIcon": "優先級圖示",
+    "priorityColor": "優先級顏色"
   },
   "table": {
     "date": "日期",
@@ -802,7 +808,10 @@
         "title": "今天沒有任務",
         "desc": "今日任務列表空白，新增任務即可開始！"
       }
-    }
+    },
+    "priority": "未找到優先順序",
+    "lists": "沒有找到清單",
+    "tags": "沒有找到標籤"
   },
   "todoList": {
     "header": {

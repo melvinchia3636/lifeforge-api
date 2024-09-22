@@ -73,7 +73,8 @@
       "statuses": "Statuses",
       "visibilities": "Visibilities",
       "authors": "Authors",
-      "information": "Information"
+      "information": "Information",
+      "priorities": "Priorities"
     },
     "descriptions": {
       "dashboard": "Your mission control center for awesome. 🚀",
@@ -485,7 +486,9 @@
       "createApiKey": "Create API Key",
       "updateApiKey": "Update API Key",
       "updateDateOfBirth": "Update Date of Birth",
-      "morandiColorPalette": "Morandi Color Palette"
+      "morandiColorPalette": "Morandi Color Palette",
+      "createPriority": "Create Priority",
+      "updatePriority": "Update Priority"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -603,7 +606,10 @@
     "colorHex": "Color (Hex Code)",
     "dateOfBirth": "Date of Birth",
     "scoreType": "Score Type",
-    "channelUrl": "Channel URL"
+    "channelUrl": "Channel URL",
+    "priorityName": "Priority Name",
+    "priorityIcon": "Priority Icon",
+    "priorityColor": "Priority Color"
   },
   "table": {
     "date": "Date",
@@ -803,7 +809,10 @@
         "title": "No tasks for today",
         "desc": "Today's tasks are empty. Add a new task to get started!"
       }
-    }
+    },
+    "priority": "No priorities found",
+    "lists": "No lists found",
+    "tags": "No tags found"
   },
   "todoList": {
     "header": {

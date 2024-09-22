@@ -49,9 +49,10 @@ router.get(
 
             let finalFilter = filters[status as keyof typeof filters]
 
-            const { tag, list } = req.query
+            const { tag, list, priority } = req.query
             if (tag) finalFilter += ` && tags ~ "${tag}"`
             if (list) finalFilter += ` && list = "${list}"`
+            if (priority) finalFilter += ` && priority = "${priority}"`
 
             const entries: (ITodoListEntry & {
                 expand?: { subtasks: ITodoSubtask[] }
@@ -173,6 +174,14 @@ router.post(
                 })
             }
 
+            if (entries.priority) {
+                await pb
+                    .collection('todo_priorities')
+                    .update(entries.priority, {
+                        'amount+': 1
+                    })
+            }
+
             for (const tag of entries.tags) {
                 await pb.collection('todo_tags').update(tag, {
                     'amount+': 1
@@ -243,6 +252,22 @@ router.patch(
                 })
             }
 
+            for (const priority of [
+                ...new Set([originalentries.priority, entries.priority])
+            ]) {
+                if (!priority) continue
+
+                const { totalItems } = await pb
+                    .collection('todo_entries')
+                    .getList(1, 1, {
+                        filter: `priority ~ "${priority}"`
+                    })
+
+                await pb.collection('todo_priorities').update(priority, {
+                    amount: totalItems
+                })
+            }
+
             for (const tag of [
                 ...new Set([...originalentries.tags, ...entries.tags])
             ]) {
@@ -281,8 +306,15 @@ router.delete(
         } = await pb.collection('todo_entries').getOne(id)
 
         await pb.collection('todo_entries').delete(id)
+
         if (entries.list) {
             await pb.collection('todo_lists').update(entries.list, {
+                'amount-': 1
+            })
+        }
+
+        if (entries.priority) {
+            await pb.collection('todo_priorities').update(entries.priority, {
                 'amount-': 1
             })
         }
