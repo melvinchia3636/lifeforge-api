@@ -281,14 +281,21 @@ router.post(
 
 router.put(
     '/update/:id',
+    uploadMiddleware,
     asyncWrapper(
         async (req: Request, res: Response<BaseResponse<IJournalEntry>>) => {
-            const { id } = req.params
             const { pb } = req
             const { data } = req.body
+            const files = req.files as Express.Multer.File[]
+            const { id } = req.params
 
             if (!pb.authStore.model) {
                 clientError(res, 'authStore is not initialized')
+
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
+
                 return
             }
 
@@ -296,6 +303,11 @@ router.put(
 
             if (!data) {
                 clientError(res, 'data is required')
+
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
+
                 return
             }
 
@@ -311,6 +323,10 @@ router.put(
             if (!isMatch) {
                 clientError(res, 'Invalid master password')
 
+                for (const file of files) {
+                    fs.unlinkSync(file.path)
+                }
+
                 return
             }
 
@@ -320,11 +336,10 @@ router.put(
             summarized = decrypt2(summarized, master)
             mood = JSON.parse(decrypt2(mood, master))
 
-            const updatedEntry: Omit<
-                WithoutPBDefault<IJournalEntry>,
-                'photos'
-            > = {
-                date: moment(date).format('YYYY-MM-DD'),
+            const newEntry: Omit<WithoutPBDefault<IJournalEntry>, 'photos'> & {
+                photos: File[]
+            } = {
+                date,
                 title: encrypt(Buffer.from(title), master).toString('base64'),
                 raw: encrypt(Buffer.from(raw), master).toString('base64'),
                 content: encrypt(Buffer.from(cleanedUp), master).toString(
@@ -333,12 +348,23 @@ router.put(
                 summary: encrypt(Buffer.from(summarized), master).toString(
                     'base64'
                 ),
-                mood
+                mood,
+                photos: files.map(
+                    file =>
+                        new File(
+                            [fs.readFileSync(file.path)],
+                            file.originalname
+                        )
+                )
             }
 
             const entry: IJournalEntry = await pb
                 .collection('journal_entries')
-                .update(id, updatedEntry)
+                .update(id, newEntry)
+
+            for (const file of files) {
+                fs.unlinkSync(file.path)
+            }
 
             successWithBaseResponse(res, entry)
         }
@@ -439,7 +465,7 @@ router.post(
         ${rawText}
         `
 
-        const summarized = fetchGroq(key, prompt)
+        const summarized = await fetchGroq(key, prompt)
         successWithBaseResponse(res, summarized)
     })
 )

@@ -185,7 +185,8 @@
       "title": "Background Temperature",
       "desc": "Choose a background temperature that suits your mood.",
       "cool": "Cool",
-      "warm": "Warm"
+      "warm": "Warm",
+      "customBgTemp": "Custom Background Temperature"
     },
     "fontFamily": {
       "title": "Font Style",
@@ -418,7 +419,10 @@
     "verifyOtp": "Verify OTP",
     "addApiKey": "New Key",
     "configApiKeys": "Configure API Keys",
-    "morandiColorPalette": "Morandi Color Palette"
+    "morandiColorPalette": "Morandi Color Palette",
+    "newFolder": "New Folder",
+    "fileUpload": "Upload File",
+    "folderUpload": "Upload Folder"
   },
   "modals": {
     "header": {
@@ -488,7 +492,8 @@
       "updateDateOfBirth": "Update Date of Birth",
       "morandiColorPalette": "Morandi Color Palette",
       "createPriority": "Create Priority",
-      "updatePriority": "Update Priority"
+      "updatePriority": "Update Priority",
+      "updateJournalEntry": "Update Journal Entry"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
@@ -613,7 +618,7 @@
   },
   "table": {
     "date": "Date",
-    "type": "Typelol",
+    "type": "Type",
     "asset": "Asset",
     "ledger": "Ledger",
     "particulars": "Particulars",
@@ -812,7 +817,11 @@
     },
     "priority": "No priorities found",
     "lists": "No lists found",
-    "tags": "No tags found"
+    "tags": "No tags found",
+    "notes": {
+      "title": "No Notes Here",
+      "description": "Time to upload some notes here!"
+    }
   },
   "todoList": {
     "header": {

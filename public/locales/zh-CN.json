@@ -186,7 +186,8 @@
       "title": "背景温度",
       "desc": "选择适合你心情的背景温度。",
       "cool": "冷色",
-      "warm": "暖色"
+      "warm": "暖色",
+      "customBgTemp": "自定义背景温度"
     },
     "fontFamily": {
       "title": "字体样式",
@@ -419,7 +420,10 @@
     "verifyOtp": "验证 OTP",
     "addApiKey": "添加密钥",
     "configApiKeys": "配置 API 密钥",
-    "morandiColorPalette": "莫兰迪颜色板"
+    "morandiColorPalette": "莫兰迪颜色板",
+    "newFolder": "新建文件夹",
+    "fileUpload": "上传文件",
+    "folderUpload": "上传文件夹"
   },
   "modals": {
     "header": {
@@ -489,7 +493,8 @@
       "updateDateOfBirth": "更新出生日期",
       "morandiColorPalette": "莫兰迪色板",
       "createPriority": "创建优先级",
-      "updatePriority": "更新优先级"
+      "updatePriority": "更新优先级",
+      "updateJournalEntry": "更新日志条目"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",
@@ -812,7 +817,11 @@
     },
     "priority": "未找到优先级",
     "lists": "没有找到列表",
-    "tags": "没有找到标签"
+    "tags": "没有找到标签",
+    "notes": {
+      "title": "还没有笔记",
+      "description": "现在是时候上传笔记啦!"
+    }
   },
   "todoList": {
     "header": {

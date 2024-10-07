@@ -185,7 +185,8 @@
       "title": "背景溫度",
       "desc": "選擇適合你心情的背景溫度。",
       "cool": "冷色",
-      "warm": "暖色"
+      "warm": "暖色",
+      "customBgTemp": "自訂背景溫度"
     },
     "fontFamily": {
       "title": "字體樣式",
@@ -418,7 +419,10 @@
     "verifyOtp": "驗證 OTP",
     "addApiKey": "新增金鑰",
     "configApiKeys": "設定 API 金鑰",
-    "morandiColorPalette": "莫蘭迪色板"
+    "morandiColorPalette": "莫蘭迪色板",
+    "newFolder": "新增資料夾",
+    "fileUpload": "上傳檔案",
+    "folderUpload": "上傳檔案夾"
   },
   "modals": {
     "header": {
@@ -488,7 +492,8 @@
       "updateDateOfBirth": "更新生日",
       "morandiColorPalette": "莫蘭迪色版",
       "createPriority": "新增優先級",
-      "updatePriority": "更新優先順序"
+      "updatePriority": "更新優先順序",
+      "updateJournalEntry": "更新日誌項目"
     },
     "deleteConfirmation": {
       "title": "您確定要刪除 {{itemName}}?",
@@ -811,7 +816,11 @@
     },
     "priority": "未找到優先順序",
     "lists": "沒有找到清單",
-    "tags": "沒有找到標籤"
+    "tags": "沒有找到標籤",
+    "notes": {
+      "title": "尚未有任何筆記",
+      "description": "現在是時間上傳筆記囉!"
+    }
   },
   "todoList": {
     "header": {

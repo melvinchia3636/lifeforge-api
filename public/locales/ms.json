@@ -185,7 +185,8 @@
       "title": "Suhu Latar Belakang",
       "desc": "Pilih suhu latar belakang yang sesuai dengan mood anda.",
       "cool": "Sejuk",
-      "warm": "Hangat"
+      "warm": "Hangat",
+      "customBgTemp": "Suhu Latar Belakang Tersuai"
     },
     "fontFamily": {
       "title": "Gaya Huruf",
@@ -418,7 +419,10 @@
     "verifyOtp": "Sahkan OTP",
     "addApiKey": "Tambah Kunci",
     "configApiKeys": "Tetapkan Kunci API",
-    "morandiColorPalette": "Palet Warna Morandi"
+    "morandiColorPalette": "Palet Warna Morandi",
+    "newFolder": "Folder Baharu",
+    "fileUpload": "Muat Naik Fail",
+    "folderUpload": "Muat Naik Folder"
   },
   "modals": {
     "header": {
@@ -488,7 +492,8 @@
       "updateDateOfBirth": "Kemaskini Tarikh Lahir",
       "morandiColorPalette": "Palet Warna Morandi",
       "createPriority": "Cipta Kepentingan",
-      "updatePriority": "Kemaskini Kepentingan"
+      "updatePriority": "Kemaskini Kepentingan",
+      "updateJournalEntry": "Kemaskini Catatan Harian"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",
@@ -811,7 +816,11 @@
     },
     "priority": "Tiada Kepentingan Ditemui",
     "lists": "Tiada senarai dijumpai",
-    "tags": "Tiada tag dijumpai"
+    "tags": "Tiada tag dijumpai",
+    "notes": {
+      "title": "Tiada Nota Di Sini",
+      "description": "Masa untuk muat naik nota di sini!"
+    }
   },
   "todoList": {
     "header": {
