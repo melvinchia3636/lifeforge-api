@@ -2,8 +2,6 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import request from 'request'
-import all_routes from 'express-list-endpoints'
-import { exec } from 'child_process'
 import { rateLimit } from 'express-rate-limit'
 import Pocketbase from 'pocketbase'
 import { createLazyRouter } from 'express-lazy-router'
@@ -16,6 +14,7 @@ import DESCRIPTIONS from './constants/description.js'
 import asyncWrapper from './utils/asyncWrapper.js'
 import { query } from 'express-validator'
 import hasError from './utils/checkError.js'
+import { flattenRoutes, getRoutes } from './utils/getRoutes.js'
 
 const lazyLoad = createLazyRouter()
 
@@ -26,6 +25,9 @@ const todoListRoutes = lazyLoad(() => import('./routes/todoList/index.js'))
 const calendarRoutes = lazyLoad(() => import('./routes/calendar/index.js'))
 const ideaBoxRoutes = lazyLoad(() => import('./routes/ideaBox/index.js'))
 const codeTimeRoutes = lazyLoad(() => import('./routes/codeTime/index.js'))
+const booksLibraryRoutes = lazyLoad(
+    () => import('./routes/booksLibrary/index.js')
+)
 const notesRoutes = lazyLoad(() => import('./routes/notes/index.js'))
 const flashcardsRoutes = lazyLoad(() => import('./routes/flashcards/index.js'))
 const achievementsRoutes = lazyLoad(
@@ -129,6 +131,34 @@ router.use(pocketbaseMiddleware)
 router.use(limiter)
 router.use(express.static('static'))
 
+router.use('/locales', localesRoutes)
+router.use('/user', userRoutes)
+router.use('/api-keys', apiKeysRoutes)
+router.use('/projects-m', projectsMRoutes)
+router.use('/todo-list', todoListRoutes)
+router.use('/calendar', calendarRoutes)
+router.use('/idea-box', ideaBoxRoutes)
+router.use('/code-time', codeTimeRoutes)
+router.use('/notes', notesRoutes)
+router.use('/books-library', booksLibraryRoutes)
+router.use('/flashcards', flashcardsRoutes)
+router.use('/journal', journalRoutes)
+router.use('/achievements', achievementsRoutes)
+router.use('/wallet', walletRoutes)
+router.use('/spotify', spotifyRoutes)
+router.use('/photos', photosRoutes)
+router.use('/music', musicRoutes)
+router.use('/guitar-tabs', guitarTabsRoutes)
+router.use('/youtube-videos', youtubeVideosRoutes)
+router.use('/repositories', repositoriesRoutes)
+router.use('/passwords', passwordsRoutes)
+router.use('/airports', airportsRoutes)
+router.use('/changi', changiRoutes)
+router.use('/mail-inbox', mailInboxRoutes)
+router.use('/dns-records', DNSRecordsRoutes)
+router.use('/server', serverRoutes)
+router.use('/change-log', changeLogRoutes)
+
 router.get('/status', async (req: Request, res: Response) => {
     res.json({
         state: 'success'
@@ -140,18 +170,14 @@ router.get(
     asyncWrapper(async (_: Request, res: Response) => {
         const routes = Object.fromEntries(
             Object.entries(
-                all_routes(router as any)
-                    .flatMap(route =>
-                        route.methods.map(method => ({
-                            path: route.path,
-                            method,
-                            description:
-                                DESCRIPTIONS[
-                                    `${method} ${route.path.replace(/:(\w+)/g, '{$1}')}` as keyof typeof DESCRIPTIONS
-                                ]
-                        }))
-                    )
-
+                flattenRoutes(getRoutes(`./src`, 'app.ts'))
+                    .map(route => ({
+                        ...route,
+                        description:
+                            DESCRIPTIONS[
+                                `${route.method} ${route.path.replace(/:(\w+)/g, '{$1}')}` as keyof typeof DESCRIPTIONS
+                            ]
+                    }))
                     .reduce(
                         (
                             acc: Record<
@@ -228,72 +254,6 @@ router.get(
         request(
             `${process.env.PB_HOST}/api/files/${collectionId}/${entriesId}/${photoId}?${searchParams.toString()}`
         ).pipe(res)
-    })
-)
-router.use('/locales', localesRoutes)
-router.use('/user', userRoutes)
-router.use('/api-keys', apiKeysRoutes)
-router.use('/projects-m', projectsMRoutes)
-// router.use('/projects-k', projectsKRoutes)
-router.use('/todo-list', todoListRoutes)
-router.use('/calendar', calendarRoutes)
-router.use('/idea-box', ideaBoxRoutes)
-router.use('/code-time', codeTimeRoutes)
-router.use('/notes', notesRoutes)
-router.use('/flashcards', flashcardsRoutes)
-router.use('/journal', journalRoutes)
-router.use('/achievements', achievementsRoutes)
-router.use('/wallet', walletRoutes)
-router.use('/spotify', spotifyRoutes)
-router.use('/photos', photosRoutes)
-router.use('/music', musicRoutes)
-router.use('/guitar-tabs', guitarTabsRoutes)
-router.use('/youtube-videos', youtubeVideosRoutes)
-router.use('/repositories', repositoriesRoutes)
-router.use('/passwords', passwordsRoutes)
-router.use('/airports', airportsRoutes)
-router.use('/changi', changiRoutes)
-router.use('/mail-inbox', mailInboxRoutes)
-router.use('/dns-records', DNSRecordsRoutes)
-router.use('/server', serverRoutes)
-router.use('/change-log', changeLogRoutes)
-
-router.get(
-    '/books-library/list',
-    asyncWrapper(async (_: Request, res: Response) => {
-        exec(
-            'xvfb-run calibredb list --with-library ../calibre --for-machine -f cover,authors,title'
-        ).stdout?.once('data', data => {
-            const parsedData = JSON.parse(data)
-            parsedData.forEach((item: any) => {
-                item.cover = item.cover
-                    .replace(process.env.CALIBRE_PATH, '')
-                    .replace(/^\//, '')
-                    .replace(/cover.jpg$/, '')
-            })
-
-            res.json({
-                state: 'success',
-                data: parsedData
-            })
-        })
-    })
-)
-
-router.get(
-    '/books-library/cover/:author/:book',
-    asyncWrapper(async (req: Request, res: Response) => {
-        const { author, book } = req.params
-        console.log(
-            `/home/pi/${
-                process.env.DATABASE_OWNER
-            }/calibre/${author}/${book}/cover.jpg`
-        )
-        res.sendFile(
-            `/home/pi/${
-                process.env.DATABASE_OWNER
-            }/calibre/${author}/${book}/cover.jpg`
-        )
     })
 )
 

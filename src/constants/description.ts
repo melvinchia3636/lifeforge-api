@@ -51,20 +51,24 @@ const DESCRIPTION = {
         'Toggle the status of a todo list entries by ID',
     'PATCH /todo-list/entries/{id}': 'Update a todo list entries by ID',
     'DELETE /todo-list/entries/{id}': 'Delete a todo list entries by ID',
-    'GET /todo-list/list': 'Get a list of todo lists',
-    'POST /todo-list/list': 'Create a new todo list',
-    'PATCH /todo-list/list/{id}': 'Update a todo list by ID',
-    'DELETE /todo-list/list/{id}': 'Delete a todo list by ID',
-    'GET /todo-list/subtask/list/{id}':
+    'GET /todo-list/lists': 'Get a list of todo lists',
+    'POST /todo-list/lists': 'Create a new todo list',
+    'PATCH /todo-list/lists/{id}': 'Update a todo list by ID',
+    'DELETE /todo-list/lists/{id}': 'Delete a todo list by ID',
+    'GET /todo-list/subtasks/list/{id}':
         'Get a list of subtasks for a specific todo list',
-    'POST /todo-list/subtask/ai-generate':
+    'POST /todo-list/subtasks/ai-generate':
         'AI-generated subtasks for a todo list',
-    'PATCH /todo-list/subtask/toggle/{id}':
+    'PATCH /todo-list/subtasks/toggle/{id}':
         'Toggle the status of a subtask by ID',
-    'GET /todo-list/tag': 'Get a list of tags for todo lists',
-    'POST /todo-list/tag': 'Create a new tag for todo lists',
-    'PATCH /todo-list/tag/{id}': 'Update a tag for todo lists by ID',
-    'DELETE /todo-list/tag/{id}': 'Delete a tag for todo lists by ID',
+    'GET /todo-list/tags': 'Get a list of tags for todo lists',
+    'POST /todo-list/tags': 'Create a new tag for todo lists',
+    'PATCH /todo-list/tags/{id}': 'Update a tag for todo lists by ID',
+    'DELETE /todo-list/tags/{id}': 'Delete a tag for todo lists by ID',
+    'GET /todo-list/priorities': 'Get a list of todo list priorities',
+    'POST /todo-list/priorities': 'Create a new todo list priority',
+    'PATCH /todo-list/priorities/{id}': 'Update a todo list priority by ID',
+    'DELETE /todo-list/priorities/{id}': 'Delete a todo list priority by ID',
     'GET /calendar/category': 'Get a list of calendar categories',
     'POST /calendar/category': 'Create a new calendar category',
     'PATCH /calendar/category/{id}': 'Update a calendar category by ID',
@@ -221,7 +225,7 @@ const DESCRIPTION = {
     'POST /music/youtube/async-download/{id}':
         'Asynchronously download YouTube video by ID',
     'GET /guitar-tabs/list': 'List all guitar tabs',
-    'GET /guitar-tabs/process-status': 'Get guitar tabs processing status',
+    'GET /guitar-tabs/process-status': 'Get guitar tabs upload status',
     'POST /guitar-tabs/upload': 'Upload guitar tabs',
     'GET /repositories/repo/list': 'List all repositories',
     'GET /passwords/master/challenge': 'Get master password challenge',
@@ -333,7 +337,24 @@ const DESCRIPTION = {
         'Asynchronously download video by ID',
     'POST /youtube-video-storage/video/download-status':
         'Get video download status',
-    'DELETE /youtube-video-storage/video/{id}': 'Delete video by ID'
+    'DELETE /youtube-video-storage/video/{id}': 'Delete video by ID',
+    'GET /guitar-tabs/': 'Get a list of guitar tabs',
+    'PUT /guitar-tabs/{id}': 'Update a guitar tab by ID',
+    'DELETE /guitar-tabs/{id}': 'Delete a guitar tab by ID',
+    'GET /guitar-tabs/download-all': 'Download all guitar tabs',
+    'GET /guitar-tabs/sidebar-data': 'Get sidebar data for guitar tabs',
+    'GET /api-keys': 'Retrieve a list of API keys',
+    'POST /api-keys': 'Create a new API key',
+    'GET /api-keys/{id}': 'Retrieve a specific API key by ID',
+    'PUT /api-keys/{id}': 'Update a specific API key by ID',
+    'DELETE /api-keys/{id}': 'Delete a specific API key by ID',
+    'GET /api-keys/auth/challenge':
+        'Retrieve an authentication challenge for API keys module authentication',
+    'POST /api-keys/auth': 'Create API key module password',
+    'POST /api-keys/auth/verify': 'Verify API key module authentication',
+    'POST /api-keys/auth/otp':
+        'Generate a one-time password for API key module authentication',
+    'GET /api-keys/check': 'Check the existence of API key'
 }
 
 export default DESCRIPTION
