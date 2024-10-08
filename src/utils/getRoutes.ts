@@ -1,5 +1,18 @@
 import fs from 'fs'
 
+interface Route {
+    method: string
+    path: string
+}
+
+interface Routes {
+    topLevel: Route[]
+    use: {
+        path: string
+        children: Routes | Route[]
+    }[]
+}
+
 function getRoutesFromFile(content: string) {
     return content
         .match(/router\.(get|post|put|delete|patch)\((?:\n|\s)*?['"](.+)['"]/g)
@@ -42,25 +55,7 @@ function getImportStatements(content: string) {
     )
 }
 
-function getRoutes(dir: string, file = 'index.ts') {
-    let routes: {
-        topLevel: { method: string; path: string }[]
-        use: { path: string; children: any }[]
-    } = {
-        topLevel: [],
-        use: []
-    }
-
-    const indexFileContent = fs.readFileSync(`${dir}/${file}`, 'utf8')
-
-    const topLevelRoutesMatches = getRoutesFromFile(indexFileContent)
-
-    if (topLevelRoutesMatches) {
-        routes.topLevel.push(...topLevelRoutesMatches)
-    }
-
-    if (!fs.existsSync(`${dir}/routes`)) return routes
-
+function getUseRoutes(content: string, dir: string) {
     const children = Object.fromEntries(
         fs.readdirSync(`${dir}/routes`).map(child => {
             if (fs.lstatSync(`${dir}/routes/${child}`).isDirectory()) {
@@ -76,9 +71,9 @@ function getRoutes(dir: string, file = 'index.ts') {
         })
     )
 
-    const importStatements = getImportStatements(indexFileContent)
+    const importStatements = getImportStatements(content)
 
-    const useRoutesMatches = indexFileContent
+    return content
         .match(
             /router\.use\((?:\n|\s)*?['"](.+)['"],(?:\n|\s)+(.*?)(?:\n|\s)*?\)/g
         )
@@ -95,25 +90,31 @@ function getRoutes(dir: string, file = 'index.ts') {
                 children: children[importStatements[match[2]]]
             }
         })
+}
+
+function getRoutes(dir: string, file = 'index.ts') {
+    let routes: Routes = {
+        topLevel: [],
+        use: []
+    }
+
+    const indexFileContent = fs.readFileSync(`${dir}/${file}`, 'utf8')
+
+    const topLevelRoutesMatches = getRoutesFromFile(indexFileContent)
+
+    if (topLevelRoutesMatches) {
+        routes.topLevel.push(...topLevelRoutesMatches)
+    }
+
+    if (!fs.existsSync(`${dir}/routes`)) return routes
+
+    const useRoutesMatches = getUseRoutes(indexFileContent, dir)
 
     if (useRoutesMatches) {
         routes.use.push(...useRoutesMatches)
     }
 
     return routes
-}
-
-interface Route {
-    method: string
-    path: string
-}
-
-interface Routes {
-    topLevel: Route[]
-    use: {
-        path: string
-        children: Routes | Route[]
-    }[]
 }
 
 function flattenRoutes(routes: Routes) {
