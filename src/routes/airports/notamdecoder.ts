@@ -905,8 +905,6 @@ function findCoordinates(str: string) {
         .replace(/S(\d)/g, 'S $1')
         .replace(/ - /g, '')
 
-    console.log(text)
-
     let res = []
     if (text.length >= 15) {
         // ex: 402500N 075000W             (15)
@@ -1402,15 +1400,9 @@ function parseContent(e: string) {
         text: e
     }
 
-    //search for circles
-    if (e.search('RADIUS') != -1) {
-        //console.log(e);
-    }
-    {
-        const coordinates = findCoordinates(e)
-        if (coordinates.length > 0) {
-            res.area = coordinates
-        }
+    const coordinates = findCoordinates(e)
+    if (coordinates.length > 0) {
+        res.area = coordinates
     }
 
     return res

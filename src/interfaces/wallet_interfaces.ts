@@ -1,45 +1,76 @@
-import type BasePBCollection from './pocketbase_interfaces.js'
+import * as s from 'superstruct'
+import { BasePBCollectionSchema } from './pocketbase_interfaces.js'
 
-interface IWalletAssetEntry extends BasePBCollection {
-    name: string
-    icon: string
-    balance: number
-    starting_balance: number
-}
+const WalletAssetSchema = s.assign(
+    BasePBCollectionSchema,
+    s.object({
+        name: s.string(),
+        icon: s.string(),
+        balance: s.optional(s.number()),
+        starting_balance: s.number()
+    })
+)
 
-interface IWalletLedgerEntry extends BasePBCollection {
-    name: string
-    icon: string
-    color: string
-}
+const WalletLedgerSchema = s.assign(
+    BasePBCollectionSchema,
+    s.object({
+        name: s.string(),
+        icon: s.string(),
+        color: s.string()
+    })
+)
 
-interface IWalletCategoryEntry extends IWalletLedgerEntry {
-    type: 'income' | 'expenses'
-}
+const WalletTransactionEntrySchema = s.assign(
+    BasePBCollectionSchema,
+    s.object({
+        type: s.union([
+            s.literal('income'),
+            s.literal('expenses'),
+            s.literal('transfer')
+        ]),
+        side: s.union([s.literal('debit'), s.literal('credit')]),
+        particulars: s.string(),
+        amount: s.number(),
+        date: s.string(),
+        category: s.string(),
+        asset: s.string(),
+        ledger: s.string(),
+        receipt: s.string()
+    })
+)
 
-interface IWalletTransactionEntry extends BasePBCollection {
-    type: 'income' | 'expenses' | 'transfer'
-    side: 'debit' | 'credit'
-    particulars: string
-    amount: number
-    date: string
-    category: string
-    asset: string
-    ledger: string
-    receipt: string
-}
+const WalletCategorySchema = s.assign(
+    WalletLedgerSchema,
+    s.object({
+        type: s.union([s.literal('income'), s.literal('expenses')])
+    })
+)
 
-interface IWalletIncomeExpenses {
-    totalIncome: number
-    totalExpenses: number
-    monthlyIncome: number
-    monthlyExpenses: number
+const WalletIncomeExpensesSchema = s.object({
+    totalIncome: s.number(),
+    totalExpenses: s.number(),
+    monthlyIncome: s.number(),
+    monthlyExpenses: s.number()
+})
+
+type IWalletAsset = s.Infer<typeof WalletAssetSchema>
+type IWalletLedger = s.Infer<typeof WalletLedgerSchema>
+type IWalletTransactionEntry = s.Infer<typeof WalletTransactionEntrySchema>
+type IWalletCategory = s.Infer<typeof WalletCategorySchema>
+type IWalletIncomeExpenses = s.Infer<typeof WalletIncomeExpensesSchema>
+
+export {
+    WalletAssetSchema,
+    WalletLedgerSchema,
+    WalletTransactionEntrySchema,
+    WalletCategorySchema,
+    WalletIncomeExpensesSchema
 }
 
 export type {
-    IWalletAssetEntry as IWalletAsset,
-    IWalletLedgerEntry as IWalletLedger,
+    IWalletAsset,
+    IWalletLedger,
     IWalletTransactionEntry,
-    IWalletCategoryEntry as IWalletCategory,
+    IWalletCategory,
     IWalletIncomeExpenses
 }

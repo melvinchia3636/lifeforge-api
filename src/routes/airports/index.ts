@@ -514,7 +514,6 @@ router.get(
 
             successWithBaseResponse(res, NOTAMs)
         } catch (err) {
-            console.log(err)
             successWithBaseResponse(res, 'none')
         }
     })

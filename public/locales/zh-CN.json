@@ -423,7 +423,8 @@
     "morandiColorPalette": "莫兰迪颜色板",
     "newFolder": "新建文件夹",
     "fileUpload": "上传文件",
-    "folderUpload": "上传文件夹"
+    "folderUpload": "上传文件夹",
+    "hideAmount": "隐藏金额"
   },
   "modals": {
     "header": {
@@ -494,7 +495,8 @@
       "morandiColorPalette": "莫兰迪色板",
       "createPriority": "创建优先级",
       "updatePriority": "更新优先级",
-      "updateJournalEntry": "更新日志条目"
+      "updateJournalEntry": "更新日志条目",
+      "createJournalEntry": "创建日志"
     },
     "deleteConfirmation": {
       "title": "您确定要删除 {{itemName}}?",

@@ -163,7 +163,6 @@ router.post(
         const { isInAlbum } = req.query
 
         for (const photo of photos) {
-            console.log(photo)
             let image
             if (isInAlbum === 'true') {
                 const dim = await pb
@@ -458,8 +457,6 @@ router.post(
             }
         }
 
-        console.log(distinctFiles)
-
         progress = 0
         let completed = 0
 
@@ -577,9 +574,7 @@ router.post(
 
             try {
                 await axios.get(thumbnailImageUrl)
-            } catch {
-                console.log("Thumbnail doesn't exist")
-            }
+            } catch {}
 
             for (const file of [...rawFiles, ...imageFiles]) {
                 fs.unlinkSync(

@@ -422,7 +422,8 @@
     "morandiColorPalette": "Palet Warna Morandi",
     "newFolder": "Folder Baharu",
     "fileUpload": "Muat Naik Fail",
-    "folderUpload": "Muat Naik Folder"
+    "folderUpload": "Muat Naik Folder",
+    "hideAmount": "Sembunyikan jumlah"
   },
   "modals": {
     "header": {
@@ -493,7 +494,8 @@
       "morandiColorPalette": "Palet Warna Morandi",
       "createPriority": "Cipta Kepentingan",
       "updatePriority": "Kemaskini Kepentingan",
-      "updateJournalEntry": "Kemaskini Catatan Harian"
+      "updateJournalEntry": "Kemaskini Catatan Harian",
+      "createJournalEntry": "Buat Catatan Journal"
     },
     "deleteConfirmation": {
       "title": "Adakah anda pasti ingin memadam {{itemName}}?",

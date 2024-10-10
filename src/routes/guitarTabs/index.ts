@@ -260,7 +260,6 @@ router.post(
                         }
                     })
             } catch (err) {
-                console.log(err)
                 processing = 'failed'
                 const allFilesLeft = fs.readdirSync('uploads')
                 for (const file of allFilesLeft) {

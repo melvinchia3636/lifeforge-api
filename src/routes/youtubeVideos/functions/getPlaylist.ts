@@ -13,7 +13,6 @@ function getPlaylist(url: string): Promise<IYoutubePlaylistEntry> {
 
                 try {
                     const playlist = JSON.parse(stdout)
-                    console.log(playlist.entries[0])
                     const final = {
                         title: playlist.title,
                         total_videos: playlist.entries.length,

@@ -97,7 +97,6 @@ router.post(
             `${process.cwd()}/src/bin/yt-dlp -f bestaudio -o "${process.cwd()}/uploads/${downloadID}-%(title)s.%(ext)s" --extract-audio --audio-format mp3 --audio-quality 0 "https://www.youtube.com/watch?v=${id}"`,
             async err => {
                 if (err) {
-                    console.log(err)
                     downloading = 'failed'
                     return
                 }

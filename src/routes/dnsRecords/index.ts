@@ -65,8 +65,6 @@ router.delete(
         const response = await fetch(url, { headers })
         const raw = await response.json()
 
-        console.log(raw)
-
         if (response.ok && raw.data && !raw.errors) {
             successWithBaseResponse(res, raw.data.newSerial)
             return

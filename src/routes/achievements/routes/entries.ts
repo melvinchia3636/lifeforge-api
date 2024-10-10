@@ -1,11 +1,15 @@
 import express, { Request, Response } from 'express'
 import asyncWrapper from '../../../utils/asyncWrapper.js'
-import { successWithBaseResponse } from '../../../utils/response.js'
+import {
+    clientError,
+    successWithBaseResponse
+} from '../../../utils/response.js'
 import { body, param } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
 import { IAchievementEntry } from '../../../interfaces/achievements_interfaces.js'
+import { checkExistence } from '../../../utils/checkExistence.js'
 
 const router = express.Router()
 
@@ -58,7 +62,7 @@ router.post(
                     thoughts
                 })
 
-            successWithBaseResponse(res, achievement)
+            successWithBaseResponse(res, achievement, 201)
         }
     )
 )
@@ -75,9 +79,13 @@ router.patch(
     ],
     asyncWrapper(async (req: Request, res: Response) => {
         if (hasError(req, res)) return
+
         const { pb } = req
         const { id } = req.params
         const { difficulty, title, thoughts } = req.body
+
+        const found = await checkExistence(req, res, 'achievements_entries', id)
+        if (!found) return
 
         const achievement: IAchievementEntry = await pb
             .collection('achievements_entries')
@@ -100,9 +108,12 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
+        const found = await checkExistence(req, res, 'achievements_entries', id)
+        if (!found) return
+
         await pb.collection('achievements_entries').delete(id)
 
-        successWithBaseResponse(res)
+        successWithBaseResponse(res, undefined, 410)
     })
 )
 

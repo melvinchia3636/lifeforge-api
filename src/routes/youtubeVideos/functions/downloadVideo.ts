@@ -37,7 +37,6 @@ function downloadVideo(
         })
 
         ytDlp.on('close', code => {
-            console.log(`yt-dlp process exited with code ${code}`)
             resolve('done')
         })
     })

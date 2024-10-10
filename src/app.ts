@@ -4,8 +4,6 @@ import helmet from 'helmet'
 import request from 'request'
 import { rateLimit } from 'express-rate-limit'
 import Pocketbase from 'pocketbase'
-import { createLazyRouter } from 'express-lazy-router'
-
 import morganMiddleware from './middleware/morganMiddleware.js'
 import pocketbaseMiddleware from './middleware/pocketbaseMiddleware.js'
 
@@ -15,49 +13,9 @@ import asyncWrapper from './utils/asyncWrapper.js'
 import { query } from 'express-validator'
 import hasError from './utils/checkError.js'
 import { flattenRoutes, getRoutes } from './utils/getRoutes.js'
+import router from './routes.js'
 
-const lazyLoad = createLazyRouter()
-
-const localesRoutes = lazyLoad(() => import('./routes/locales/index.js'))
-const userRoutes = lazyLoad(() => import('./routes/user/index.js'))
-const projectsMRoutes = lazyLoad(() => import('./routes/projectsM/index.js'))
-const todoListRoutes = lazyLoad(() => import('./routes/todoList/index.js'))
-const calendarRoutes = lazyLoad(() => import('./routes/calendar/index.js'))
-const ideaBoxRoutes = lazyLoad(() => import('./routes/ideaBox/index.js'))
-const codeTimeRoutes = lazyLoad(() => import('./routes/codeTime/index.js'))
-const booksLibraryRoutes = lazyLoad(
-    () => import('./routes/booksLibrary/index.js')
-)
-const notesRoutes = lazyLoad(() => import('./routes/notes/index.js'))
-const flashcardsRoutes = lazyLoad(() => import('./routes/flashcards/index.js'))
-const achievementsRoutes = lazyLoad(
-    () => import('./routes/achievements/index.js')
-)
-const spotifyRoutes = lazyLoad(() => import('./routes/spotify/index.js'))
-const photosRoutes = lazyLoad(() => import('./routes/photos/index.js'))
-const musicRoutes = lazyLoad(() => import('./routes/music/index.js'))
-const guitarTabsRoutes = lazyLoad(() => import('./routes/guitarTabs/index.js'))
-const repositoriesRoutes = lazyLoad(
-    () => import('./routes/repositories/index.js')
-)
-const passwordsRoutes = lazyLoad(() => import('./routes/passwords/index.js'))
-const airportsRoutes = lazyLoad(() => import('./routes/airports/index.js'))
-const changiRoutes = lazyLoad(() => import('./routes/changi/index.js'))
-const journalRoutes = lazyLoad(() => import('./routes/journal/index.js'))
-const serverRoutes = lazyLoad(() => import('./routes/server/index.js'))
-const changeLogRoutes = lazyLoad(() => import('./routes/changeLog/index.js'))
-const DNSRecordsRoutes = lazyLoad(() => import('./routes/dnsRecords/index.js'))
-const mailInboxRoutes = lazyLoad(() => import('./routes/mailInbox/index.js'))
-const walletRoutes = lazyLoad(() => import('./routes/wallet/index.js'))
-const youtubeVideosRoutes = lazyLoad(
-    () => import('./routes/youtubeVideos/index.js')
-)
-const apiKeysRoutes = lazyLoad(() => import('./routes/apiKeys/index.js'))
-
-const app = express()
-app.disable('x-powered-by')
-app.set('view engine', 'ejs')
-const router = express.Router()
+const mainRouter = express.Router()
 
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -106,14 +64,14 @@ const limiter = rateLimit({
     }
 })
 
-router.use(
+mainRouter.use(
     helmet({
         crossOriginResourcePolicy: {
             policy: 'cross-origin'
         }
     })
 )
-router.use(
+mainRouter.use(
     cors({
         origin: [
             'http://localhost:5173',
@@ -124,53 +82,27 @@ router.use(
         ]
     })
 )
-router.use(express.raw())
-router.use(express.json())
-router.use(morganMiddleware)
-router.use(pocketbaseMiddleware)
-router.use(limiter)
-router.use(express.static('static'))
+mainRouter.use(express.raw())
+mainRouter.use(express.json())
+mainRouter.use(morganMiddleware)
+mainRouter.use(pocketbaseMiddleware)
+mainRouter.use(limiter)
+mainRouter.use(express.static('static'))
 
-router.use('/locales', localesRoutes)
-router.use('/user', userRoutes)
-router.use('/api-keys', apiKeysRoutes)
-router.use('/projects-m', projectsMRoutes)
-router.use('/todo-list', todoListRoutes)
-router.use('/calendar', calendarRoutes)
-router.use('/idea-box', ideaBoxRoutes)
-router.use('/code-time', codeTimeRoutes)
-router.use('/notes', notesRoutes)
-router.use('/books-library', booksLibraryRoutes)
-router.use('/flashcards', flashcardsRoutes)
-router.use('/journal', journalRoutes)
-router.use('/achievements', achievementsRoutes)
-router.use('/wallet', walletRoutes)
-router.use('/spotify', spotifyRoutes)
-router.use('/photos', photosRoutes)
-router.use('/music', musicRoutes)
-router.use('/guitar-tabs', guitarTabsRoutes)
-router.use('/youtube-videos', youtubeVideosRoutes)
-router.use('/repositories', repositoriesRoutes)
-router.use('/passwords', passwordsRoutes)
-router.use('/airports', airportsRoutes)
-router.use('/changi', changiRoutes)
-router.use('/mail-inbox', mailInboxRoutes)
-router.use('/dns-records', DNSRecordsRoutes)
-router.use('/server', serverRoutes)
-router.use('/change-log', changeLogRoutes)
+mainRouter.use('/', router)
 
-router.get('/status', async (req: Request, res: Response) => {
+mainRouter.get('/status', async (req: Request, res: Response) => {
     res.json({
         state: 'success'
     })
 })
 
-router.get(
+mainRouter.get(
     '/',
     asyncWrapper(async (_: Request, res: Response) => {
         const routes = Object.fromEntries(
             Object.entries(
-                flattenRoutes(getRoutes(`./src`, 'app.ts'))
+                flattenRoutes(getRoutes(`./src`, 'routes.ts'))
                     .map(route => ({
                         ...route,
                         description:
@@ -226,7 +158,7 @@ router.get(
     })
 )
 
-router.get(
+mainRouter.get(
     '/media/:collectionId/:entriesId/:photoId',
     [
         query('thumb').optional().isString(),
@@ -257,13 +189,13 @@ router.get(
     })
 )
 
-router.get('/cron', async (req: Request, res: Response) => {
+mainRouter.get('/cron', async (req: Request, res: Response) => {
     res.json({
         state: 'success'
     })
 })
 
-router.use((req: Request, res: Response) => {
+mainRouter.use((req: Request, res: Response) => {
     res.status(404)
 
     res.json({
@@ -272,6 +204,4 @@ router.use((req: Request, res: Response) => {
     })
 })
 
-app.use('/', router)
-
-export default router
+export default mainRouter

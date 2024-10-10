@@ -30,11 +30,7 @@ router.get(
     '/cover/:author/:book',
     asyncWrapper(async (req: Request, res: Response) => {
         const { author, book } = req.params
-        console.log(
-            `/home/pi/${
-                process.env.DATABASE_OWNER
-            }/calibre/${author}/${book}/cover.jpg`
-        )
+        
         res.sendFile(
             `/home/pi/${
                 process.env.DATABASE_OWNER

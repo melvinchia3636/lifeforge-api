@@ -34,8 +34,6 @@ router.post(
             const { pb } = req
             const { name, icon } = req.body
 
-            console.log(name, icon)
-
             const technology: IProjectsMTechnology = await pb
                 .collection('projects_m_technologies')
                 .create({

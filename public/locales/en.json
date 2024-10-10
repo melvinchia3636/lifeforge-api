@@ -422,7 +422,8 @@
     "morandiColorPalette": "Morandi Color Palette",
     "newFolder": "New Folder",
     "fileUpload": "Upload File",
-    "folderUpload": "Upload Folder"
+    "folderUpload": "Upload Folder",
+    "hideAmount": "Hide amount"
   },
   "modals": {
     "header": {
@@ -493,7 +494,8 @@
       "morandiColorPalette": "Morandi Color Palette",
       "createPriority": "Create Priority",
       "updatePriority": "Update Priority",
-      "updateJournalEntry": "Update Journal Entry"
+      "updateJournalEntry": "Update Journal Entry",
+      "createJournalEntry": "Create Journal Entry"
     },
     "deleteConfirmation": {
       "title": "Are you sure you want to delete {{itemName}}?",
