@@ -35,7 +35,9 @@ const WalletTransactionEntrySchema = s.assign(
         category: s.string(),
         asset: s.string(),
         ledger: s.string(),
-        receipt: s.string()
+        receipt: s.string(),
+        fromAsset: s.optional(s.string()),
+        toAsset: s.optional(s.string())
     })
 )
 

@@ -7,7 +7,7 @@ import ledgersRoutes from './routes/ledgers.js'
 const router = express.Router()
 
 router.use('/transactions', transactionsRoutes)
-router.use('/category', categoryRoutes)
+router.use('/categories', categoryRoutes)
 router.use('/assets', assetsRoutes)
 router.use('/ledgers', ledgersRoutes)
 

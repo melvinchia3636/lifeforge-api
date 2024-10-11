@@ -14,6 +14,9 @@ import {
     IWalletTransactionEntry
 } from '../../../interfaces/wallet_interfaces.js'
 import { WithoutPBDefault } from '../../../interfaces/pocketbase_interfaces.js'
+import { body } from 'express-validator'
+import hasError from '../../../utils/checkError.js'
+import { validateExistence } from '../../../utils/PBRecordValidator.js'
 
 const router = express.Router()
 
@@ -105,12 +108,98 @@ router.get(
 
 router.post(
     '/',
+    [
+        body('particulars').isString(),
+        body('date').custom((value: string) => {
+            if (!value) {
+                throw new Error('Invalid value')
+            }
+
+            if (!moment(value).isValid()) {
+                throw new Error('Invalid value')
+            }
+
+            return true
+        }),
+        body('amount').isNumeric(),
+        body('category').custom(
+            async (value: string, meta) =>
+                await validateExistence(
+                    meta.req.pb,
+                    'wallet_categories',
+                    value,
+                    true
+                )
+        ),
+        body('asset').custom(
+            async (value: string, meta) =>
+                await validateExistence(
+                    meta.req.pb,
+                    'wallet_assets',
+                    value,
+                    true
+                )
+        ),
+        body('ledger').custom(
+            async (value: string, meta) =>
+                await validateExistence(
+                    meta.req.pb,
+                    'wallet_ledgers',
+                    value,
+                    true
+                )
+        ),
+        body('type').isIn(['income', 'expenses', 'transfer']),
+        body('side').custom((value: string, meta) => {
+            if (meta.req.body.type === 'transfer') {
+                return true
+            }
+
+            return (
+                (meta.req.body.type === 'income' && value === 'credit') ||
+                (meta.req.body.type === 'expenses' && value === 'debit') ||
+                !['income', 'expenses'].includes(meta.req.body.type)
+            )
+        }),
+        body('fromAsset').custom(async (value: string, meta) => {
+            if (meta.req.body.type === 'transfer') {
+                await validateExistence(
+                    meta.req.pb,
+                    'wallet_assets',
+                    value,
+                    true
+                )
+                return true
+            }
+
+            if (value) throw new Error('Invalid value')
+
+            return true
+        }),
+        body('toAsset').custom(async (value: string, meta) => {
+            if (meta.req.body.type === 'transfer') {
+                await validateExistence(
+                    meta.req.pb,
+                    'wallet_assets',
+                    value,
+                    true
+                )
+                return true
+            }
+
+            if (value) throw new Error('Invalid value')
+
+            return true
+        })
+    ],
     singleUploadMiddleware,
     asyncWrapper(
         async (
             req: Request,
             res: Response<BaseResponse<IWalletTransactionEntry[]>>
         ) => {
+            if (hasError(req, res)) return
+
             const { pb } = req
             let {
                 particulars,
@@ -241,7 +330,7 @@ router.post(
                 fs.unlinkSync(file.path)
             }
 
-            successWithBaseResponse(res, created)
+            successWithBaseResponse(res, created, 201)
         }
     )
 )

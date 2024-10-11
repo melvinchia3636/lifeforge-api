@@ -9,7 +9,7 @@ import hasError from '../../../utils/checkError.js'
 import { list } from '../../../utils/CRUD.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
 import { IAchievementEntry } from '../../../interfaces/achievements_interfaces.js'
-import { checkExistence } from '../../../utils/checkExistence.js'
+import { checkExistence } from '../../../utils/PBRecordValidator.js'
 
 const router = express.Router()
 
@@ -84,8 +84,8 @@ router.patch(
         const { id } = req.params
         const { difficulty, title, thoughts } = req.body
 
-        const found = await checkExistence(req, res, 'achievements_entries', id)
-        if (!found) return
+        if (!(await checkExistence(req, res, 'achievements_entries', id)))
+            return
 
         const achievement: IAchievementEntry = await pb
             .collection('achievements_entries')
@@ -108,8 +108,8 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const found = await checkExistence(req, res, 'achievements_entries', id)
-        if (!found) return
+        if (!(await checkExistence(req, res, 'achievements_entries', id)))
+            return
 
         await pb.collection('achievements_entries').delete(id)
 

@@ -9,6 +9,7 @@ import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
 import { IWalletLedger } from '../../../interfaces/wallet_interfaces.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
+import { checkExistence } from '../../../utils/PBRecordValidator.js'
 
 const router = express.Router()
 
@@ -42,7 +43,7 @@ router.post(
                     color
                 })
 
-            successWithBaseResponse(res, ledger)
+            successWithBaseResponse(res, ledger, 201)
         }
     )
 )
@@ -61,6 +62,8 @@ router.patch(
             const { pb } = req
             const { id } = req.params
             const { name, icon, color } = req.body
+
+            if (!(await checkExistence(req, res, 'wallet_ledgers', id))) return
 
             const ledger: IWalletLedger = await pb
                 .collection('wallet_ledgers')
@@ -81,9 +84,11 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
+        if (!(await checkExistence(req, res, 'wallet_ledgers', id))) return
+
         await pb.collection('wallet_ledgers').delete(id)
 
-        successWithBaseResponse(res)
+        successWithBaseResponse(res, undefined, 410)
     })
 )
 

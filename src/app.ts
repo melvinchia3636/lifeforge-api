@@ -200,7 +200,7 @@ mainRouter.use((req: Request, res: Response) => {
 
     res.json({
         state: 'error',
-        message: 'Not Found'
+        message: 'Endpoint not found'
     })
 })
 

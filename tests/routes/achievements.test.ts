@@ -6,7 +6,13 @@ import { AchievementsEntrySchema } from '../../src/interfaces/achievements_inter
 import { LoremIpsum } from 'lorem-ipsum'
 import { PBAuthToken, PBClient } from '../utils/PBClient.js'
 import API_HOST from '../constant/API_HOST.js'
-import testUnauthorized from '../common/unauthorized.js'
+import testUnauthorized from '../common/testUnauthorized.js'
+import testList from '../common/testList.js'
+import testEntryCreation from '../common/testEntryCreation.js'
+import testInvalidOrMissingValue from '../common/testInvalidOrMissingValue.js'
+import testEntryNotFound from '../common/testEntryNotFound.js'
+import testEntryDeletion from '../common/testEntryDeletion.js'
+import testEntryModification from '../common/testEntryModification.js'
 
 const lorem = new LoremIpsum({
     sentencesPerParagraph: {
@@ -22,21 +28,13 @@ const lorem = new LoremIpsum({
 describe('GET /achievements/entries', () => {
     testUnauthorized('/achievements/entries/easy', 'get')
 
-    it('should return the list of achievements entries for each difficulty', async () => {
-        const DIFFICULTIES = ['easy', 'medium', 'hard', 'impossible']
-
-        for (const difficulty of DIFFICULTIES) {
-            const res = await request(API_HOST)
-                .get(`/achievements/entries/${difficulty}`)
-                .set('Authorization', `Bearer ${PBAuthToken}`)
-                .expect(200)
-
-            expect(res.body).to.be.an('object')
-            expect(res.body).to.have.property('state', 'success')
-            expect(res.body).to.have.property('data')
-            expect(res.body.data).to.be.an('array')
-        }
-    })
+    for (const difficulty of ['easy', 'medium', 'hard', 'impossible']) {
+        testList(
+            `/achievements/entries/${difficulty}`,
+            AchievementsEntrySchema,
+            `${difficulty} achievements entry`
+        )
+    }
 
     it('should return 400 if difficulty is not valid', async () => {
         const res = await request(API_HOST)
@@ -60,251 +58,130 @@ describe('GET /achievements/entries', () => {
 
         expect(res.body).to.be.an('object')
         expect(res.body).to.have.property('state', 'error')
-        expect(res.body).to.have.property('message', 'Not Found')
+        expect(res.body).to.have.property('message', 'Endpoint not found')
     })
 })
 
 describe('POST /achievements/entries', () => {
     testUnauthorized('/achievements/entries', 'post')
 
-    it('should create a new achievement entry for each difficulty', async () => {
-        for (const difficulty of ['easy', 'medium', 'hard', 'impossible']) {
-            const data = {
-                difficulty,
-                title: lorem.generateWords(3),
-                thoughts: lorem.generateWords(10)
-            }
+    for (const difficulty of ['easy', 'medium', 'hard', 'impossible']) {
+        const data = {
+            difficulty,
+            title: lorem.generateWords(3),
+            thoughts: lorem.generateWords(10)
+        }
 
-            const res = await request(API_HOST)
-                .post('/achievements/entries')
-                .set('Authorization', `Bearer ${PBAuthToken}`)
-                .send(data)
-                .expect(201)
+        testEntryCreation({
+            name: `${difficulty} achievement`,
+            endpoint: '/achievements/entries',
+            schema: AchievementsEntrySchema,
+            collection: 'achievements_entries',
+            data
+        })
+    }
 
-            expect(res.body).to.be.an('object')
-            expect(res.body).to.have.property('state', 'success')
-            expect(res.body).to.have.property('data')
-            expect(res.body.data).to.be.an('object')
-
-            const entry = res.body.data
-
-            assert(
-                AchievementsEntrySchema.is(entry),
-                'Invalid schema for achievements entry'
-            )
-
-            expect(entry.difficulty).to.equal(data.difficulty)
-            expect(entry.title).to.equal(data.title)
-            expect(entry.thoughts).to.equal(data.thoughts)
-
-            await PBClient.collection('achievements_entries')
-                .getOne(entry.id)
-                .catch(() => {
-                    throw new Error('Entry not found in database')
-                })
-
-            await PBClient.collection('achievements_entries').delete(entry.id)
+    testInvalidOrMissingValue({
+        name: 'difficulty',
+        type: 'invalid',
+        method: 'post',
+        endpoint: '/achievements/entries',
+        data: {
+            difficulty: 'invalid',
+            title: 'Title',
+            thoughts: 'Thoughts'
         }
     })
 
-    it('should return 400 on invalid difficulty', async () => {
-        const res = await request(API_HOST)
-            .post('/achievements/entries')
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .send({
-                difficulty: 'invalid',
-                title: 'Title',
-                thoughts: 'Thoughts'
-            })
-            .expect(400)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'error')
-        expect(res.body).to.have.property(
-            'message',
-            'difficulty: Invalid value'
-        )
-    })
-
-    it('should return 400 on missing request data', async () => {
-        for (const field of ['difficulty', 'title', 'thoughts']) {
-            const data = {
-                difficulty: 'easy',
-                title: 'Title',
-                thoughts: 'Thoughts'
-            }
-
-            delete data[field as keyof typeof data]
-
-            const res = await request(API_HOST)
-                .post('/achievements/entries')
-                .set('Authorization', `Bearer ${PBAuthToken}`)
-                .send(data)
-                .expect(400)
-
-            expect(res.body).to.be.an('object')
-            expect(res.body).to.have.property('state', 'error')
-            expect(res.body).to.have.property(
-                'message',
-                `${field}: Invalid value`
-            )
+    for (const field of ['difficulty', 'title', 'thoughts']) {
+        const data = {
+            difficulty: 'easy',
+            title: 'Title',
+            thoughts: 'Thoughts'
         }
-    })
+
+        delete data[field as keyof typeof data]
+
+        testInvalidOrMissingValue({
+            name: field,
+            type: 'missing',
+            method: 'post',
+            endpoint: '/achievements/entries',
+            data
+        })
+    }
 })
 
 describe('PATCH /achievements/entries/:id', () => {
     testUnauthorized('/achievements/entries/1', 'patch')
 
-    it('should update an achievement entry', async () => {
-        const data = {
+    testEntryModification({
+        name: 'achievement',
+        endpoint: '/achievements/entries',
+        schema: AchievementsEntrySchema,
+        collection: 'achievements_entries',
+        oldData: {
             difficulty: 'easy',
             title: lorem.generateWords(3),
             thoughts: lorem.generateWords(10)
+        },
+        newData: {
+            difficulty: 'medium',
+            title: 'New title',
+            thoughts: 'New thoughts'
+        }
+    })
+
+    testInvalidOrMissingValue({
+        name: 'difficulty',
+        type: 'invalid',
+        endpoint: '/achievements/entries/1',
+        method: 'patch',
+        data: {
+            difficulty: 'invalid',
+            title: 'Title',
+            thoughts: 'Thoughts'
+        }
+    })
+
+    for (const field of ['difficulty', 'title', 'thoughts']) {
+        const data = {
+            difficulty: 'easy',
+            title: 'Title',
+            thoughts: 'Thoughts'
         }
 
-        const entry = await PBClient.collection('achievements_entries').create(
+        delete data[field as keyof typeof data]
+
+        testInvalidOrMissingValue({
+            name: field,
+            type: 'missing',
+            endpoint: '/achievements/entries/1',
+            method: 'patch',
             data
-        )
-
-        const res = await request(API_HOST)
-            .patch(`/achievements/entries/${entry.id}`)
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .send({
-                difficulty: 'medium',
-                title: 'New title',
-                thoughts: 'New thoughts'
-            })
-            .expect(200)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'success')
-        expect(res.body).to.have.property('data')
-        expect(res.body.data).to.be.an('object')
-
-        const updatedEntry = res.body.data
-
-        assert(
-            AchievementsEntrySchema.is(updatedEntry),
-            'Invalid schema for achievements entry'
-        )
-
-        expect(updatedEntry.title).to.equal('New title')
-        expect(updatedEntry.thoughts).to.equal('New thoughts')
-
-        await PBClient.collection('achievements_entries').delete(entry.id)
-    })
-
-    it('should return 400 on missing difficulty', async () => {
-        const entry = await PBClient.collection('achievements_entries').create({
-            difficulty: 'easy',
-            title: 'Title',
-            thoughts: 'Thoughts'
         })
+    }
 
-        const res = await request(API_HOST)
-            .patch(`/achievements/entries/${entry.id}`)
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .send({
-                difficulty: 'invalid',
-                title: 'New title',
-                thoughts: 'New thoughts'
-            })
-            .expect(400)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'error')
-        expect(res.body).to.have.property(
-            'message',
-            'difficulty: Invalid value'
-        )
-
-        await PBClient.collection('achievements_entries').delete(entry.id)
-    })
-
-    it('should return 400 on missing request', async () => {
-        const entry = await PBClient.collection('achievements_entries').create({
-            difficulty: 'easy',
-            title: 'Title',
-            thoughts: 'Thoughts'
-        })
-
-        for (const field of ['difficulty', 'title', 'thoughts']) {
-            const data = {
-                difficulty: 'easy',
-                title: 'Title',
-                thoughts: 'Thoughts'
-            }
-
-            delete data[field as keyof typeof data]
-
-            const res = await request(API_HOST)
-                .patch(`/achievements/entries/${entry.id}`)
-                .set('Authorization', `Bearer ${PBAuthToken}`)
-                .send(data)
-                .expect(400)
-
-            expect(res.body).to.be.an('object')
-            expect(res.body).to.have.property('state', 'error')
-            expect(res.body).to.have.property(
-                'message',
-                `${field}: Invalid value`
-            )
-        }
-
-        await PBClient.collection('achievements_entries').delete(entry.id)
-    })
-
-    it('should return 404 if entry is not found', async () => {
-        const res = await request(API_HOST)
-            .patch('/achievements/entries/1')
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .send({
-                difficulty: 'easy',
-                title: 'Title',
-                thoughts: 'Thoughts'
-            })
-            .expect(404)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'error')
-        expect(res.body).to.have.property('message', 'Entry not found')
+    testEntryNotFound('/achievements/entries/1', 'patch', {
+        difficulty: 'easy',
+        title: 'Title',
+        thoughts: 'Thoughts'
     })
 })
 
 describe('DELETE /achievements/entries/:id', () => {
     testUnauthorized('/achievements/entries/1', 'delete')
 
-    it('should delete an achievement entry', async () => {
-        const entry = await PBClient.collection('achievements_entries').create({
+    testEntryDeletion({
+        name: 'achievement',
+        endpoint: '/achievements/entries',
+        collection: 'achievements_entries',
+        data: {
             difficulty: 'easy',
             title: 'Title',
             thoughts: 'Thoughts'
-        })
-
-        const res = await request(API_HOST)
-            .delete(`/achievements/entries/${entry.id}`)
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .expect(410)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'success')
-
-        await PBClient.collection('achievements_entries')
-            .getOne(entry.id)
-            .then(() => {
-                throw new Error('Entry still exists in database')
-            })
-            .catch(() => {})
+        }
     })
 
-    it('should return 404 if entry is not found', async () => {
-        const res = await request(API_HOST)
-            .delete('/achievements/entries/1')
-            .set('Authorization', `Bearer ${PBAuthToken}`)
-            .expect(404)
-
-        expect(res.body).to.be.an('object')
-        expect(res.body).to.have.property('state', 'error')
-        expect(res.body).to.have.property('message', 'Entry not found')
-    })
+    testEntryNotFound('/achievements/entries/1', 'delete')
 })

@@ -19,3 +19,21 @@ export async function checkExistence(
 
     return found
 }
+
+export async function validateExistence(
+    pb: Pocketbase,
+    collection: string,
+    id: string,
+    optional = false
+): Promise<boolean> {
+    if (optional && !id) return true
+
+    await pb
+        .collection(collection)
+        .getOne(id)
+        .catch(() => {
+            throw new Error('Invalid value')
+        })
+
+    return true
+}

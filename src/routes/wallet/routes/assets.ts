@@ -5,7 +5,7 @@ import { BaseResponse } from '../../../interfaces/base_response.js'
 import { IWalletAsset } from '../../../interfaces/wallet_interfaces.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
-import { checkExistence } from '../../../utils/checkExistence.js'
+import { checkExistence } from '../../../utils/PBRecordValidator.js'
 
 const router = express.Router()
 
@@ -59,7 +59,7 @@ router.post(
                     starting_balance: +starting_balance
                 })
 
-            successWithBaseResponse(res, asset)
+            successWithBaseResponse(res, asset, 201)
         }
     )
 )
@@ -79,8 +79,7 @@ router.patch(
             const { id } = req.params
             const { name, icon, starting_balance } = req.body
 
-            const found = await checkExistence(req, res, 'wallet_assets', id)
-            if (!found) return
+            if (!(await checkExistence(req, res, 'wallet_assets', id))) return
 
             const asset: IWalletAsset = await pb
                 .collection('wallet_assets')
@@ -101,12 +100,11 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
-        const found = await checkExistence(req, res, 'wallet_assets', id)
-        if (!found) return
+        if (!(await checkExistence(req, res, 'wallet_assets', id))) return
 
         await pb.collection('wallet_assets').delete(id)
 
-        successWithBaseResponse(res)
+        successWithBaseResponse(res, undefined, 410)
     })
 )
 

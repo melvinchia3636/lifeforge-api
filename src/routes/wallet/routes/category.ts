@@ -6,6 +6,7 @@ import { IWalletCategory } from '../../../interfaces/wallet_interfaces.js'
 import { BaseResponse } from '../../../interfaces/base_response.js'
 import { body } from 'express-validator'
 import hasError from '../../../utils/checkError.js'
+import { checkExistence } from '../../../utils/PBRecordValidator.js'
 
 const router = express.Router()
 
@@ -23,7 +24,7 @@ router.post(
         body('name').isString(),
         body('icon').isString(),
         body('color').isHexColor(),
-        body('type').isString()
+        body('type').isIn(['expenses', 'income'])
     ],
     asyncWrapper(
         async (req: Request, res: Response<BaseResponse<IWalletCategory>>) => {
@@ -41,7 +42,7 @@ router.post(
                     type
                 })
 
-            successWithBaseResponse(res, category)
+            successWithBaseResponse(res, category, 201)
         }
     )
 )
@@ -60,6 +61,14 @@ router.patch(
             const { pb } = req
             const { id } = req.params
             const { name, icon, color } = req.body
+
+            const found = await checkExistence(
+                req,
+                res,
+                'wallet_categories',
+                id
+            )
+            if (!found) return
 
             const category: IWalletCategory = await pb
                 .collection('wallet_categories')
@@ -80,9 +89,12 @@ router.delete(
         const { pb } = req
         const { id } = req.params
 
+        const found = await checkExistence(req, res, 'wallet_categories', id)
+        if (!found) return
+
         await pb.collection('wallet_categories').delete(id)
 
-        successWithBaseResponse(res)
+        successWithBaseResponse(res, null, 410)
     })
 )
 
