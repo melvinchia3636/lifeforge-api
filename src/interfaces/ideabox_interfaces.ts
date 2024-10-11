@@ -1,30 +1,45 @@
-import type BasePBCollection from './pocketbase_interfaces.js'
+import * as s from "superstruct";
+import { BasePBCollectionSchema } from "./pocketbase_interfaces.js";
 
-interface IIdeaBoxContainer extends BasePBCollection {
-    color: string
-    icon: string
-    image_count: number
-    link_count: number
-    name: string
-    text_count: number
-}
+const IdeaBoxContainerSchema = s.assign(
+  BasePBCollectionSchema,
+  s.object({
+    color: s.string(),
+    icon: s.string(),
+    image_count: s.number(),
+    link_count: s.number(),
+    name: s.string(),
+    text_count: s.number(),
+  })
+);
 
-interface IIdeaBoxFolder extends BasePBCollection {
-    color: string
-    icon: string
-    name: string
-    containers: string
-}
+const IdeaBoxFolderSchema = s.assign(
+  BasePBCollectionSchema,
+  s.object({
+    color: s.string(),
+    icon: s.string(),
+    name: s.string(),
+    containers: s.string(),
+  })
+);
 
-interface IIdeaBoxEntry extends BasePBCollection {
-    container: string
-    folder: string
-    content?: string
-    image?: string
-    title?: string
-    type: 'text' | 'image' | 'link'
-    pinned: boolean
-    archived: boolean
-}
+const IdeaBoxEntrySchema = s.assign(
+  BasePBCollectionSchema,
+  s.object({
+    container: s.string(),
+    folder: s.string(),
+    content: s.optional(s.string()),
+    image: s.optional(s.string()),
+    title: s.optional(s.string()),
+    type: s.enums(["text", "image", "link"]),
+    pinned: s.boolean(),
+    archived: s.boolean(),
+  })
+);
 
-export type { IIdeaBoxContainer, IIdeaBoxFolder, IIdeaBoxEntry }
+type IIdeaBoxContainer = s.Infer<typeof IdeaBoxContainerSchema>;
+type IIdeaBoxFolder = s.Infer<typeof IdeaBoxFolderSchema>;
+type IIdeaBoxEntry = s.Infer<typeof IdeaBoxEntrySchema>;
+
+export { IdeaBoxContainerSchema, IdeaBoxFolderSchema, IdeaBoxEntrySchema };
+export type { IIdeaBoxContainer, IIdeaBoxFolder, IIdeaBoxEntry };

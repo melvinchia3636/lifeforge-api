@@ -103,7 +103,7 @@ router.post(
     [
         body('name').notEmpty(),
         body('icon').notEmpty(),
-        body('color').isHexColor(),
+        body('color').notEmpty(),
         body('website').notEmpty(),
         body('username').notEmpty(),
         body('password').notEmpty(),

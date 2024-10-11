@@ -1,12 +1,12 @@
-import express, { Request, Response } from 'express'
-import container from './routes/container.js'
-import folder from './routes/folder.js'
-import idea from './routes/idea.js'
+import express from "express";
+import container from "./routes/containers.js";
+import folder from "./routes/folders.js";
+import idea from "./routes/ideas.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.use('/container', container)
-router.use('/folder', folder)
-router.use('/idea', idea)
+router.use("/containers", container);
+router.use("/folders", folder);
+router.use("/ideas", idea);
 
-export default router
+export default router;

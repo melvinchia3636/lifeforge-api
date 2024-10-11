@@ -1,10 +1,4 @@
-.env.local
 node_modules
-.DS_Store
-yarn.lock
+
+*.local
 scripts
-.vercel
-uploads
-# Local Netlify folder
-.netlify
-dist
