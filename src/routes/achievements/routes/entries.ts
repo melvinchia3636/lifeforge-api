@@ -13,22 +13,35 @@ import { checkExistence } from "../../../utils/PBRecordValidator.js";
 
 const router = express.Router();
 
+/**
+ * @protected
+ * @summary Get a list of all achievements entries by difficulty
+ * @description Retrieve a list of all achievements entries, filtered by difficulty level given in the URL.
+ * @param difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
+ * @response 200
+ * @returns {IAchievementEntry[]} - An array of achievement entries
+ */
 router.get(
   "/:difficulty",
   param("difficulty").isString().isIn(["easy", "medium", "hard", "impossible"]),
   asyncWrapper(
-    async (req: Request, res: Response<BaseResponse<IAchievementEntry[]>>) => {
-      if (hasError(req, res)) return;
-
-      const { difficulty } = req.params;
-
-      await list<IAchievementEntry>(req, res, "achievements_entries", {
-        filter: `difficulty = "${difficulty}"`,
-      });
-    }
+    async (req: Request, res: Response<BaseResponse<IAchievementEntry[]>>) =>
+      list<IAchievementEntry>(req, res, "achievements_entries", {
+        filter: `difficulty = "${req.params.difficulty}"`,
+      })
   )
 );
 
+/**
+ * @protected
+ * @summary Create a new achievement entry
+ * @description Create a new achievement entry with the given difficulty, title, and thoughts.
+ * @body difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
+ * @body title (string, required) - The title of the achievement
+ * @body thoughts (string, required) - The thoughts on the achievement
+ * @response 201
+ * @returns {IAchievementEntry} - The created achievement entry
+ */
 router.post(
   "/",
   [
@@ -36,8 +49,8 @@ router.post(
       .exists()
       .isString()
       .isIn(["easy", "medium", "hard", "impossible"]),
-    body("title").exists().notEmpty(),
-    body("thoughts").exists().notEmpty(),
+    body("title").isString(),
+    body("thoughts").isString(),
   ],
   asyncWrapper(
     async (req: Request, res: Response<BaseResponse<IAchievementEntry>>) => {
@@ -59,6 +72,17 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Update an achievement entry
+ * @description Update an existing achievement entry with the given ID, setting the difficulty, title, and thoughts.
+ * @param id (string, required, must_exist) - The ID of the achievement entry to update
+ * @body difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
+ * @body title (string, required) - The title of the achievement
+ * @body thoughts (string, required) - The thoughts on the achievement
+ * @response 200
+ * @returns {IAchievementEntry} - The updated achievement entry
+ */
 router.patch(
   "/:id",
   [
@@ -90,6 +114,14 @@ router.patch(
   })
 );
 
+/**
+ * @protected
+ * @summary Delete an achievement entry
+ * @description Delete an existing achievement entry with the given ID.
+ * @param id (string, required, must_exist) - The ID of the achievement entry to delete
+ * @response 204
+ * @returns {void} - No content
+ */
 router.delete(
   "/:id",
   [param("id").isString()],

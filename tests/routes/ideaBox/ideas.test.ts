@@ -1,4 +1,4 @@
-import { describe } from "vitest";
+import { describe, it } from "vitest";
 import { IdeaBoxEntrySchema } from "../../../src/interfaces/ideabox_interfaces.js";
 import testUnauthorized from "../../common/testUnauthorized.js";
 import testEntryList from "../../common/testEntryList.js";
@@ -8,9 +8,12 @@ import testEntryNotFound from "../../common/testEntryNotFound.js";
 import testEntryDeletion from "../../common/testEntryDeletion.js";
 import testEntryModification from "../../common/testEntryModification.js";
 import { postTestCleanup } from "../../common/postTestCleanup.js";
-import { PBClient } from "../../utils/PBClient.js";
+import { PBAuthToken, PBClient } from "../../utils/PBClient.js";
 import { expect } from "chai";
 import testInvalidOrMissingQuery from "../../common/testInvalidOrMissingQuery.js";
+import request from "supertest";
+import API_HOST from "../../constant/API_HOST.js";
+import { assert } from "superstruct";
 
 async function generateDummyData() {
   const container = await PBClient.collection("idea_box_containers").create(
@@ -660,5 +663,89 @@ describe("POST /idea-box/archive/:id", async () => {
 
   testEntryNotFound("/idea-box/ideas/archive/123", "post", {
     archived: true,
+  });
+});
+
+describe("POST /idea-box/folder/:id", async () => {
+  postTestCleanup("idea_box_containers");
+  postTestCleanup("idea_box_folders");
+  postTestCleanup("idea_box_entries", "content");
+
+  testUnauthorized("/idea-box/folder/123", "post");
+
+  it("should move an idea to a folder", async () => {
+    const { folder, entryOutsideFolder } = await generateDummyData();
+
+    const res = await request(API_HOST)
+      .post(
+        `/idea-box/ideas/folder/${entryOutsideFolder.id}?folder=${folder.id}`
+      )
+      .set("Authorization", `Bearer ${PBAuthToken}`)
+      .expect(200);
+
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("state", "success");
+    assert(res.body.data, IdeaBoxEntrySchema);
+    expect(res.body.data.folder).to.equal(folder.id);
+  });
+
+  it("should return 404 if the idea is not found", async () => {
+    const { folder } = await generateDummyData();
+
+    const res = await request(API_HOST)
+      .post(`/idea-box/ideas/folder/123?folder=${folder.id}`)
+      .set("Authorization", `Bearer ${PBAuthToken}`)
+      .expect(404);
+
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("state", "error");
+    expect(res.body).to.have.property("message", "Entry not found");
+  });
+
+  testInvalidOrMissingQuery({
+    name: "folder",
+    type: "missing",
+    endpoint: "/idea-box/ideas/folder/123",
+    method: "post",
+  });
+
+  testInvalidOrMissingQuery({
+    name: "folder",
+    type: "invalid",
+    endpoint: "/idea-box/ideas/folder/123?folder=123",
+    method: "post",
+  });
+});
+
+describe("DELETE /idea-box/folder/:id", async () => {
+  postTestCleanup("idea_box_containers");
+  postTestCleanup("idea_box_folders");
+  postTestCleanup("idea_box_entries", "content");
+
+  testUnauthorized("/idea-box/folder/123", "delete");
+
+  it("should remove an idea from a folder", async () => {
+    const { entryInsideFolder } = await generateDummyData();
+
+    const res = await request(API_HOST)
+      .delete(`/idea-box/ideas/folder/${entryInsideFolder.id}`)
+      .set("Authorization", `Bearer ${PBAuthToken}`)
+      .expect(200);
+
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("state", "success");
+    assert(res.body.data, IdeaBoxEntrySchema);
+    expect(res.body.data.folder).to.be.empty.string;
+  });
+
+  it("should return 404 if the idea is not found", async () => {
+    const res = await request(API_HOST)
+      .delete("/idea-box/ideas/folder/123")
+      .set("Authorization", `Bearer ${PBAuthToken}`)
+      .expect(404);
+
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("state", "error");
+    expect(res.body).to.have.property("message", "Entry not found");
   });
 });

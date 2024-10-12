@@ -14,7 +14,7 @@ import {
   IWalletTransactionEntry,
 } from "../../../interfaces/wallet_interfaces.js";
 import { WithoutPBDefault } from "../../../interfaces/pocketbase_interfaces.js";
-import { body } from "express-validator";
+import { body, query } from "express-validator";
 import hasError from "../../../utils/checkError.js";
 import {
   checkExistence,
@@ -24,8 +24,11 @@ import {
 const router = express.Router();
 
 /**
- * @description Get a list of wallet transactions
- * @access Private
+ * @protected
+ * @summary Get a list of all wallet transactions
+ * @description Retrieve a list of all wallet transactions.
+ * @response 200
+ * @returns {IWalletIncomeExpenses[]} - An array of wallet transactions
  */
 router.get(
   "/",
@@ -37,15 +40,27 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Get the summarized amount of income and expenses
+ * @description Retrieve the total amount of income and expenses, as well as the amount of income and expenses in a specific month.
+ * @query year (number, required) - The year to filter by (YYYY)
+ * @query month (number, required) - The month to filter by (M)
+ * @response 200
+ * @returns {IWalletIncomeExpenses} - The total and monthly income and expenses
+ */
 router.get(
-  "/income-expenses/:year/:month",
+  "/income-expenses",
+  [query("year").isNumeric(), query("month").isNumeric()],
   asyncWrapper(
     async (
       req: Request,
       res: Response<BaseResponse<IWalletIncomeExpenses>>
     ) => {
+      if (hasError(req, res)) return;
+
       const { pb } = req;
-      const { year, month } = req.params;
+      const { year, month } = req.query;
 
       const start = moment(`${year}-${month}-01`)
         .startOf("month")
@@ -113,6 +128,22 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Create a new wallet transaction
+ * @description Create a new wallet transaction with the given particulars, date, amount, category, asset, ledger, type, and side.
+ * @body type (string, required, one_of income|expenses|transfer) - The type of the transaction
+ * @body particulars (string, required) - The particulars of the transaction
+ * @body date (string, required) - The date of the transaction (any valid date string that can be parsed by moment.js)
+ * @body amount (number, required) - The amount of the transaction
+ * @body category (string, optional, must_exist) - The ID of the category, will raise an error if the type is transfer
+ * @body asset (string, optional, must_exist) - The ID of the asset, will raise an error if the type is transfer
+ * @body ledger (string, optional) - The ID of the ledger, will raise an error if the type is transfer
+ * @body fromAsset (string, required if type is transfer, must_exist) - The ID of the asset to transfer from
+ * @body toAsset (string, required if type is transfer, must_exist) - The ID of the asset to transfer to
+ * @response 201
+ * @returns {IWalletTransactionEntry[]} - The created wallet transaction
+ */
 router.post(
   "/",
   [
@@ -142,17 +173,6 @@ router.post(
         await validateExistence(meta.req.pb, "wallet_ledgers", value, true)
     ),
     body("type").isIn(["income", "expenses", "transfer"]),
-    body("side").custom((value: string, meta) => {
-      if (meta.req.body.type === "transfer") {
-        return true;
-      }
-
-      return (
-        (meta.req.body.type === "income" && value === "credit") ||
-        (meta.req.body.type === "expenses" && value === "debit") ||
-        !["income", "expenses"].includes(meta.req.body.type)
-      );
-    }),
     body("fromAsset").custom(async (value: string, meta) => {
       if (meta.req.body.type === "transfer") {
         await validateExistence(meta.req.pb, "wallet_assets", value, true);
@@ -191,7 +211,6 @@ router.post(
         asset,
         ledger,
         type,
-        side,
         fromAsset,
         toAsset,
       } = req.body;
@@ -199,16 +218,6 @@ router.post(
       amount = +amount;
 
       const file = req.file;
-
-      if (type === "transfer") {
-        if (!fromAsset || !toAsset) {
-          clientError(res, "Missing required fields");
-          return;
-        }
-      } else if (!particulars || !date || !amount || !type || !side) {
-        clientError(res, "Missing required fields");
-        return;
-      }
 
       if (file) file.originalname = decodeURIComponent(file.originalname);
 
@@ -230,7 +239,7 @@ router.post(
           asset,
           ledger,
           type,
-          side,
+          side: type === "income" ? "credit" : "debit",
           receipt:
             file && fs.existsSync(file.path)
               ? (() => {
@@ -304,6 +313,21 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Update a wallet transaction
+ * @description Update a wallet income or expenses transaction with the given particulars, date, amount, category, asset, ledger, type, and side.
+ * @param id (string, path, required, must_exist) - The ID of the transaction
+ * @body particulars (string, required) - The particulars of the transaction
+ * @body date (string, required) - The date of the transaction (any valid date string that can be parsed by moment.js)
+ * @body amount (number, required) - The amount of the transaction
+ * @body category (string, optional, must_exist) - The ID of the category
+ * @body asset (string, optional, must_exist) - The ID of the asset
+ * @body ledger (string, optional, must_exist) - The ID of the ledger
+ * @body type (string, required, one_of income|expenses) - The type of the transaction
+ * @response 200
+ * @returns {IWalletTransactionEntry} - The updated wallet transaction
+ */
 router.patch(
   "/:id",
   [
@@ -333,13 +357,6 @@ router.patch(
         await validateExistence(meta.req.pb, "wallet_ledgers", value, true)
     ),
     body("type").isIn(["income", "expenses"]),
-    body("side").custom((value: string, meta) => {
-      return (
-        (meta.req.body.type === "income" && value === "credit") ||
-        (meta.req.body.type === "expenses" && value === "debit") ||
-        !["income", "expenses"].includes(meta.req.body.type)
-      );
-    }),
   ],
   singleUploadMiddleware,
   asyncWrapper(
@@ -359,7 +376,6 @@ router.patch(
         asset,
         ledger,
         type,
-        side,
         removeReceipt,
       } = req.body;
 
@@ -393,7 +409,7 @@ router.patch(
         asset,
         ledger,
         type,
-        side,
+        side: type === "income" ? "credit" : "debit",
         receipt: (() => {
           if (file && fs.existsSync(file.path)) {
             const fileBuffer = fs.readFileSync(file.path);
@@ -423,6 +439,14 @@ router.patch(
   )
 );
 
+/**
+ * @protected
+ * @summary Delete a wallet transaction
+ * @description Delete a wallet transaction with the given ID.
+ * @param id (string, path, required, must_exist) - The ID of the transaction
+ * @response 204
+ * @returns {void} - No content
+ */
 router.delete(
   "/:id",
   asyncWrapper(async (req: Request, res: Response) => {
@@ -431,11 +455,11 @@ router.delete(
 
     if (!(await checkExistence(req, res, "wallet_transactions", id))) return;
 
-    const transaction = await pb.collection("wallet_transactions").getOne(id);
+    await pb.collection("wallet_transactions").getOne(id);
 
     await pb.collection("wallet_transactions").delete(id);
 
-    successWithBaseResponse(res, transaction, 204);
+    successWithBaseResponse(res, undefined, 204);
   })
 );
 

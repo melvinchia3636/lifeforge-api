@@ -424,7 +424,8 @@
     "newFolder": "新建文件夹",
     "fileUpload": "上传文件",
     "folderUpload": "上传文件夹",
-    "hideAmount": "隐藏金额"
+    "hideAmount": "隐藏金额",
+    "removeFromFolder": "从文件夹中移除"
   },
   "modals": {
     "header": {

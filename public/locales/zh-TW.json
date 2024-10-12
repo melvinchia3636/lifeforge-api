@@ -423,7 +423,8 @@
     "newFolder": "新增資料夾",
     "fileUpload": "上傳檔案",
     "folderUpload": "上傳檔案夾",
-    "hideAmount": "隱藏金額"
+    "hideAmount": "隱藏金額",
+    "removeFromFolder": "從檔案夾中移除"
   },
   "modals": {
     "header": {

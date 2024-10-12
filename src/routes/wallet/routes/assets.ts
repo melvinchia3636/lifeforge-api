@@ -9,6 +9,13 @@ import { checkExistence } from "../../../utils/PBRecordValidator.js";
 
 const router = express.Router();
 
+/**
+ * @protected
+ * @summary Get a list of all wallet assets
+ * @description Retrieve a list of all wallet assets.
+ * @response 200
+ * @returns {IWalletAsset[]} - An array of wallet assets
+ */
 router.get(
   "/",
   asyncWrapper(
@@ -37,6 +44,16 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Create a new wallet asset
+ * @description Create a new wallet asset with the given name, icon, and starting balance.
+ * @body name (string, required) - The name of the asset
+ * @body icon (string, required) - The icon of the asset
+ * @body starting_balance (number, required) - The starting balance of the asset
+ * @response 201
+ * @returns {IWalletAsset} - The created wallet asset
+ */
 router.post(
   "/",
   [
@@ -62,6 +79,17 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Update a wallet asset
+ * @description Update an existing wallet asset with the given ID, setting the name, icon, and starting balance.
+ * @param id (string, required, must_exist) - The ID of the wallet asset to update
+ * @body name (string, required) - The name of the asset
+ * @body icon (string, required) - The icon of the asset
+ * @body starting_balance (number, required) - The starting balance of the asset
+ * @response 200
+ * @returns {IWalletAsset} - The updated wallet asset
+ */
 router.patch(
   "/:id",
   [
@@ -92,6 +120,14 @@ router.patch(
   )
 );
 
+/**
+ * @protected
+ * @summary Delete a wallet asset
+ * @description Delete an existing wallet asset with the given ID.
+ * @param id (string, required, must_exist) - The ID of the wallet asset to delete
+ * @response 204
+ * @returns {void} - No content
+ */
 router.delete(
   "/:id",
   asyncWrapper(async (req: Request, res: Response) => {

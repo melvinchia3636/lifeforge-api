@@ -18,6 +18,16 @@ import {
 
 const router = express.Router();
 
+/**
+ * @protected
+ * @summary Get a list of all idea box entries
+ * @description Retrieve a list of all idea box entries, filtered by container and folder given in the URL.
+ * @query container (string, required, must_exist) - The container of the idea box entries
+ * @query folder (string, optional, must_exist) - The folder of the idea box entries
+ * @query archived (boolean, optional) - Whether to include archived entries
+ * @response 200
+ * @returns {IIdeaBoxEntry[]} - An array of idea box entries
+ */
 router.get(
   "/",
   [
@@ -44,6 +54,20 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Create a new idea box entry
+ * @description Create a new idea box entry with the given container, title, content, and type.
+ * @body container (string, required, must_exist) - The container of the idea box entry
+ * @body type (string, required, one_of text|link|image) - The type of the idea box entry
+ * @body title (string, required if type is text or link) - The title of the idea box entry
+ * @body content (string, required if type is text or link) - The content of the idea box entry
+ * @body imageLink (string, optional) - The link to the image, will raise an error if type is not image
+ * @body folder (string, optional, must_exist) - The folder of the idea box entry
+ * @body file (file, required if type is image) - The image file
+ * @response 201
+ * @returns {IIdeaBoxEntry} - The created idea box entry
+ */
 router.post(
   "/",
   multer().single("image"),
@@ -67,7 +91,12 @@ router.post(
       return true;
     }),
     body("type").isString().isIn(["text", "link", "image"]).notEmpty(),
-    body("imageLink").isString().optional(),
+    body("imageLink").custom((value, { req }) => {
+      if (req.body.type !== "image" && value) {
+        throw new Error("Invalid value");
+      }
+      return true;
+    }),
     body("folder").isString().optional(),
     body("file").custom((_, { req }) => {
       if (req.body.type === "image" && !req.file && !req.body.imageLink) {
@@ -137,6 +166,17 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Update an idea box entry
+ * @description Update an existing idea box entry with the given ID, setting the title, content, and type.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to update
+ * @body title (string, required) - The title of the idea box entry
+ * @body content (string, required) - The content of the idea box entry
+ * @body type (string, required, one_of text|link) - The type of the idea box entry
+ * @response 200
+ * @returns {IIdeaBoxEntry} - The updated idea box entry
+ */
 router.patch(
   "/:id",
   [
@@ -184,6 +224,14 @@ router.patch(
   )
 );
 
+/**
+ * @protected
+ * @summary Delete an idea box entry
+ * @description Delete an existing idea box entry with the given ID.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to delete
+ * @response 204
+ * @returns {void} - No content
+ */
 router.delete(
   "/:id",
   asyncWrapper(async (req: Request, res: Response<BaseResponse>) => {
@@ -202,6 +250,14 @@ router.delete(
   })
 );
 
+/**
+ * @protected
+ * @summary Pin/unpin an idea box entry
+ * @description Update the pinned status of an existing idea box entry with the given ID.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to pin
+ * @response 200
+ * @returns {IIdeaBoxEntry} - The updated idea box entry
+ */
 router.post(
   "/pin/:id",
   asyncWrapper(
@@ -223,6 +279,14 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Archive/unarchive an idea box entry
+ * @description Update the archived status of an existing idea box entry with the given ID.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to archive
+ * @response 200
+ * @returns {IIdeaBoxEntry} - The updated idea box entry
+ */
 router.post(
   "/archive/:id",
   asyncWrapper(
@@ -245,6 +309,15 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Move an idea box entry to a folder
+ * @description Update the folder of an existing idea box entry with the given ID.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to move
+ * @query folder (string, required, must_exist) - The folder to move the idea box entry to
+ * @response 200
+ * @returns {IIdeaBoxEntry} - The updated idea box entry
+ */
 router.post(
   "/folder/:id",
   query("folder").custom(
@@ -259,7 +332,7 @@ router.post(
       const { id } = req.params;
       const { folder } = req.query;
 
-      if (!(await checkExistence(req, res, "idea_box_folders", id))) return;
+      if (!(await checkExistence(req, res, "idea_box_entries", id))) return;
 
       const entry: IIdeaBoxEntry = await pb
         .collection("idea_box_entries")
@@ -272,12 +345,22 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Remove an idea box entry from a folder
+ * @description Update the folder of an existing idea box entry with the given ID to an empty string.
+ * @param id (string, required, must_exist) - The ID of the idea box entry to remove from the folder
+ * @response 200
+ * @returns {IIdeaBoxEntry} - The updated idea box entry
+ */
 router.delete(
   "/folder/:id",
   asyncWrapper(
     async (req: Request, res: Response<BaseResponse<IIdeaBoxEntry>>) => {
       const { pb } = req;
       const { id } = req.params;
+
+      if (!(await checkExistence(req, res, "idea_box_entries", id))) return;
 
       const entry: IIdeaBoxEntry = await pb
         .collection("idea_box_entries")

@@ -423,7 +423,8 @@
     "newFolder": "New Folder",
     "fileUpload": "Upload File",
     "folderUpload": "Upload Folder",
-    "hideAmount": "Hide amount"
+    "hideAmount": "Hide amount",
+    "removeFromFolder": "Remove from Folder"
   },
   "modals": {
     "header": {

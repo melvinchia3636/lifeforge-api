@@ -38,7 +38,7 @@
           </tr>
         </thead>
         <tbody>
-          <% methods.forEach(({method, path, description})=> { %>
+          <% methods.forEach(({method, path, description, docs})=> { %>
             <tr class="even:bg-zinc-900">
               <td class="px-4 py-2 text-center font-medium tracking-wider <%= (() => {
                 switch(method) {
@@ -57,7 +57,7 @@
         </tbody>
       </table>
       <div class="sm:hidden w-full flex flex-col">
-        <% methods.forEach(({method, path, description})=> { %>
+        <% methods.forEach(({method, path, description, docs})=> { %>
           <div class="p-4 w-full odd:bg-neutral-900/50 flex items-center justify-between gap-2">
             <div class="text-center font-medium tracking-wider">
               <span class="<%= (() => {

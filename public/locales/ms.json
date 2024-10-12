@@ -423,7 +423,8 @@
     "newFolder": "Folder Baharu",
     "fileUpload": "Muat Naik Fail",
     "folderUpload": "Muat Naik Folder",
-    "hideAmount": "Sembunyikan jumlah"
+    "hideAmount": "Sembunyikan jumlah",
+    "removeFromFolder": "Alih Keluar dari Folder"
   },
   "modals": {
     "header": {

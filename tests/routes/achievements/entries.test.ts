@@ -2,18 +2,18 @@ import { assert, expect } from "chai";
 import request from "supertest";
 import { describe, it } from "vitest";
 
-import { AchievementsEntrySchema } from "../../src/interfaces/achievements_interfaces.js";
+import { AchievementsEntrySchema } from "../../../src/interfaces/achievements_interfaces.js";
 import { LoremIpsum } from "lorem-ipsum";
-import { PBAuthToken, PBClient } from "../utils/PBClient.js";
-import API_HOST from "../constant/API_HOST.js";
-import testUnauthorized from "../common/testUnauthorized.js";
-import testEntryList from "../common/testEntryList.js";
-import testEntryCreation from "../common/testEntryCreation.js";
-import testInvalidOrMissingValue from "../common/testInvalidOrMissingValue.js";
-import testEntryNotFound from "../common/testEntryNotFound.js";
-import testEntryDeletion from "../common/testEntryDeletion.js";
-import testEntryModification from "../common/testEntryModification.js";
-import { postTestCleanup } from "../common/postTestCleanup.js";
+import { PBAuthToken, PBClient } from "../../utils/PBClient.js";
+import API_HOST from "../../constant/API_HOST.js";
+import testUnauthorized from "../../common/testUnauthorized.js";
+import testEntryList from "../../common/testEntryList.js";
+import testEntryCreation from "../../common/testEntryCreation.js";
+import testInvalidOrMissingValue from "../../common/testInvalidOrMissingValue.js";
+import testEntryNotFound from "../../common/testEntryNotFound.js";
+import testEntryDeletion from "../../common/testEntryDeletion.js";
+import testEntryModification from "../../common/testEntryModification.js";
+import { postTestCleanup } from "../../common/postTestCleanup.js";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {

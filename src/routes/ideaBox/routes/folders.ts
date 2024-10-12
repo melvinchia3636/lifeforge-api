@@ -1,17 +1,11 @@
 import express, { Request, Response } from "express";
 import asyncWrapper from "../../../utils/asyncWrapper.js";
-import {
-  clientError,
-  successWithBaseResponse,
-} from "../../../utils/response.js";
+import { successWithBaseResponse } from "../../../utils/response.js";
 import { body, query } from "express-validator";
 import hasError from "../../../utils/checkError.js";
 import { list, validate } from "../../../utils/CRUD.js";
 import { BaseResponse } from "../../../interfaces/base_response.js";
-import {
-  IIdeaBoxEntry,
-  IIdeaBoxFolder,
-} from "../../../interfaces/ideabox_interfaces.js";
+import { IIdeaBoxFolder } from "../../../interfaces/ideabox_interfaces.js";
 import {
   checkExistence,
   validateExistence,
@@ -19,6 +13,14 @@ import {
 
 const router = express.Router();
 
+/**
+ * @protected
+ * @summary Get a single idea box folder
+ * @description Retrieve a single idea box folder by its ID.
+ * @param id (string, required) - The ID of the idea box folder
+ * @response 200
+ * @returns {IIdeaBoxFolder} - The idea box folder
+ */
 router.get(
   "/:id",
   asyncWrapper(
@@ -37,6 +39,14 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Get a list of all idea box folders
+ * @description Retrieve a list of all idea box folders, filtered by the container ID given in the query.
+ * @query container (string, required) - The ID of the container
+ * @response 200
+ * @returns {IIdeaBoxFolder[]} - An array of idea box folders
+ */
 router.get(
   "/",
   [
@@ -54,6 +64,14 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Check if an idea box folder exists
+ * @description Check if an idea box folder exists by its ID.
+ * @param id (string, required) - The ID of the idea box folder
+ * @response 200
+ * @returns {boolean} - Whether the idea box folder exists
+ */
 router.get(
   "/valid/:id",
   asyncWrapper(async (req: Request, res: Response<boolean>) =>
@@ -61,6 +79,17 @@ router.get(
   )
 );
 
+/**
+ * @protected
+ * @summary Create a new idea box folder
+ * @description Create a new idea box folder with the given name, container, icon, and color.
+ * @body name (string, required) - The name of the folder
+ * @body container (string, required) - The ID of the container
+ * @body icon (string, required) - The icon of the folder
+ * @body color (string, required) - The color of the folder
+ * @response 201
+ * @returns {IIdeaBoxFolder} - The created idea box folder
+ */
 router.post(
   "/",
   [
@@ -93,6 +122,17 @@ router.post(
   )
 );
 
+/**
+ * @protected
+ * @summary Update an idea box folder
+ * @description Update an existing idea box folder with the given ID, setting the name, icon, and color.
+ * @param id (string, required, must_exist) - The ID of the idea box folder to update
+ * @body name (string, required) - The name of the folder
+ * @body icon (string, required) - The icon of the folder
+ * @body color (string, required) - The color of the folder
+ * @response 200
+ * @returns {IIdeaBoxFolder} - The updated idea box folder
+ */
 router.patch(
   "/:id",
   [
@@ -123,6 +163,14 @@ router.patch(
   )
 );
 
+/**
+ * @protected
+ * @summary Delete an idea box folder
+ * @description Delete an existing idea box folder with the given ID.
+ * @param id (string, required, must_exist) - The ID of the idea box folder to delete
+ * @response 204
+ * @returns {void} - No content
+ */
 router.delete(
   "/:id",
   asyncWrapper(async (req: Request, res: Response<BaseResponse>) => {

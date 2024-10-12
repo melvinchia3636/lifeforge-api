@@ -16,6 +16,8 @@ import { assert } from "superstruct";
 import { expect } from "chai";
 import API_HOST from "../../constant/API_HOST.js";
 import { postTestCleanup } from "../../common/postTestCleanup.js";
+import moment from "moment";
+import testInvalidOrMissingQuery from "../../common/testInvalidOrMissingQuery.js";
 
 async function createDummyData(isTransfer = false) {
   const dummyCategory = await PBClient.collection("wallet_categories").create({
@@ -50,7 +52,7 @@ async function createDummyData(isTransfer = false) {
   return { dummyCategory, dummyLedger, dummyAsset, dummyAsset2 };
 }
 
-describe("GET /wallet/ledgers", () => {
+describe("GET /wallet/transactions", () => {
   postTestCleanup("wallet_transactions", "particulars");
   postTestCleanup("wallet_assets");
   postTestCleanup("wallet_categories");
@@ -62,6 +64,74 @@ describe("GET /wallet/ledgers", () => {
     endpoint: "/wallet/ledgers",
     schema: WalletLedgerSchema,
     name: "wallet ledger",
+  });
+});
+
+describe("GET /wallet/transactions/income-expenses", () => {
+  testUnauthorized("/wallet/transactions/income-expenses", "get");
+
+  it("should return a list of income and expenses for the month", async () => {
+    const { dummyCategory, dummyLedger, dummyAsset } = await createDummyData();
+    const date = moment();
+
+    const data = {
+      type: "expenses",
+      side: "debit",
+      particulars: "~test",
+      amount: 100,
+      date: date.toISOString(),
+      category: dummyCategory.id,
+      asset: dummyAsset.id,
+      ledger: dummyLedger.id,
+    };
+
+    await PBClient.collection("wallet_transactions").create(data);
+
+    const res = await request(API_HOST)
+      .get(
+        `/wallet/transactions/income-expenses?year=${date.year()}&month=${date.month() + 1}`
+      )
+      .set("Authorization", `Bearer ${PBAuthToken}`)
+      .expect(200);
+
+    expect(res.body).to.be.an("object");
+    expect(res.body).to.have.property("state", "success");
+    expect(res.body).to.have.property("data");
+    expect(res.body.data).to.be.an("object");
+    expect(res.body.data).to.have.all.keys(
+      "totalIncome",
+      "totalExpenses",
+      "monthlyIncome",
+      "monthlyExpenses"
+    );
+  });
+
+  testInvalidOrMissingQuery({
+    name: "year",
+    type: "invalid",
+    endpoint: "/wallet/transactions/income-expenses?year=abc&month=1",
+    method: "get",
+  });
+
+  testInvalidOrMissingQuery({
+    name: "month",
+    type: "invalid",
+    endpoint: "/wallet/transactions/income-expenses?year=2021&month=abc",
+    method: "get",
+  });
+
+  testInvalidOrMissingQuery({
+    name: "year",
+    type: "missing",
+    endpoint: "/wallet/transactions/income-expenses?month=1",
+    method: "get",
+  });
+
+  testInvalidOrMissingQuery({
+    name: "month",
+    type: "missing",
+    endpoint: "/wallet/transactions/income-expenses?year=2021",
+    method: "get",
   });
 });
 
@@ -80,7 +150,6 @@ describe("POST /wallet/transactions", async () => {
 
         return {
           type: type,
-          side: type === "income" ? "credit" : "debit",
           particulars: "~test",
           amount: 100,
           date: new Date().toISOString(),
@@ -174,35 +243,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "invalid",
-      side: "credit",
-      particulars: "~test",
-      amount: 100,
-      date: new Date().toISOString(),
-    },
-  });
-
-  testInvalidOrMissingValue({
-    name: "side (expenses)",
-    type: "invalid",
-    method: "post",
-    endpoint: "/wallet/transactions",
-    data: {
-      type: "expenses",
-      side: "credit",
-      particulars: "~test",
-      amount: 100,
-      date: new Date().toISOString(),
-    },
-  });
-
-  testInvalidOrMissingValue({
-    name: "side (income)",
-    type: "invalid",
-    method: "post",
-    endpoint: "/wallet/transactions",
-    data: {
-      type: "income",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -216,7 +256,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: 123,
       amount: 100,
       date: new Date().toISOString(),
@@ -230,7 +269,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: "abc",
       date: new Date().toISOString(),
@@ -244,7 +282,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: "abc",
@@ -258,7 +295,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -273,7 +309,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -288,7 +323,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -318,7 +352,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "income",
-      side: "credit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -334,7 +367,6 @@ describe("POST /wallet/transactions", async () => {
     endpoint: "/wallet/transactions",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -343,10 +375,9 @@ describe("POST /wallet/transactions", async () => {
     },
   });
 
-  for (const field of ["type", "side", "particulars", "amount", "date"]) {
+  for (const field of ["type", "particulars", "amount", "date"]) {
     const data = {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -383,7 +414,6 @@ describe("PATCH /wallet/transactions/:id", () => {
 
       return {
         type: "expenses",
-        side: "debit",
         particulars: "~test",
         amount: 100,
         date: new Date().toISOString(),
@@ -398,7 +428,6 @@ describe("PATCH /wallet/transactions/:id", () => {
 
       return {
         type: "income",
-        side: "credit",
         particulars: "~test2",
         amount: 200,
         date: new Date().toISOString(),
@@ -410,12 +439,10 @@ describe("PATCH /wallet/transactions/:id", () => {
   });
 
   it("should not update a transfer transaction entry", async () => {
-    const { dummyLedger, dummyCategory, dummyAsset, dummyAsset2 } =
-      await createDummyData(true);
+    const { dummyAsset, dummyAsset2 } = await createDummyData(true);
 
     const entry = await PBClient.collection("wallet_transactions").create({
       type: "transfer",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -442,7 +469,6 @@ describe("PATCH /wallet/transactions/:id", () => {
 
     const entry = await PBClient.collection("wallet_transactions").create({
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -471,35 +497,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "invalid",
-      side: "credit",
-      particulars: "~test",
-      amount: 100,
-      date: new Date().toISOString(),
-    },
-  });
-
-  testInvalidOrMissingValue({
-    name: "side (expenses)",
-    type: "invalid",
-    endpoint: "/wallet/transactions/1",
-    method: "patch",
-    data: {
-      type: "expenses",
-      side: "credit",
-      particulars: "~test",
-      amount: 100,
-      date: new Date().toISOString(),
-    },
-  });
-
-  testInvalidOrMissingValue({
-    name: "side (income)",
-    type: "invalid",
-    endpoint: "/wallet/transactions/1",
-    method: "patch",
-    data: {
-      type: "income",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -513,7 +510,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: 123,
       amount: 100,
       date: new Date().toISOString(),
@@ -527,7 +523,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: "abc",
       date: new Date().toISOString(),
@@ -541,7 +536,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: "abc",
@@ -555,7 +549,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -570,7 +563,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -585,7 +577,6 @@ describe("PATCH /wallet/transactions/:id", () => {
     method: "patch",
     data: {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -593,10 +584,9 @@ describe("PATCH /wallet/transactions/:id", () => {
     },
   });
 
-  for (const field of ["type", "side", "particulars", "amount", "date"]) {
+  for (const field of ["type", "particulars", "amount", "date"]) {
     const data = {
       type: "expenses",
-      side: "debit",
       particulars: "~test",
       amount: 100,
       date: new Date().toISOString(),
@@ -615,7 +605,6 @@ describe("PATCH /wallet/transactions/:id", () => {
 
   testEntryNotFound("/wallet/transactions/1", "patch", {
     type: "expenses",
-    side: "debit",
     particulars: "~test",
     amount: 100,
     date: new Date().toISOString(),
@@ -640,7 +629,6 @@ describe("DELETE /wallet/transactions/:id", () => {
 
       return {
         type: "expenses",
-        side: "debit",
         particulars: "~test",
         amount: 100,
         date: new Date().toISOString(),
