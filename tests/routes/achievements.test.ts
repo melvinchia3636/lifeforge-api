@@ -7,7 +7,7 @@ import { LoremIpsum } from "lorem-ipsum";
 import { PBAuthToken, PBClient } from "../utils/PBClient.js";
 import API_HOST from "../constant/API_HOST.js";
 import testUnauthorized from "../common/testUnauthorized.js";
-import testList from "../common/testList.js";
+import testEntryList from "../common/testEntryList.js";
 import testEntryCreation from "../common/testEntryCreation.js";
 import testInvalidOrMissingValue from "../common/testInvalidOrMissingValue.js";
 import testEntryNotFound from "../common/testEntryNotFound.js";
@@ -30,11 +30,11 @@ describe("GET /achievements/entries", () => {
   testUnauthorized("/achievements/entries/easy", "get");
 
   for (const difficulty of ["easy", "medium", "hard", "impossible"]) {
-    testList(
-      `/achievements/entries/${difficulty}`,
-      AchievementsEntrySchema,
-      `${difficulty} achievements entry`
-    );
+    testEntryList({
+      endpoint: `/achievements/entries/${difficulty}`,
+      schema: AchievementsEntrySchema,
+      name: `${difficulty} achievement entry`,
+    });
   }
 
   it("should return 400 if difficulty is not valid", async () => {

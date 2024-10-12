@@ -4,24 +4,18 @@ import API_HOST from "../constant/API_HOST.js";
 import request from "supertest";
 import { expect } from "chai";
 
-export default function testInvalidOrMissingValue({
+export default function testInvalidOrMissingQuery({
   name,
   type,
   endpoint,
   method,
-  data,
 }: {
   name: string;
   type: "invalid" | "missing";
   endpoint: string;
-  method: "post" | "patch";
-  data: Record<string, any> | (() => Promise<Record<string, any>>);
+  method: "get" | "post" | "patch" | "delete";
 }) {
   it(`should return error 400 on ${type} ${name}`, async () => {
-    if (typeof data !== "object") {
-      data = await data();
-    }
-
     const stuffs = name
       .split("(")[0]
       .trim()
@@ -31,7 +25,7 @@ export default function testInvalidOrMissingValue({
     const res = await request(API_HOST)
       [method](endpoint)
       .set("Authorization", `Bearer ${PBAuthToken}`)
-      .send(data);
+      .expect(400);
 
     expect(res.body).to.be.an("object");
     expect(res.body).to.have.property("state", "error");

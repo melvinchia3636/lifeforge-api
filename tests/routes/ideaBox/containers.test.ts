@@ -1,53 +1,31 @@
-import { afterAll, describe, it } from "vitest";
+import { describe } from "vitest";
 import { IdeaBoxContainerSchema } from "../../../src/interfaces/ideabox_interfaces.js";
 import testUnauthorized from "../../common/testUnauthorized.js";
-import testList from "../../common/testList.js";
+import testEntryList from "../../common/testEntryList.js";
 import testEntryCreation from "../../common/testEntryCreation.js";
 import testInvalidOrMissingValue from "../../common/testInvalidOrMissingValue.js";
 import testEntryNotFound from "../../common/testEntryNotFound.js";
 import testEntryDeletion from "../../common/testEntryDeletion.js";
 import testEntryModification from "../../common/testEntryModification.js";
 import { postTestCleanup } from "../../common/postTestCleanup.js";
-import { PBAuthToken, PBClient } from "../../utils/PBClient.js";
-import request from "supertest";
-import API_HOST from "../../constant/API_HOST.js";
-import { expect } from "chai";
-import { assert } from "superstruct";
+import testEntrySingleGet from "../../common/testEntrySingleGet.js";
+import testEntryValidation from "../../common/testEntryValidation.js";
 
 describe("GET /idea-box/containers/:id", () => {
   postTestCleanup("idea_box_containers");
 
   testUnauthorized("/idea-box/containers/123", "get");
 
-  it("should return the idea-box container with the specified id", async () => {
-    const container = {
+  testEntrySingleGet({
+    name: "idea-box container",
+    endpoint: "/idea-box/containers",
+    schema: IdeaBoxContainerSchema,
+    collection: "idea_box_containers",
+    data: {
       name: "~test",
       icon: "test-icon",
       color: "#000000",
-    };
-
-    const entry = await PBClient.collection("idea_box_containers").create(
-      container
-    );
-
-    const res = await request(API_HOST)
-      .get(`/idea-box/containers/${entry.id}`)
-      .set("Authorization", `Bearer ${PBAuthToken}`)
-      .expect(200);
-
-    expect(res.body).to.be.an("object");
-    expect(res.body).to.have.property("state", "success");
-    expect(res.body).to.have.property("data");
-    assert(res.body.data, IdeaBoxContainerSchema);
-
-    const data = res.body.data;
-
-    for (const key in container) {
-      const value = data[key as keyof typeof container];
-      const expected = container[key as keyof typeof container];
-
-      expect(value).to.equal(expected);
-    }
+    },
   });
 
   testEntryNotFound("/idea-box/containers/123", "get");
@@ -58,46 +36,26 @@ describe("GET /idea-box/containers/valid/:id", () => {
 
   testUnauthorized("/idea-box/containers/valid/123", "get");
 
-  it("should return true if the idea-box container exists", async () => {
-    const container = {
+  testEntryValidation({
+    name: "idea-box container",
+    endpoint: "/idea-box/containers/valid",
+    collection: "idea_box_containers",
+    schema: IdeaBoxContainerSchema,
+    data: {
       name: "~test",
       icon: "test-icon",
       color: "#000000",
-    };
-
-    const entry = await PBClient.collection("idea_box_containers").create(
-      container
-    );
-
-    const res = await request(API_HOST)
-      .get(`/idea-box/containers/valid/${entry.id}`)
-      .set("Authorization", `Bearer ${PBAuthToken}`)
-      .expect(200);
-
-    expect(res.body).to.be.an("object");
-    expect(res.body).to.have.property("state", "success");
-    expect(res.body).to.have.property("data", true);
-  });
-
-  it("should return false if the idea-box container does not exist", async () => {
-    const res = await request(API_HOST)
-      .get("/idea-box/containers/valid/123")
-      .set("Authorization", `Bearer ${PBAuthToken}`)
-      .expect(200);
-
-    expect(res.body).to.be.an("object");
-    expect(res.body).to.have.property("state", "success");
-    expect(res.body).to.have.property("data", false);
+    },
   });
 });
 
 describe("GET /idea-box/containers", () => {
   testUnauthorized("/idea-box/containers", "get");
-  testList(
-    "/idea-box/containers",
-    IdeaBoxContainerSchema,
-    "idea-box container"
-  );
+  testEntryList({
+    endpoint: "/idea-box/containers",
+    schema: IdeaBoxContainerSchema,
+    name: "idea-box container",
+  });
 });
 
 describe("POST /idea-box/containers", () => {

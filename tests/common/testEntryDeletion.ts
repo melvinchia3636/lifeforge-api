@@ -9,6 +9,8 @@ export default function testEntryDeletion({
   endpoint,
   collection,
   data,
+  additionalAssertions,
+  entryCreationSideEffects,
 }: {
   name: string;
   endpoint: string;
@@ -16,6 +18,8 @@ export default function testEntryDeletion({
   data: Record<string, any> | (() => Promise<Record<string, any>>);
   before?: () => Promise<void>;
   after?: (entry: any) => Promise<void>;
+  additionalAssertions?: (entry: any) => Promise<void>;
+  entryCreationSideEffects?: (entry: any) => Promise<void>;
 }) {
   it(`should delete an existing ${name} entry`, async () => {
     if (typeof data !== "object") {
@@ -23,6 +27,7 @@ export default function testEntryDeletion({
     }
 
     const entry = await PBClient.collection(collection).create(data);
+    entryCreationSideEffects?.(entry);
 
     await request(API_HOST)
       .delete(`${endpoint}/${entry.id}`)
@@ -35,5 +40,9 @@ export default function testEntryDeletion({
         throw new Error("Entry still exists in database");
       })
       .catch(() => {});
+
+    if (additionalAssertions) {
+      await additionalAssertions(entry);
+    }
   });
 }

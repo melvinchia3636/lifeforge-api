@@ -1,7 +1,7 @@
 import { describe } from "vitest";
 import { WalletAssetSchema } from "../../../src/interfaces/wallet_interfaces.js";
 import testUnauthorized from "../../common/testUnauthorized.js";
-import testList from "../../common/testList.js";
+import testEntryList from "../../common/testEntryList.js";
 import testEntryCreation from "../../common/testEntryCreation.js";
 import testInvalidOrMissingValue from "../../common/testInvalidOrMissingValue.js";
 import testEntryNotFound from "../../common/testEntryNotFound.js";
@@ -11,7 +11,11 @@ import { postTestCleanup } from "../../common/postTestCleanup.js";
 
 describe("GET /wallet/assets", () => {
   testUnauthorized("/wallet/assets", "get");
-  testList("/wallet/assets", WalletAssetSchema, "wallet asset");
+  testEntryList({
+    endpoint: "/wallet/assets",
+    schema: WalletAssetSchema,
+    name: "wallet asset",
+  });
 });
 
 describe("POST /wallet/assets", () => {

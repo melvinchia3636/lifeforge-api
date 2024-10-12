@@ -19,7 +19,7 @@ const IdeaBoxFolderSchema = s.assign(
     color: s.string(),
     icon: s.string(),
     name: s.string(),
-    containers: s.string(),
+    container: s.string(),
   })
 );
 

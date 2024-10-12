@@ -4,7 +4,7 @@ import {
   WalletTransactionEntrySchema,
 } from "../../../src/interfaces/wallet_interfaces.js";
 import testUnauthorized from "../../common/testUnauthorized.js";
-import testList from "../../common/testList.js";
+import testEntryList from "../../common/testEntryList.js";
 import testEntryCreation from "../../common/testEntryCreation.js";
 import testInvalidOrMissingValue from "../../common/testInvalidOrMissingValue.js";
 import testEntryNotFound from "../../common/testEntryNotFound.js";
@@ -58,11 +58,11 @@ describe("GET /wallet/ledgers", () => {
 
   testUnauthorized("/wallet/transactions", "get");
 
-  testList(
-    "/wallet/transactions",
-    WalletTransactionEntrySchema,
-    "wallet transaction"
-  );
+  testEntryList({
+    endpoint: "/wallet/ledgers",
+    schema: WalletLedgerSchema,
+    name: "wallet ledger",
+  });
 });
 
 describe("POST /wallet/transactions", async () => {

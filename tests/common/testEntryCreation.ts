@@ -11,12 +11,14 @@ export default function testEntryCreation({
   schema,
   collection,
   data,
+  additionalAssertions,
 }: {
   name: string;
   endpoint: string;
   schema: Struct<any>;
   collection: string;
   data: Record<string, any> | (() => Promise<Record<string, any>>);
+  additionalAssertions?: (entry: any) => Promise<void>;
 }) {
   it(`should create a new ${name} entry`, async () => {
     if (typeof data !== "object") {
@@ -59,6 +61,8 @@ export default function testEntryCreation({
           .catch(() => {
             throw new Error("Entry not found in database");
           });
+
+        await additionalAssertions?.(entry);
       }
     } else {
       assert(result, schema, "Invalid schema for entry");
@@ -74,6 +78,8 @@ export default function testEntryCreation({
         .catch(() => {
           throw new Error("Entry not found in database");
         });
+
+      await additionalAssertions?.(result);
     }
   });
 }

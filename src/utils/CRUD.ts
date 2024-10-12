@@ -1,29 +1,32 @@
-import { Request, Response } from 'express'
-import { successWithBaseResponse } from './response.js'
-import { BaseResponse } from '../interfaces/base_response.js'
+import { Request, Response } from "express";
+import { successWithBaseResponse } from "./response.js";
+import { BaseResponse } from "../interfaces/base_response.js";
+import hasError from "./checkError.js";
 
 async function list<T>(
-    req: Request,
-    res: Response<BaseResponse<T[]>>,
-    collection: string,
-    options = {}
+  req: Request,
+  res: Response<BaseResponse<T[]>>,
+  collection: string,
+  options = {}
 ) {
-    const { pb } = req
+  if (hasError(req, res)) return;
 
-    const data: T[] = await pb.collection(collection).getFullList(options)
+  const { pb } = req;
 
-    successWithBaseResponse(res, data)
+  const data: T[] = await pb.collection(collection).getFullList(options);
+
+  successWithBaseResponse(res, data);
 }
 
 async function validate(req: Request, res: Response, collectionName: string) {
-    const { pb } = req
-    const { id } = req.params
+  const { pb } = req;
+  const { id } = req.params;
 
-    const { totalItems } = await pb.collection(collectionName).getList(1, 1, {
-        filter: `id = "${id}"`
-    })
+  const { totalItems } = await pb.collection(collectionName).getList(1, 1, {
+    filter: `id = "${id}"`,
+  });
 
-    successWithBaseResponse(res, totalItems === 1)
+  successWithBaseResponse(res, totalItems === 1);
 }
 
-export { list, validate }
+export { list, validate };

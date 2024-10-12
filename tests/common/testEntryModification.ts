@@ -8,31 +8,43 @@ import { Struct } from "superstruct";
 
 export default function testEntryModification({
   name,
+  action = "update",
   endpoint,
+  method = "patch",
   schema,
   collection,
   oldData,
   newData,
+  additionalAssertions,
+  dataCreationSideEffects,
 }: {
   name: string;
+  action?: string;
+  method?: "patch" | "put" | "post";
   endpoint: string;
   schema: Struct<any>;
   collection: string;
   oldData: Record<string, any> | (() => Promise<Record<string, any>>);
-  newData: Record<string, any> | (() => Promise<Record<string, any>>);
+  newData:
+    | Record<string, any>
+    | ((oldEntry: Record<string, any>) => Promise<Record<string, any>>);
+  additionalAssertions?: (entry: any) => Promise<void>;
+  dataCreationSideEffects?: (entry: any) => Promise<void>;
 }) {
-  it(`should update an exsisting ${name}`, async () => {
+  it(`should ${action} an exsisting ${name}`, async () => {
     if (typeof oldData !== "object") {
       oldData = await oldData();
     }
-    if (typeof newData !== "object") {
-      newData = await newData();
-    }
 
     const entry = await PBClient.collection(collection).create(oldData);
+    dataCreationSideEffects?.(entry);
+
+    if (typeof newData !== "object") {
+      newData = await newData(entry);
+    }
 
     const res = await request(API_HOST)
-      .patch(`${endpoint}/${entry.id}`)
+      [method](`${endpoint}/${entry.id}`)
       .set("Authorization", `Bearer ${PBAuthToken}`)
       .send(newData)
       .expect(200);
@@ -60,5 +72,7 @@ export default function testEntryModification({
 
       expect(value).to.equal(expectedValue);
     }
+
+    additionalAssertions?.(updatedEntry);
   });
 }
