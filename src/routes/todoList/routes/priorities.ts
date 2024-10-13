@@ -13,8 +13,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all todo priorities
  * @description Retrieve a list of all todo priorities.
- * @response 200
- * @returns {ITodoPriority[]} - An array of todo priorities
+ * @response 200 (ITodoPriority[]) - The list of todo priorities
  */
 router.get(
   "/",
@@ -30,8 +29,7 @@ router.get(
  * @description Create a new todo priority with the given name and color.
  * @body name (string, required) - The name of the priority
  * @body color (string, required) - The color of the priority, in hex format
- * @response 201
- * @returns {ITodoPriority} - The created todo priority
+ * @response 201 (ITodoPriority) - The created todo priority
  */
 router.post(
   "/",
@@ -59,11 +57,10 @@ router.post(
  * @protected
  * @summary Update a todo priority
  * @description Update a todo priority with the given ID with the given name and color.
- * @param id (string, required, must exist) - The ID of the todo priority
+ * @param id (string, required, must_exist) - The ID of the todo priority
  * @body name (string, required) - The name of the priority
  * @body color (string, required) - The color of the priority, in hex format
- * @response 200
- * @returns {ITodoPriority} - The updated todo priority
+ * @response 200 (ITodoPriority) - The updated todo priority
  */
 router.patch(
   "/:id",
@@ -92,9 +89,8 @@ router.patch(
  * @protected
  * @summary Delete a todo priority
  * @description Delete a todo priority with the given ID.
- * @param id (string, required, must exist) - The ID of the todo priority
- * @response 204
- * @returns {void} - No content
+ * @param id (string, required, must_exist) - The ID of the todo priority
+ * @response 204 - The todo priority was successfully deleted
  */
 router.delete(
   "/:id",

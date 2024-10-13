@@ -19,7 +19,6 @@ const router = express.Router();
  * @description Retrieve a single idea box folder by its ID.
  * @param id (string, required) - The ID of the idea box folder
  * @response 200
- * @returns {IIdeaBoxFolder} - The idea box folder
  */
 router.get(
   "/:id",
@@ -45,7 +44,6 @@ router.get(
  * @description Retrieve a list of all idea box folders, filtered by the container ID given in the query.
  * @query container (string, required) - The ID of the container
  * @response 200
- * @returns {IIdeaBoxFolder[]} - An array of idea box folders
  */
 router.get(
   "/",
@@ -70,7 +68,6 @@ router.get(
  * @description Check if an idea box folder exists by its ID.
  * @param id (string, required) - The ID of the idea box folder
  * @response 200
- * @returns {boolean} - Whether the idea box folder exists
  */
 router.get(
   "/valid/:id",
@@ -85,10 +82,9 @@ router.get(
  * @description Create a new idea box folder with the given name, container, icon, and color.
  * @body name (string, required) - The name of the folder
  * @body container (string, required) - The ID of the container
- * @body icon (string, required) - The icon of the folder
- * @body color (string, required) - The color of the folder
+ * @body icon (string, required) - The icon of the folder, can be any icon available in Iconify
+ * @body color (string, required) - The color of the folder, in hex format
  * @response 201
- * @returns {IIdeaBoxFolder} - The created idea box folder
  */
 router.post(
   "/",
@@ -128,10 +124,9 @@ router.post(
  * @description Update an existing idea box folder with the given ID, setting the name, icon, and color.
  * @param id (string, required, must_exist) - The ID of the idea box folder to update
  * @body name (string, required) - The name of the folder
- * @body icon (string, required) - The icon of the folder
- * @body color (string, required) - The color of the folder
+ * @body icon (string, required) - The icon of the folder, can be any icon available in Iconify
+ * @body color (string, required) - The color of the folder, in hex format
  * @response 200
- * @returns {IIdeaBoxFolder} - The updated idea box folder
  */
 router.patch(
   "/:id",
@@ -169,7 +164,6 @@ router.patch(
  * @description Delete an existing idea box folder with the given ID.
  * @param id (string, required, must_exist) - The ID of the idea box folder to delete
  * @response 204
- * @returns {void} - No content
  */
 router.delete(
   "/:id",

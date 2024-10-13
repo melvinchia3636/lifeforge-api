@@ -26,7 +26,6 @@ const router = express.Router();
  * @query folder (string, optional, must_exist) - The folder of the idea box entries
  * @query archived (boolean, optional) - Whether to include archived entries
  * @response 200
- * @returns {IIdeaBoxEntry[]} - An array of idea box entries
  */
 router.get(
   "/",
@@ -66,7 +65,6 @@ router.get(
  * @body folder (string, optional, must_exist) - The folder of the idea box entry
  * @body file (file, required if type is image) - The image file
  * @response 201
- * @returns {IIdeaBoxEntry} - The created idea box entry
  */
 router.post(
   "/",
@@ -175,7 +173,6 @@ router.post(
  * @body content (string, required) - The content of the idea box entry
  * @body type (string, required, one_of text|link) - The type of the idea box entry
  * @response 200
- * @returns {IIdeaBoxEntry} - The updated idea box entry
  */
 router.patch(
   "/:id",
@@ -230,7 +227,6 @@ router.patch(
  * @description Delete an existing idea box entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the idea box entry to delete
  * @response 204
- * @returns {void} - No content
  */
 router.delete(
   "/:id",
@@ -256,7 +252,6 @@ router.delete(
  * @description Update the pinned status of an existing idea box entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the idea box entry to pin
  * @response 200
- * @returns {IIdeaBoxEntry} - The updated idea box entry
  */
 router.post(
   "/pin/:id",
@@ -285,7 +280,6 @@ router.post(
  * @description Update the archived status of an existing idea box entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the idea box entry to archive
  * @response 200
- * @returns {IIdeaBoxEntry} - The updated idea box entry
  */
 router.post(
   "/archive/:id",
@@ -316,7 +310,6 @@ router.post(
  * @param id (string, required, must_exist) - The ID of the idea box entry to move
  * @query folder (string, required, must_exist) - The folder to move the idea box entry to
  * @response 200
- * @returns {IIdeaBoxEntry} - The updated idea box entry
  */
 router.post(
   "/folder/:id",
@@ -351,7 +344,6 @@ router.post(
  * @description Update the folder of an existing idea box entry with the given ID to an empty string.
  * @param id (string, required, must_exist) - The ID of the idea box entry to remove from the folder
  * @response 200
- * @returns {IIdeaBoxEntry} - The updated idea box entry
  */
 router.delete(
   "/folder/:id",

@@ -25,8 +25,7 @@ const router = express.Router();
  * @query tag (string, optional, must_exist) - The tag of the todo list entry
  * @query list (string, optional, must_exist) - The list of the todo list entry
  * @query priority (string, optional, must_exist) - The priority of the todo list entry
- * @response 200
- * @returns {ITodoListEntry[]} - An array of todo list entries
+ * @response 200 (ITodoListEntry[]) - The list of todo list entries
  */
 router.get(
   "/",
@@ -106,8 +105,7 @@ router.get(
  * @protected
  * @summary Get the amount of todo list entries in each status
  * @description Retrieve the amount of todo list entries in each status.
- * @response 200
- * @returns {ITodoListStatusCounter} - The amount of todo list entries in each status
+ * @response 200 (ITodoListStatusCounter) - The amount of todo list entries in each status
  */
 router.get(
   "/status-counter",
@@ -171,8 +169,7 @@ router.get(
  * @body priority (string, required, must_exist) - The priority of the todo list entry
  * @body tags (string[], required, must_exist) - The tags of the todo list entry
  * @body subtasks (ITodoSubtask[], required) - The subtasks of the todo list entry
- * @response 201
- * @returns {ITodoListEntry} - The created todo list entry
+ * @response 201 (ITodoListEntry) - The created todo list entry
  */
 router.post(
   "/",
@@ -267,8 +264,7 @@ router.post(
  * @body priority (string, required, must_exist) - The priority of the todo list entry
  * @body tags (string[], required, must_exist) - The tags of the todo list entry
  * @body subtasks (ITodoSubtask[], required) - The subtasks of the todo list entry
- * @response 200
- * @returns {ITodoListEntry} - The updated todo list entry
+ * @response 200 (ITodoListEntry) - The updated todo list entry
  */
 router.patch(
   "/:id",
@@ -405,8 +401,7 @@ router.patch(
  * @summary Delete a todo list entry
  * @description Delete a todo list entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the todo list entry
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The todo list entry was successfully deleted
  */
 router.delete(
   "/:id",
@@ -451,8 +446,7 @@ router.delete(
  * @summary Toggle a todo list entry
  * @description Toggle the done status of a todo list entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the todo list entry
- * @response 200
- * @returns {ITodoListEntry} - The toggled todo list entry
+ * @response 200 (ITodoListEntry) - The updated todo list entry
  */
 router.post(
   "/toggle/:id",

@@ -13,8 +13,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all wallet assets
  * @description Retrieve a list of all wallet assets.
- * @response 200
- * @returns {IWalletAsset[]} - An array of wallet assets
+ * @response 200 (IWalletAsset[]) - The list of wallet assets
  */
 router.get(
   "/",
@@ -49,10 +48,9 @@ router.get(
  * @summary Create a new wallet asset
  * @description Create a new wallet asset with the given name, icon, and starting balance.
  * @body name (string, required) - The name of the asset
- * @body icon (string, required) - The icon of the asset
+ * @body icon (string, required) - The icon of the asset, can be any icon available in Iconify
  * @body starting_balance (number, required) - The starting balance of the asset
- * @response 201
- * @returns {IWalletAsset} - The created wallet asset
+ * @response 201 (IWalletAsset) - The created wallet asset
  */
 router.post(
   "/",
@@ -85,10 +83,9 @@ router.post(
  * @description Update an existing wallet asset with the given ID, setting the name, icon, and starting balance.
  * @param id (string, required, must_exist) - The ID of the wallet asset to update
  * @body name (string, required) - The name of the asset
- * @body icon (string, required) - The icon of the asset
+ * @body icon (string, required) - The icon of the asset, can be any icon available in Iconify
  * @body starting_balance (number, required) - The starting balance of the asset
- * @response 200
- * @returns {IWalletAsset} - The updated wallet asset
+ * @response 200 (IWalletAsset) - The updated wallet asset
  */
 router.patch(
   "/:id",
@@ -125,8 +122,7 @@ router.patch(
  * @summary Delete a wallet asset
  * @description Delete an existing wallet asset with the given ID.
  * @param id (string, required, must_exist) - The ID of the wallet asset to delete
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The wallet asset was successfully deleted
  */
 router.delete(
   "/:id",

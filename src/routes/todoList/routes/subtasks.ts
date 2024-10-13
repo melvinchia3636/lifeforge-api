@@ -30,8 +30,7 @@ const BREAKDOWN_LEVELS = [
  * @summary Get a list of all subtasks for a todo list entry
  * @description Retrieve a list of all subtasks for a todo list entry.
  * @param id (string, required, must_exist) - The ID of the todo list entry
- * @response 200
- * @returns {ITodoSubtask[]} - An array of todo subtasks
+ * @response 200 (ITodoSubtask[]) - The list of subtasks
  */
 router.get(
   "/list/:id",
@@ -61,8 +60,7 @@ router.get(
  * @body summary (string, required) - The summary of the task
  * @body notes (string, optional) - The notes of the task
  * @body level (number, required, one_of 0|1|2|3|4) - The level of breakdown for the subtasks, the higher the number, the more amount of subtasks generated
- * @response 200
- * @returns {string[]} - An array of suggested subtasks
+ * @response 200 (string[]) - The list of subtasks
  */
 router.post(
   "/ai-generate",
@@ -105,8 +103,7 @@ router.post(
  * @description Mark a subtask as done or not done, toggling the completion status.
  * @param id (string, required, must_exist) - The ID of the todo list entry
  * @body content (string, required) - The content of the subtask
- * @response 201
- * @returns {ITodoSubtask} - The created todo subtask
+ * @response 201 (ITodoSubtask) - The updated subtask
  */
 router.patch(
   "/toggle/:id",

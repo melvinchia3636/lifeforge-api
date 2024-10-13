@@ -18,7 +18,6 @@ const router = express.Router();
  * @summary Get a list of all wallet ledgers
  * @description Retrieve a list of all wallet ledgers.
  * @response 200
- * @returns {IWalletLedger[]} - An array of wallet ledgers
  */
 router.get(
   "/",
@@ -33,10 +32,9 @@ router.get(
  * @summary Create a new wallet ledger
  * @description Create a new wallet ledger with the given name, icon, and color.
  * @body name (string, required) - The name of the ledger
- * @body icon (string, required) - The icon of the ledger
- * @body color (string, required) - The color of the ledger
- * @response 201
- * @returns {IWalletLedger} - The created wallet ledger
+ * @body icon (string, required) - The icon of the ledger, can be any icon available in Iconify
+ * @body color (string, required) - The color of the ledger, in hex format
+ * @response 201 (IWalletLedger) - The created wallet ledger
  */
 router.post(
   "/",
@@ -69,12 +67,11 @@ router.post(
  * @protected
  * @summary Update a wallet ledger
  * @description Update a wallet ledger with the given name, icon, and color.
- * @param id (string, path, required, must_exist) - The ID of the ledger
+ * @param id (string, required, must_exist) - The ID of the ledger
  * @body name (string, required) - The name of the ledger
- * @body icon (string, required) - The icon of the ledger
- * @body color (string, required) - The color of the ledger
- * @response 200
- * @returns {IWalletLedger} - The updated wallet ledger
+ * @body icon (string, required) - The icon of the ledger, can be any icon available in Iconify
+ * @body color (string, required) - The color of the ledger, in hex format
+ * @response 200 (IWalletLedger) - The updated wallet ledger
  */
 router.patch(
   "/:id",
@@ -110,9 +107,8 @@ router.patch(
  * @protected
  * @summary Delete a wallet ledger
  * @description Delete a wallet ledger with the given ID.
- * @param id (string, path, required, must_exist) - The ID of the ledger
- * @response 204
- * @returns {void} - No content
+ * @param id (string, required, must_exist) - The ID of the ledger
+ * @response 204 - The wallet ledger was successfully deleted
  */
 router.delete(
   "/:id",

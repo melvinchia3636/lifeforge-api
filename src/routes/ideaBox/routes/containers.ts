@@ -16,7 +16,6 @@ const router = express.Router();
  * @description Retrieve a single idea box container by its ID.
  * @param id (string, required) - The ID of the idea box container
  * @response 200
- * @returns {IIdeaBoxContainer} - The idea box container
  */
 router.get(
   "/:id",
@@ -42,7 +41,6 @@ router.get(
  * @description Check if an idea box container exists by its ID.
  * @param id (string, required) - The ID of the idea box container
  * @response 200
- * @returns {boolean} - Whether the idea box container exists
  */
 router.get(
   "/valid/:id",
@@ -56,7 +54,6 @@ router.get(
  * @summary Get a list of all idea box containers
  * @description Retrieve a list of all idea box containers.
  * @response 200
- * @returns {IIdeaBoxContainer[]} - An array of idea box containers
  */
 router.get(
   "/",
@@ -74,7 +71,6 @@ router.get(
  * @body color (string, required) - The color of the container
  * @body icon (string) - The icon of the container
  * @response 201
- * @returns {IIdeaBoxContainer} - The created idea box container
  */
 router.post(
   "/",
@@ -112,7 +108,6 @@ router.post(
  * @body color (string, required) - The color of the container
  * @body icon (string) - The icon of the container
  * @response 200
- * @returns {IIdeaBoxContainer} - The updated idea box container
  */
 router.patch(
   "/:id",
@@ -151,7 +146,6 @@ router.patch(
  * @description Delete an idea box container by its ID.
  * @param id (string, required) - The ID of the idea box container
  * @response 204
- * @returns {void} - No content
  */
 router.delete(
   "/:id",

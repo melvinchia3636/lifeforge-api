@@ -14,8 +14,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all wallet categories
  * @description Retrieve a list of all wallet categories.
- * @response 200
- * @returns {IWalletCategory[]} - An array of wallet categories
+ * @response 200 (IWalletCategory[]) - The list of wallet categories
  */
 router.get(
   "/",
@@ -30,11 +29,10 @@ router.get(
  * @summary Create a new wallet category
  * @description Create a new wallet category with the given name, icon, color, and type.
  * @body name (string, required) - The name of the category
- * @body icon (string, required) - The icon of the category
- * @body color (string, required) - The color of the category
+ * @body icon (string, required) - The icon of the category, can be any icon available in Iconify
+ * @body color (string, required) - The color of the category, in hex format
  * @body type (string, required, one_of expenses|income) - The type of the category
- * @response 201
- * @returns {IWalletCategory} - The created wallet category
+ * @response 201 (IWalletCategory) - The created wallet category
  */
 router.post(
   "/",
@@ -71,10 +69,9 @@ router.post(
  * @description Update a wallet category with the given name, icon, and color.
  * @param id (string, required, must_exist) - The ID of the wallet category
  * @body name (string, required) - The name of the category
- * @body icon (string, required) - The icon of the category
- * @body color (string, required) - The color of the category
- * @response 200
- * @returns {IWalletCategory} - The updated wallet category
+ * @body icon (string, required) - The icon of the category, can be any icon available in Iconify
+ * @body color (string, required) - The color of the category, in hex format
+ * @response 200 (IWalletCategory) - The updated wallet category
  */
 router.patch(
   "/:id",
@@ -112,8 +109,7 @@ router.patch(
  * @summary Delete a wallet category
  * @description Delete a wallet category with the given ID.
  * @param id (string, required, must_exist) - The ID of the wallet category
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The wallet category was successfully deleted
  */
 router.delete(
   "/:id",

@@ -27,8 +27,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all wallet transactions
  * @description Retrieve a list of all wallet transactions.
- * @response 200
- * @returns {IWalletIncomeExpenses[]} - An array of wallet transactions
+ * @response 200 (IWalletTransactionEntry[]) - The list of wallet transactions
  */
 router.get(
   "/",
@@ -46,8 +45,7 @@ router.get(
  * @description Retrieve the total amount of income and expenses, as well as the amount of income and expenses in a specific month.
  * @query year (number, required) - The year to filter by (YYYY)
  * @query month (number, required) - The month to filter by (M)
- * @response 200
- * @returns {IWalletIncomeExpenses} - The total and monthly income and expenses
+ * @response 200 (IWalletIncomeExpenses) - The total and monthly income and expenses
  */
 router.get(
   "/income-expenses",
@@ -141,8 +139,7 @@ router.get(
  * @body ledger (string, optional) - The ID of the ledger, will raise an error if the type is transfer
  * @body fromAsset (string, required if type is transfer, must_exist) - The ID of the asset to transfer from
  * @body toAsset (string, required if type is transfer, must_exist) - The ID of the asset to transfer to
- * @response 201
- * @returns {IWalletTransactionEntry[]} - The created wallet transaction
+ * @response 201 (IWalletTransactionEntry[]) - The created wallet transaction
  */
 router.post(
   "/",
@@ -317,7 +314,7 @@ router.post(
  * @protected
  * @summary Update a wallet transaction
  * @description Update a wallet income or expenses transaction with the given particulars, date, amount, category, asset, ledger, type, and side.
- * @param id (string, path, required, must_exist) - The ID of the transaction
+ * @param id (string, required, must_exist) - The ID of the transaction
  * @body particulars (string, required) - The particulars of the transaction
  * @body date (string, required) - The date of the transaction (any valid date string that can be parsed by moment.js)
  * @body amount (number, required) - The amount of the transaction
@@ -325,8 +322,7 @@ router.post(
  * @body asset (string, optional, must_exist) - The ID of the asset
  * @body ledger (string, optional, must_exist) - The ID of the ledger
  * @body type (string, required, one_of income|expenses) - The type of the transaction
- * @response 200
- * @returns {IWalletTransactionEntry} - The updated wallet transaction
+ * @response 200 (IWalletTransactionEntry) - The updated wallet transaction
  */
 router.patch(
   "/:id",
@@ -443,9 +439,8 @@ router.patch(
  * @protected
  * @summary Delete a wallet transaction
  * @description Delete a wallet transaction with the given ID.
- * @param id (string, path, required, must_exist) - The ID of the transaction
- * @response 204
- * @returns {void} - No content
+ * @param id (string, required, must_exist) - The ID of the transaction
+ * @response 204 - The wallet transaction was successfully deleted
  */
 router.delete(
   "/:id",

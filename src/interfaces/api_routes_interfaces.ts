@@ -1,4 +1,4 @@
-interface RouteDocs {
+interface IRouteDocs {
   summary: string;
   description: string;
   access: "public" | "protected" | "private";
@@ -31,19 +31,19 @@ interface RouteDocs {
   };
 }
 
-interface Route {
+interface IRoute {
   method: string;
   path: string;
   description?: string;
-  docs: RouteDocs | null;
+  docs: IRouteDocs | null;
 }
 
-interface Routes {
-  topLevel: Route[];
+interface IRoutes {
+  topLevel: IRoute[];
   use: {
     path: string;
-    children: Routes | Route[];
+    children: IRoutes | IRoute[];
   }[];
 }
 
-export { Route, RouteDocs, Routes };
+export { IRoute, IRouteDocs, IRoutes };

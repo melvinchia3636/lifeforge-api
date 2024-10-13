@@ -17,7 +17,7 @@ import router from "./routes.js";
 import dotenv from "dotenv";
 import { successWithBaseResponse } from "./utils/response.js";
 import { BaseResponse } from "./interfaces/base_response.js";
-import { Route } from "./interfaces/api_routes_interfaces.js";
+import { IRoute } from "./interfaces/api_routes_interfaces.js";
 
 dotenv.config({
   path: ".env.local",
@@ -115,9 +115,9 @@ mainRouter.get(
   asyncWrapper(
     async (
       _: Request,
-      res: Response<BaseResponse<Record<string, Route[]>>>
+      res: Response<BaseResponse<Record<string, IRoute[]>>>
     ) => {
-      const routes: Record<string, Route[]> = Object.fromEntries(
+      const routes: Record<string, IRoute[]> = Object.fromEntries(
         Object.entries(
           flattenRoutes(getRoutes(`./src`, "routes.ts"))
             .map((route) => ({
@@ -127,7 +127,7 @@ mainRouter.get(
                   `${route.method} ${route.path.replace(/:(\w+)/g, "{$1}")}` as keyof typeof DESCRIPTIONS
                 ],
             }))
-            .reduce((acc: Record<string, Route[]>, route) => {
+            .reduce((acc: Record<string, IRoute[]>, route) => {
               const r = route.path.split("/")[1] as keyof typeof acc;
               if (acc[r]) {
                 acc[r].push(route);

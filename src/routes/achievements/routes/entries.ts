@@ -1,9 +1,6 @@
 import express, { Request, Response } from "express";
 import asyncWrapper from "../../../utils/asyncWrapper.js";
-import {
-  clientError,
-  successWithBaseResponse,
-} from "../../../utils/response.js";
+import { successWithBaseResponse } from "../../../utils/response.js";
 import { body, param } from "express-validator";
 import hasError from "../../../utils/checkError.js";
 import { list } from "../../../utils/CRUD.js";
@@ -18,8 +15,7 @@ const router = express.Router();
  * @summary Get a list of all achievements entries by difficulty
  * @description Retrieve a list of all achievements entries, filtered by difficulty level given in the URL.
  * @param difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
- * @response 200
- * @returns {IAchievementEntry[]} - An array of achievement entries
+ * @response 200 (IAchievementEntry[]) - The list of achievements entries
  */
 router.get(
   "/:difficulty",
@@ -39,8 +35,7 @@ router.get(
  * @body difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
  * @body title (string, required) - The title of the achievement
  * @body thoughts (string, required) - The thoughts on the achievement
- * @response 201
- * @returns {IAchievementEntry} - The created achievement entry
+ * @response 201 (IAchievementEntry) - The created achievement entry
  */
 router.post(
   "/",
@@ -80,8 +75,7 @@ router.post(
  * @body difficulty (string, required, one_of easy|medium|hard|impossible) - The difficulty of the achievement
  * @body title (string, required) - The title of the achievement
  * @body thoughts (string, required) - The thoughts on the achievement
- * @response 200
- * @returns {IAchievementEntry} - The updated achievement entry
+ * @response 200 (IAchievementEntry) - The updated achievement entry
  */
 router.patch(
   "/:id",
@@ -119,8 +113,7 @@ router.patch(
  * @summary Delete an achievement entry
  * @description Delete an existing achievement entry with the given ID.
  * @param id (string, required, must_exist) - The ID of the achievement entry to delete
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The achievement entry was deleted successfully
  */
 router.delete(
   "/:id",

@@ -13,8 +13,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all todo tags
  * @description Retrieve a list of all todo tags.
- * @response 200
- * @returns {ITodoListTag[]} - An array of todo tags
+ * @response 200 (ITodoListTag[]) - The list of todo tags
  */
 router.get(
   "/",
@@ -29,8 +28,7 @@ router.get(
  * @summary Create a new todo tag
  * @description Create a new todo tag with the given name.
  * @body name (string, required) - The name of the tag
- * @response 201
- * @returns {ITodoListTag} - The created todo tag
+ * @response 201 (ITodoListTag) - The created todo tag
  */
 router.post(
   "/",
@@ -57,8 +55,7 @@ router.post(
  * @description Update a todo tag with the given name.
  * @param id (string, required, must_exist) - The ID of the tag
  * @body name (string, required) - The name of the tag
- * @response 200
- * @returns {ITodoListTag} - The updated todo tag
+ * @response 200 (ITodoListTag) - The updated todo tag
  */
 router.patch(
   "/:id",
@@ -85,8 +82,7 @@ router.patch(
  * @summary Delete a todo tag
  * @description Delete a todo tag with the given ID.
  * @param id (string, required, must_exist) - The ID of the tag
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The todo tag was deleted successfully
  */
 router.delete(
   "/:id",

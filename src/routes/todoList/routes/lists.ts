@@ -13,8 +13,7 @@ const router = express.Router();
  * @protected
  * @summary Get a list of all todo lists
  * @description Retrieve a list of all todo lists.
- * @response 200
- * @returns {ITodoListList[]} - An array of todo lists
+ * @response 200 (ITodoListList[]) - The list of todo lists
  */
 router.get(
   "/",
@@ -29,10 +28,9 @@ router.get(
  * @summary Create a new todo list
  * @description Create a new todo list with the given name, icon, and color.
  * @body name (string, required) - The name of the list
- * @body icon (string, required) - The icon of the list
+ * @body icon (string, required) - The icon of the list, can be any icon available in Iconify
  * @body color (string, required) - The color of the list, in hex format
- * @response 201
- * @returns {ITodoListList} - The created todo list
+ * @response 201 (ITodoListList) - The created todo list
  */
 router.post(
   "/",
@@ -65,10 +63,9 @@ router.post(
  * @description Update a todo list with the given name, icon, and color.
  * @param id (string, required, must_exist) - The ID of the list
  * @body name (string, required) - The name of the list
- * @body icon (string, required) - The icon of the list
+ * @body icon (string, required) - The icon of the list, can be any icon available in Iconify
  * @body color (string, required) - The color of the list, in hex format
- * @response 200
- * @returns {ITodoListList} - The updated todo list
+ * @response 200 (ITodoListList) - The updated todo list
  */
 router.patch(
   "/:id",
@@ -101,8 +98,7 @@ router.patch(
  * @summary Delete a todo list
  * @description Delete a todo list with the given ID.
  * @param id (string, required, must_exist) - The ID of the list
- * @response 204
- * @returns {void} - No content
+ * @response 204 - The todo list was successfully deleted
  */
 router.delete(
   "/:id",

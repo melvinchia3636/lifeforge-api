@@ -1,9 +1,10 @@
 import fs from "fs";
 import {
-  Route,
-  RouteDocs,
-  Routes,
+  IRoute,
+  IRouteDocs,
+  IRoutes,
 } from "../interfaces/api_routes_interfaces.js";
+import parseRouteDocs from "./parseRouteDocs.js";
 
 function getRoutesFromFile(content: string) {
   return content
@@ -18,138 +19,14 @@ function getRoutesFromFile(content: string) {
 
       if (!match) return { method: "", path: "", docs: null };
 
-      const res: Route = {
+      const res: IRoute = {
         method: match.groups?.method ?? "",
         path: match.groups?.path ?? "",
         docs: null,
       };
 
       if (match.groups?.docstring) {
-        const docs: RouteDocs = {
-          summary: "",
-          description: "",
-          access: "private",
-          params: [],
-          query: [],
-          body: [],
-          response: {
-            status: 200,
-            description: "",
-            body: "",
-          },
-        };
-
-        const docString = match.groups.docstring
-          .trim()
-          .split("\n")
-          .map((e) => e.trim().replace(/^\*\s+/, ""));
-
-        for (let row of docString) {
-          const match = /^@(\w+)/.exec(row);
-          if (!match) continue;
-          const tag = match[1];
-
-          switch (tag) {
-            case "summary":
-              docs.summary = row.replace(/^@summary\s+/, "");
-              break;
-            case "description":
-              docs.description = row.replace(/^@description\s+/, "");
-              break;
-            case "protected":
-              docs.access = "protected";
-              break;
-            case "private":
-              docs.access = "private";
-              break;
-            case "public":
-              docs.access = "public";
-              break;
-            case "param":
-            case "query":
-            case "body":
-              {
-                const match =
-                  /@(?<tag>param|query|body) (?<name>\w+) \((?<options>.*?)\) - (?<description>.+)/.exec(
-                    row
-                  )?.groups;
-
-                if (!match) continue;
-
-                const data = {
-                  name: match.name,
-                  type: "",
-                  required: false as boolean | string,
-                  must_exist: false,
-                  options: [] as string[],
-                  description: match.description,
-                };
-
-                const options = match.options.split(",").map((e) => e.trim());
-
-                data.type = options.shift() ?? "";
-
-                for (const option of options) {
-                  if (option.startsWith("required")) {
-                    data.required =
-                      option.replace(/^required/, "").trim() || true;
-                  }
-
-                  if (option === "optional") {
-                    data.required = false;
-                  }
-
-                  if (option === "must_exist") {
-                    data.must_exist = true;
-                  }
-
-                  if (option.startsWith("one_of")) {
-                    data.options = option
-                      .replace(/^one_of\s+/, "")
-                      .split("|")
-                      .map((e) => e.trim());
-                  }
-                }
-
-                if (match.tag === "param") {
-                  docs.params.push(data);
-                }
-
-                if (match.tag === "query") {
-                  docs.query.push(data);
-                }
-
-                if (match.tag === "body") {
-                  docs.body.push(data);
-                }
-              }
-              break;
-
-            case "response":
-              console.log(row);
-              const match = /@response (?<status>\d+)/.exec(row)?.groups;
-
-              if (!match) continue;
-
-              docs.response.status = parseInt(match.status);
-
-              break;
-
-            case "returns": {
-              const match =
-                /@returns \{(?<body>.+)\} - (?<description>.+)/.exec(
-                  row
-                )?.groups;
-
-              if (!match) continue;
-
-              docs.response.body = match.body;
-              docs.response.description = match.description;
-            }
-          }
-        }
-
-        res.docs = docs;
+        res.docs = parseRouteDocs(match.groups.docstring);
       }
 
       return res;
@@ -216,7 +93,7 @@ function getUseRoutes(content: string, dir: string) {
 }
 
 function getRoutes(dir: string, file = "index.ts") {
-  let routes: Routes = {
+  let routes: IRoutes = {
     topLevel: [],
     use: [],
   };
@@ -240,10 +117,10 @@ function getRoutes(dir: string, file = "index.ts") {
   return routes;
 }
 
-function flattenRoutes(routes: Routes) {
+function flattenRoutes(routes: IRoutes) {
   return [
     ...routes.topLevel,
-    ...routes.use.flatMap((e): Route[] =>
+    ...routes.use.flatMap((e): IRoute[] =>
       e.children
         ? Array.isArray(e.children)
           ? e.children.map((c) => ({
